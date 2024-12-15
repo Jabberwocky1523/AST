@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "astobject.h": "c",
+        "stdarg.h": "c",
+        "stdlib.h": "c"
+    }
+}
