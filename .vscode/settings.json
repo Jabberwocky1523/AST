@@ -2,6 +2,25 @@
     "files.associations": {
         "astobject.h": "c",
         "stdarg.h": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "numbers": "cpp",
+        "array": "cpp",
+        "hash_map": "cpp",
+        "string_view": "cpp",
+        "format": "cpp",
+        "initializer_list": "cpp",
+        "span": "cpp",
+        "*.tcc": "cpp",
+        "chrono": "cpp",
+        "algorithm": "cpp",
+        "random": "cpp",
+        "fstream": "cpp",
+        "streambuf": "cpp",
+        "*.inc": "cpp",
+        "aststate.h": "c",
+        "ast.h": "c",
+        "stddef.h": "c",
+        "aststring.h": "c",
+        "astmem.h": "c"
     }
 }

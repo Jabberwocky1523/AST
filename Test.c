@@ -4,11 +4,5 @@
 
 int main()
 {
-    TValue *a;
-    setnvalue(a, 1);
-    printf("%d", ttype(a));
-    printnvalue(a);
-    setbvalue(a, 1);
-    printf("%d", ttype(a));
-    printbvalue(a);
+    printf("%d", (size_t)(~(size_t)0) - 2);
 }
