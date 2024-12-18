@@ -86,10 +86,52 @@ CMakeFiles/AST.dir/Test.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/AST.dir/Test.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jabberwocky/桌面/AST/Test.c -o CMakeFiles/AST.dir/Test.s
 
+CMakeFiles/AST.dir/ast.o: CMakeFiles/AST.dir/flags.make
+CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.c
+CMakeFiles/AST.dir/ast.o: CMakeFiles/AST.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/AST.dir/ast.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/AST.dir/ast.o -MF CMakeFiles/AST.dir/ast.o.d -o CMakeFiles/AST.dir/ast.o -c /home/jabberwocky/桌面/AST/ast.c
+
+CMakeFiles/AST.dir/ast.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/AST.dir/ast.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jabberwocky/桌面/AST/ast.c > CMakeFiles/AST.dir/ast.i
+
+CMakeFiles/AST.dir/ast.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/AST.dir/ast.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jabberwocky/桌面/AST/ast.c -o CMakeFiles/AST.dir/ast.s
+
+CMakeFiles/AST.dir/astMem.o: CMakeFiles/AST.dir/flags.make
+CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.c
+CMakeFiles/AST.dir/astMem.o: CMakeFiles/AST.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/AST.dir/astMem.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/AST.dir/astMem.o -MF CMakeFiles/AST.dir/astMem.o.d -o CMakeFiles/AST.dir/astMem.o -c /home/jabberwocky/桌面/AST/astMem.c
+
+CMakeFiles/AST.dir/astMem.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/AST.dir/astMem.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jabberwocky/桌面/AST/astMem.c > CMakeFiles/AST.dir/astMem.i
+
+CMakeFiles/AST.dir/astMem.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/AST.dir/astMem.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jabberwocky/桌面/AST/astMem.c -o CMakeFiles/AST.dir/astMem.s
+
+CMakeFiles/AST.dir/astObject.o: CMakeFiles/AST.dir/flags.make
+CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.c
+CMakeFiles/AST.dir/astObject.o: CMakeFiles/AST.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/AST.dir/astObject.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/AST.dir/astObject.o -MF CMakeFiles/AST.dir/astObject.o.d -o CMakeFiles/AST.dir/astObject.o -c /home/jabberwocky/桌面/AST/astObject.c
+
+CMakeFiles/AST.dir/astObject.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/AST.dir/astObject.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/jabberwocky/桌面/AST/astObject.c > CMakeFiles/AST.dir/astObject.i
+
+CMakeFiles/AST.dir/astObject.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/AST.dir/astObject.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/jabberwocky/桌面/AST/astObject.c -o CMakeFiles/AST.dir/astObject.s
+
 CMakeFiles/AST.dir/astState.o: CMakeFiles/AST.dir/flags.make
 CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.c
 CMakeFiles/AST.dir/astState.o: CMakeFiles/AST.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/AST.dir/astState.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/AST.dir/astState.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/AST.dir/astState.o -MF CMakeFiles/AST.dir/astState.o.d -o CMakeFiles/AST.dir/astState.o -c /home/jabberwocky/桌面/AST/astState.c
 
 CMakeFiles/AST.dir/astState.i: cmake_force
@@ -103,7 +145,7 @@ CMakeFiles/AST.dir/astState.s: cmake_force
 CMakeFiles/AST.dir/astString.o: CMakeFiles/AST.dir/flags.make
 CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c
 CMakeFiles/AST.dir/astString.o: CMakeFiles/AST.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/AST.dir/astString.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/AST.dir/astString.o"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/AST.dir/astString.o -MF CMakeFiles/AST.dir/astString.o.d -o CMakeFiles/AST.dir/astString.o -c /home/jabberwocky/桌面/AST/astString.c
 
 CMakeFiles/AST.dir/astString.i: cmake_force
@@ -117,6 +159,9 @@ CMakeFiles/AST.dir/astString.s: cmake_force
 # Object files for target AST
 AST_OBJECTS = \
 "CMakeFiles/AST.dir/Test.o" \
+"CMakeFiles/AST.dir/ast.o" \
+"CMakeFiles/AST.dir/astMem.o" \
+"CMakeFiles/AST.dir/astObject.o" \
 "CMakeFiles/AST.dir/astState.o" \
 "CMakeFiles/AST.dir/astString.o"
 
@@ -124,12 +169,15 @@ AST_OBJECTS = \
 AST_EXTERNAL_OBJECTS =
 
 AST: CMakeFiles/AST.dir/Test.o
+AST: CMakeFiles/AST.dir/ast.o
+AST: CMakeFiles/AST.dir/astMem.o
+AST: CMakeFiles/AST.dir/astObject.o
 AST: CMakeFiles/AST.dir/astState.o
 AST: CMakeFiles/AST.dir/astString.o
 AST: CMakeFiles/AST.dir/build.make
 AST: CMakeFiles/AST.dir/compiler_depend.ts
 AST: CMakeFiles/AST.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable AST"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable AST"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/AST.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

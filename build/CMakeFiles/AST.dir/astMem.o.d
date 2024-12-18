@@ -1,5 +1,5 @@
-CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
- /usr/include/stdc-predef.h /home/jabberwocky/桌面/AST/astString.h \
+CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.c \
+ /usr/include/stdc-predef.h /home/jabberwocky/桌面/AST/astMem.h \
  /home/jabberwocky/桌面/AST/ast.h /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
@@ -32,8 +32,6 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
  /usr/include/bits/atomic_wide_counter.h /usr/include/bits/struct_mutex.h \
  /usr/include/bits/struct_rwlock.h /usr/include/alloca.h \
  /usr/include/bits/stdlib-float.h \
- /home/jabberwocky/桌面/AST/astObject.h \
- /home/jabberwocky/桌面/AST/astState.h \
- /home/jabberwocky/桌面/AST/astMem.h /usr/include/string.h \
+ /home/jabberwocky/桌面/AST/astObject.h /usr/include/string.h \
  /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
- /usr/include/strings.h
+ /usr/include/strings.h /home/jabberwocky/桌面/AST/astState.h

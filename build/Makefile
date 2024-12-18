@@ -145,6 +145,51 @@ Test.s:
 .PHONY : Test.s
 
 # target to build an object file
+ast.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/ast.o
+.PHONY : ast.o
+
+# target to preprocess a source file
+ast.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/ast.i
+.PHONY : ast.i
+
+# target to generate assembly for a file
+ast.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/ast.s
+.PHONY : ast.s
+
+# target to build an object file
+astMem.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astMem.o
+.PHONY : astMem.o
+
+# target to preprocess a source file
+astMem.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astMem.i
+.PHONY : astMem.i
+
+# target to generate assembly for a file
+astMem.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astMem.s
+.PHONY : astMem.s
+
+# target to build an object file
+astObject.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astObject.o
+.PHONY : astObject.o
+
+# target to preprocess a source file
+astObject.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astObject.i
+.PHONY : astObject.i
+
+# target to generate assembly for a file
+astObject.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astObject.s
+.PHONY : astObject.s
+
+# target to build an object file
 astState.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/astState.o
 .PHONY : astState.o
@@ -186,6 +231,15 @@ help:
 	@echo "... Test.o"
 	@echo "... Test.i"
 	@echo "... Test.s"
+	@echo "... ast.o"
+	@echo "... ast.i"
+	@echo "... ast.s"
+	@echo "... astMem.o"
+	@echo "... astMem.i"
+	@echo "... astMem.s"
+	@echo "... astObject.o"
+	@echo "... astObject.i"
+	@echo "... astObject.s"
 	@echo "... astState.o"
 	@echo "... astState.i"
 	@echo "... astState.s"

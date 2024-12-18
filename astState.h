@@ -13,26 +13,26 @@ union GCObject
     GCHeader gch;
     ast_String ts;
 };
+typedef struct StringTable
+{
+    GCObject **hashTable;
+    ast_Uint32 Tnum;
+    ast_Uint32 size;
+} StringTable;
+
 // 全局状态机
 typedef struct global_State
 {
     StringTable stringtable;
     ast_Mem GCthreshold;
     ast_Mem totalbytes;
-
+    void *StringBuff;
 } global_State;
 typedef struct ast_State
 {
-    GCCommonHearder;
+    GCCommonHeader;
     ast_Byte status;
-    TValue global_table;
+    global_State *G_S;
 } ast_State;
-
-typedef struct StringTable
-{
-    GCObject **hash;
-    ast_Uint32 Tnum;
-    ast_Uint32 size;
-} StringTable;
 
 #endif

@@ -22,5 +22,11 @@
         "stddef.h": "c",
         "aststring.h": "c",
         "astmem.h": "c"
+    },
+    "files.exclude": {
+        "**/*.rpyc": true,
+        "**/*.rpa": true,
+        "**/*.rpymc": true,
+        "**/cache/": true
     }
 }

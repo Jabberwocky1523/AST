@@ -29,5 +29,9 @@ CMakeFiles/AST.dir/Test.o: /home/jabberwocky/桌面/AST/Test.c \
  /usr/include/bits/types/__fpos64_t.h /usr/include/bits/types/__FILE.h \
  /usr/include/bits/types/FILE.h /usr/include/bits/types/struct_FILE.h \
  /usr/include/bits/types/cookie_io_functions_t.h \
- /usr/include/bits/stdio_lim.h /home/jabberwocky/桌面/AST/astObject.h \
- /home/jabberwocky/桌面/AST/ast.h
+ /usr/include/bits/stdio_lim.h /home/jabberwocky/桌面/AST/astState.h \
+ /home/jabberwocky/桌面/AST/ast.h \
+ /home/jabberwocky/桌面/AST/astObject.h \
+ /home/jabberwocky/桌面/AST/astMem.h /usr/include/string.h \
+ /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
+ /usr/include/strings.h /home/jabberwocky/桌面/AST/astString.h
