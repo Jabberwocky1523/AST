@@ -9,13 +9,10 @@
 #include <stddef.h>
 // 重定义数据
 typedef unsigned int ast_Uint32;
-typedef struct ast_Bool
+typedef enum ast_Bool
 {
-    enum BOOL
-    {
-        FALSE = 0,
-        TRUE
-    };
+    FALSE = 0,
+    TRUE
 } ast_Bool;
 #define AST_USER_ALINMENT \
     union                 \
@@ -25,7 +22,6 @@ typedef struct ast_Bool
         long l;           \
     }
 typedef AST_USER_ALINMENT ast_UMaxAlign;
-
 typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 
 #define ttype(o) ((o)->tt)
@@ -34,4 +30,5 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_TUSERDATA 2
 #define AST_TNUMBER 3
 #define AST_TSTRING 4
+
 #endif

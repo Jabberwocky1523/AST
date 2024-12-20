@@ -54,6 +54,11 @@ typedef union ast_TString
     } Tsv;
 } ast_String;
 
+typedef union GCObject
+{
+    GCHeader gch;
+    ast_String ts;
+} GCObject;
 // 判断数据对象是否可回收
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)
 

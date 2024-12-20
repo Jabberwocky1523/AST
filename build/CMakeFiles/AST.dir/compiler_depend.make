@@ -3,9 +3,10 @@
 
 AST: /usr/lib/libc.so \
   /usr/lib/libgcc_s.so \
+  /usr/lib/libm.so \
   /usr/lib/ld-linux-x86-64.so.2
 
-CMakeFiles/AST.dir/Test.o: /home/jabberwocky/桌面/AST/Test.c \
+CMakeFiles/AST.dir/Test.o: /home/jabberwocky/桌面/AST/Test.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
   /home/jabberwocky/桌面/AST/astMem.h \
   /home/jabberwocky/桌面/AST/astObject.h \
@@ -54,6 +55,13 @@ CMakeFiles/AST.dir/Test.o: /home/jabberwocky/桌面/AST/Test.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
@@ -70,9 +78,8 @@ CMakeFiles/AST.dir/Test.o: /home/jabberwocky/桌面/AST/Test.c \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
-CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.c \
+CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
-  /home/jabberwocky/桌面/AST/astObject.h \
   /usr/include/alloca.h \
   /usr/include/bits/atomic_wide_counter.h \
   /usr/include/bits/byteswap.h \
@@ -85,18 +92,6 @@ CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.c \
   /usr/include/bits/pthreadtypes-arch.h \
   /usr/include/bits/pthreadtypes.h \
   /usr/include/bits/select.h \
-  /usr/include/bits/sigaction.h \
-  /usr/include/bits/sigcontext.h \
-  /usr/include/bits/sigevent-consts.h \
-  /usr/include/bits/siginfo-arch.h \
-  /usr/include/bits/siginfo-consts.h \
-  /usr/include/bits/signal_ext.h \
-  /usr/include/bits/signum-arch.h \
-  /usr/include/bits/signum-generic.h \
-  /usr/include/bits/sigstack.h \
-  /usr/include/bits/sigstksz.h \
-  /usr/include/bits/sigthread.h \
-  /usr/include/bits/ss_flags.h \
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdio_lim.h \
   /usr/include/bits/stdlib-float.h \
@@ -113,19 +108,12 @@ CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.c \
   /usr/include/bits/types/__locale_t.h \
   /usr/include/bits/types/__mbstate_t.h \
   /usr/include/bits/types/__sigset_t.h \
-  /usr/include/bits/types/__sigval_t.h \
   /usr/include/bits/types/clock_t.h \
   /usr/include/bits/types/clockid_t.h \
   /usr/include/bits/types/cookie_io_functions_t.h \
   /usr/include/bits/types/locale_t.h \
-  /usr/include/bits/types/sig_atomic_t.h \
-  /usr/include/bits/types/sigevent_t.h \
-  /usr/include/bits/types/siginfo_t.h \
   /usr/include/bits/types/sigset_t.h \
-  /usr/include/bits/types/sigval_t.h \
-  /usr/include/bits/types/stack_t.h \
   /usr/include/bits/types/struct_FILE.h \
-  /usr/include/bits/types/struct_sigstack.h \
   /usr/include/bits/types/struct_timespec.h \
   /usr/include/bits/types/struct_timeval.h \
   /usr/include/bits/types/time_t.h \
@@ -135,25 +123,28 @@ CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
   /usr/include/gnu/stubs-64.h \
   /usr/include/gnu/stubs.h \
-  /usr/include/signal.h \
   /usr/include/stdc-predef.h \
   /usr/include/stdio.h \
   /usr/include/stdlib.h \
-  /usr/include/string.h \
-  /usr/include/strings.h \
   /usr/include/sys/cdefs.h \
   /usr/include/sys/select.h \
   /usr/include/sys/types.h \
-  /usr/include/sys/ucontext.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
-CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.c \
+CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
   /home/jabberwocky/桌面/AST/astMem.h \
   /home/jabberwocky/桌面/AST/astObject.h \
@@ -201,6 +192,13 @@ CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
@@ -217,7 +215,7 @@ CMakeFiles/AST.dir/astMem.o: /home/jabberwocky/桌面/AST/astMem.c \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
-CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.c \
+CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
   /home/jabberwocky/桌面/AST/astObject.h \
   /usr/include/alloca.h \
@@ -245,11 +243,13 @@ CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.c \
   /usr/include/bits/types/__FILE.h \
   /usr/include/bits/types/__fpos64_t.h \
   /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
   /usr/include/bits/types/__mbstate_t.h \
   /usr/include/bits/types/__sigset_t.h \
   /usr/include/bits/types/clock_t.h \
   /usr/include/bits/types/clockid_t.h \
   /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/locale_t.h \
   /usr/include/bits/types/sigset_t.h \
   /usr/include/bits/types/struct_FILE.h \
   /usr/include/bits/types/struct_timespec.h \
@@ -261,6 +261,13 @@ CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
@@ -275,7 +282,7 @@ CMakeFiles/AST.dir/astObject.o: /home/jabberwocky/桌面/AST/astObject.c \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
-CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.c \
+CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
   /home/jabberwocky/桌面/AST/astObject.h \
   /home/jabberwocky/桌面/AST/astState.h \
@@ -304,11 +311,13 @@ CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.c \
   /usr/include/bits/types/__FILE.h \
   /usr/include/bits/types/__fpos64_t.h \
   /usr/include/bits/types/__fpos_t.h \
+  /usr/include/bits/types/__locale_t.h \
   /usr/include/bits/types/__mbstate_t.h \
   /usr/include/bits/types/__sigset_t.h \
   /usr/include/bits/types/clock_t.h \
   /usr/include/bits/types/clockid_t.h \
   /usr/include/bits/types/cookie_io_functions_t.h \
+  /usr/include/bits/types/locale_t.h \
   /usr/include/bits/types/sigset_t.h \
   /usr/include/bits/types/struct_FILE.h \
   /usr/include/bits/types/struct_timespec.h \
@@ -320,6 +329,13 @@ CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
@@ -334,7 +350,7 @@ CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.c \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
-CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
+CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.cpp \
   /home/jabberwocky/桌面/AST/ast.h \
   /home/jabberwocky/桌面/AST/astMem.h \
   /home/jabberwocky/桌面/AST/astObject.h \
@@ -383,6 +399,13 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
   /usr/include/bits/waitflags.h \
   /usr/include/bits/waitstatus.h \
   /usr/include/bits/wordsize.h \
+  /usr/include/c++/14.2.1/bits/std_abs.h \
+  /usr/include/c++/14.2.1/cstdlib \
+  /usr/include/c++/14.2.1/pstl/pstl_config.h \
+  /usr/include/c++/14.2.1/stdlib.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h \
+  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h \
   /usr/include/endian.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
@@ -400,33 +423,15 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
   /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h
 
 
-/home/jabberwocky/桌面/AST/astString.c:
+/home/jabberwocky/桌面/AST/astString.cpp:
 
-/home/jabberwocky/桌面/AST/astState.c:
+/home/jabberwocky/桌面/AST/astState.cpp:
 
-/usr/include/signal.h:
+/home/jabberwocky/桌面/AST/astMem.cpp:
 
-/usr/include/bits/types/sigval_t.h:
+/home/jabberwocky/桌面/AST/ast.cpp:
 
-/usr/include/bits/types/siginfo_t.h:
-
-/usr/include/bits/types/sigevent_t.h:
-
-/usr/include/bits/types/sig_atomic_t.h:
-
-/usr/include/bits/ss_flags.h:
-
-/usr/include/bits/types/struct_sigstack.h:
-
-/usr/include/bits/types/stack_t.h:
-
-/usr/include/bits/signum-arch.h:
-
-/usr/include/bits/signal_ext.h:
-
-/usr/include/bits/sigcontext.h:
-
-/home/jabberwocky/桌面/AST/ast.c:
+/home/jabberwocky/桌面/AST/astObject.cpp:
 
 /usr/include/sys/types.h:
 
@@ -438,23 +443,19 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /usr/include/stdlib.h:
 
-/usr/include/string.h:
+/usr/include/gnu/stubs.h:
 
-/usr/include/bits/time64.h:
+/usr/include/gnu/stubs-64.h:
 
-/usr/include/bits/byteswap.h:
+/usr/include/features.h:
 
-/usr/include/bits/sigstksz.h:
+/usr/include/bits/thread-shared-types.h:
 
 /usr/include/bits/stdint-intn.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h:
 
 /usr/include/bits/struct_mutex.h:
-
-/usr/include/bits/signum-generic.h:
-
-/usr/include/gnu/stubs-64.h:
 
 /usr/include/bits/select.h:
 
@@ -466,8 +467,6 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /usr/include/bits/long-double.h:
 
-/usr/include/bits/siginfo-consts.h:
-
 /usr/include/bits/libc-header-start.h:
 
 /usr/include/bits/pthreadtypes.h:
@@ -478,29 +477,35 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /usr/include/bits/types/sigset_t.h:
 
-/home/jabberwocky/桌面/AST/astObject.c:
-
-/usr/include/bits/floatn-common.h:
-
 /usr/include/bits/endianness.h:
+
+/usr/include/c++/14.2.1/cstdlib:
 
 /home/jabberwocky/桌面/AST/astState.h:
 
 /usr/include/bits/types/__locale_t.h:
 
-/usr/include/bits/thread-shared-types.h:
+/usr/include/string.h:
 
-/home/jabberwocky/桌面/AST/astMem.c:
+/usr/include/bits/time64.h:
 
-/usr/include/bits/sigthread.h:
+/home/jabberwocky/桌面/AST/Test.cpp:
 
-/usr/include/alloca.h:
+/usr/include/bits/byteswap.h:
 
 /usr/include/features-time64.h:
 
 /home/jabberwocky/桌面/AST/ast.h:
 
 /home/jabberwocky/桌面/AST/astObject.h:
+
+/usr/lib/libm.so:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/os_defines.h:
+
+/usr/include/alloca.h:
+
+/usr/include/c++/14.2.1/stdlib.h:
 
 /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h:
 
@@ -516,25 +521,17 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /home/jabberwocky/桌面/AST/astString.h:
 
-/usr/include/bits/sigevent-consts.h:
-
 /usr/include/bits/types/struct_timespec.h:
 
-/usr/include/bits/types/__sigval_t.h:
-
-/usr/include/bits/timesize.h:
-
-/usr/include/bits/endian.h:
-
 /usr/include/bits/types/__sigset_t.h:
-
-/usr/include/sys/ucontext.h:
 
 /usr/include/bits/waitflags.h:
 
 /usr/lib/libgcc_s.so:
 
-/usr/include/bits/siginfo-arch.h:
+/usr/include/bits/endian.h:
+
+/usr/include/bits/timesize.h:
 
 /usr/include/bits/types.h:
 
@@ -544,21 +541,21 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /usr/include/bits/types/__mbstate_t.h:
 
-/home/jabberwocky/桌面/AST/Test.c:
-
 /usr/include/bits/types/clock_t.h:
 
 /usr/include/bits/atomic_wide_counter.h:
 
 /usr/include/bits/types/clockid_t.h:
 
+/usr/include/endian.h:
+
+/usr/include/bits/types/cookie_io_functions_t.h:
+
 /usr/include/bits/uintn-identity.h:
 
 /usr/include/bits/typesizes.h:
 
 /usr/include/bits/types/locale_t.h:
-
-/usr/include/bits/types/struct_FILE.h:
 
 /usr/include/bits/stdio_lim.h:
 
@@ -568,20 +565,20 @@ CMakeFiles/AST.dir/astString.o: /home/jabberwocky/桌面/AST/astString.c \
 
 /usr/include/bits/types/time_t.h:
 
-/usr/include/bits/types/cookie_io_functions_t.h:
-
-/usr/include/endian.h:
-
-/usr/include/bits/waitstatus.h:
-
-/usr/include/features.h:
-
-/usr/include/bits/sigstack.h:
-
-/usr/include/bits/sigaction.h:
-
-/usr/include/gnu/stubs.h:
+/usr/include/stdio.h:
 
 /usr/include/bits/types/timer_t.h:
 
-/usr/include/stdio.h:
+/usr/include/bits/waitstatus.h:
+
+/usr/include/c++/14.2.1/bits/std_abs.h:
+
+/usr/include/bits/types/struct_FILE.h:
+
+/usr/include/c++/14.2.1/pstl/pstl_config.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h:
+
+/usr/include/bits/floatn-common.h:
+
+/usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/cpu_defines.h:

@@ -102,6 +102,7 @@ AST: CMakeFiles/AST.dir/rule
 # codegen rule for target.
 CMakeFiles/AST.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Finished codegen for target AST"
 .PHONY : CMakeFiles/AST.dir/codegen
 
 # clean rule for target.

@@ -21,7 +21,8 @@
         "ast.h": "c",
         "stddef.h": "c",
         "aststring.h": "c",
-        "astmem.h": "c"
+        "astmem.h": "c",
+        "stdio.h": "c"
     },
     "files.exclude": {
         "**/*.rpyc": true,

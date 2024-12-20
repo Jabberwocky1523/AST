@@ -8,11 +8,7 @@
 #include "ast.h"
 #include "astObject.h"
 typedef size_t ast_Mem;
-union GCObject
-{
-    GCHeader gch;
-    ast_String ts;
-};
+
 typedef struct StringTable
 {
     GCObject **hashTable;
@@ -35,4 +31,5 @@ typedef struct ast_State
     global_State *G_S;
 } ast_State;
 
+ast_Bool ast_Init(ast_State *L, global_State *G_S);
 #endif

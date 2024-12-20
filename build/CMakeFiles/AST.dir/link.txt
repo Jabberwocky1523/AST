@@ -1,1 +1,1 @@
-/usr/bin/cc -rdynamic -Wl,--dependency-file=CMakeFiles/AST.dir/link.d CMakeFiles/AST.dir/Test.o CMakeFiles/AST.dir/ast.o CMakeFiles/AST.dir/astMem.o CMakeFiles/AST.dir/astObject.o CMakeFiles/AST.dir/astState.o CMakeFiles/AST.dir/astString.o -o AST
+/usr/bin/c++ -rdynamic -Wl,--dependency-file=CMakeFiles/AST.dir/link.d CMakeFiles/AST.dir/Test.o CMakeFiles/AST.dir/ast.o CMakeFiles/AST.dir/astMem.o CMakeFiles/AST.dir/astObject.o CMakeFiles/AST.dir/astState.o CMakeFiles/AST.dir/astString.o -o AST

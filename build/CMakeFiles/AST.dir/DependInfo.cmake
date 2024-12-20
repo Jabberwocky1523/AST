@@ -8,12 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jabberwocky/桌面/AST/Test.c" "CMakeFiles/AST.dir/Test.o" "gcc" "CMakeFiles/AST.dir/Test.o.d"
-  "/home/jabberwocky/桌面/AST/ast.c" "CMakeFiles/AST.dir/ast.o" "gcc" "CMakeFiles/AST.dir/ast.o.d"
-  "/home/jabberwocky/桌面/AST/astMem.c" "CMakeFiles/AST.dir/astMem.o" "gcc" "CMakeFiles/AST.dir/astMem.o.d"
-  "/home/jabberwocky/桌面/AST/astObject.c" "CMakeFiles/AST.dir/astObject.o" "gcc" "CMakeFiles/AST.dir/astObject.o.d"
-  "/home/jabberwocky/桌面/AST/astState.c" "CMakeFiles/AST.dir/astState.o" "gcc" "CMakeFiles/AST.dir/astState.o.d"
-  "/home/jabberwocky/桌面/AST/astString.c" "CMakeFiles/AST.dir/astString.o" "gcc" "CMakeFiles/AST.dir/astString.o.d"
+  "/home/jabberwocky/桌面/AST/Test.cpp" "CMakeFiles/AST.dir/Test.o" "gcc" "CMakeFiles/AST.dir/Test.o.d"
+  "/home/jabberwocky/桌面/AST/ast.cpp" "CMakeFiles/AST.dir/ast.o" "gcc" "CMakeFiles/AST.dir/ast.o.d"
+  "/home/jabberwocky/桌面/AST/astMem.cpp" "CMakeFiles/AST.dir/astMem.o" "gcc" "CMakeFiles/AST.dir/astMem.o.d"
+  "/home/jabberwocky/桌面/AST/astObject.cpp" "CMakeFiles/AST.dir/astObject.o" "gcc" "CMakeFiles/AST.dir/astObject.o.d"
+  "/home/jabberwocky/桌面/AST/astState.cpp" "CMakeFiles/AST.dir/astState.o" "gcc" "CMakeFiles/AST.dir/astState.o.d"
+  "/home/jabberwocky/桌面/AST/astString.cpp" "CMakeFiles/AST.dir/astString.o" "gcc" "CMakeFiles/AST.dir/astString.o.d"
   "" "AST" "gcc" "CMakeFiles/AST.dir/link.d"
   )
 
