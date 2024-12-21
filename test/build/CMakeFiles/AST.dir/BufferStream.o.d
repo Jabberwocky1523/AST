@@ -1,5 +1,6 @@
 CMakeFiles/AST.dir/BufferStream.o: \
- /home/kurisu/桌面/AST/test/BufferStream.cpp /usr/include/stdc-predef.h \
+ /home/jabberwocky/桌面/AST/test/BufferStream.cpp \
+ /usr/include/stdc-predef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
  /usr/include/c++/14.2.1/stdlib.h /usr/include/c++/14.2.1/cstdlib \
  /usr/include/c++/14.2.1/x86_64-pc-linux-gnu/bits/c++config.h \
@@ -42,5 +43,5 @@ CMakeFiles/AST.dir/BufferStream.o: \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-uintn.h /usr/include/bits/stdint-least.h \
- /home/kurisu/桌面/AST/test/BufferStream.h \
- /home/kurisu/桌面/AST/test/Buffer.h
+ /home/jabberwocky/桌面/AST/test/BufferStream.h \
+ /home/jabberwocky/桌面/AST/test/Buffer.h

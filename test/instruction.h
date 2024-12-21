@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include "Type.h"
 #include "opcodes.h"
-
+typedef uint32_t Instruction;
 #define MAXARG_Bx ((1 << 18) - 1)
 #define MAXARG_sBx ((MAXARG_Bx) >> 1)
 
@@ -21,41 +21,43 @@ typedef struct
 {
     int a, sbx;
 } TAsBx;
-
-inline int InstructionOpcode(Instruction i)
+typedef struct
+{
+    int a;
+} TAX;
+int InstructionOpcode(Instruction i)
 {
     return i & 0x3f;
 }
 
-inline TABC InstructionABC(Instruction i)
+inline TABC InstructionTABC(Instruction i)
 {
     TABC ret = {
-        (i >> 6) & 0xff,
-        (i >> 23) & 0x1ff,
-        (i >> 14) & 0x1ff};
+        .a = (i >> 6) & 0xff,
+        .b = (i >> 23) & 0x1ff,
+        .c = (i >> 14) & 0x1ff};
     return ret;
 }
-
-inline TABx InstructionABx(Instruction i)
+inline TABx InstructionTABx(Instruction i)
 {
     TABx ret = {
-        (i >> 6) & 0xff,
-        i >> 14};
+        .a = (i >> 6) & 0xff,
+        .bx = (i >> 14)};
     return ret;
 }
-
-inline TAsBx InstructionAsBx(Instruction i)
+inline TAsBx InstructionTAsBx(Instruction i)
 {
-    TABx temp = InstructionABx(i);
+    TABx res = InstructionTABx(i);
     TAsBx ret = {
-        temp.a,
-        temp.bx - MAXARG_sBx};
+        .a = res.a,
+        .sbx = res.bx - MAXARG_sBx};
     return ret;
 }
-
-inline int InstructionAx(Instruction i)
+inline int InstructionTAX(Instruction i)
 {
-    return i >> 6;
+    TAX ret = {
+        i >> 6};
+    return ret.a;
 }
 
 inline const char *InstructionOpName(Instruction i)
@@ -63,32 +65,19 @@ inline const char *InstructionOpName(Instruction i)
     return g_opcodes[InstructionOpcode(i)].name;
 }
 
-inline uint32_t InstructionOpMode(Instruction i)
+inline unsigned char InstructionOpMode(Instruction i)
 {
     return g_opcodes[InstructionOpcode(i)].opMode;
 }
 
-inline uint32_t InstructionBMode(Instruction i)
+inline unsigned char InstructionBMode(Instruction i)
 {
     return g_opcodes[InstructionOpcode(i)].argBMode;
 }
 
-inline uint32_t InstructionCMode(Instruction i)
+inline unsigned char InstructionCMode(Instruction i)
 {
     return g_opcodes[InstructionOpcode(i)].argCMode;
-}
-
-inline void InstructionExecute(Instruction i, LuaVM vm)
-{
-    InstructoinActionFuncType action = g_opcodes[InstructionOpcode(i)].action;
-    if (action != NULL)
-    {
-        action(vm, i);
-    }
-    else
-    {
-        PANIC("%s\n", InstructionOpName(i));
-    }
 }
 
 #endif

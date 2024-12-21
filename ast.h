@@ -7,6 +7,12 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include "vector"
+using namespace std;
+#define ast_Vector(obj) vector<obj>
+#define PANIC(fmt, ...)                                                                \
+    printf("file:[%s], line:[%d] panic:" fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+    exit(-1);
 // 重定义数据
 typedef unsigned int ast_Uint32;
 typedef enum ast_Bool
@@ -26,9 +32,14 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 
 #define ttype(o) ((o)->tt)
 #define AST_TNONE (-1)
+#define AST_TNIL 0
 #define AST_TBOOLEAN 1
-#define AST_TUSERDATA 2
+#define AST_TLIGHTUSERDATA 2
 #define AST_TNUMBER 3
 #define AST_TSTRING 4
+#define AST_TTABLE 5
+#define AST_TFUNCTION 6
+#define AST_TUSERDATA 7
+#define AST_TTHREAD 8
 
 #endif

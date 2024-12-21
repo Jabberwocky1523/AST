@@ -1,6 +1,6 @@
-CMakeFiles/AST.dir/utils.o: /home/kurisu/桌面/AST/test/utils.cpp \
- /usr/include/stdc-predef.h /home/kurisu/桌面/AST/test/utils.h \
- /home/kurisu/桌面/AST/test/Buffer.h \
+CMakeFiles/AST.dir/utils.o: /home/jabberwocky/桌面/AST/test/utils.cpp \
+ /usr/include/stdc-predef.h /home/jabberwocky/桌面/AST/test/utils.h \
+ /home/jabberwocky/桌面/AST/test/Buffer.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
  /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \

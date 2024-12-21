@@ -1,6 +1,7 @@
 CMakeFiles/AST.dir/BinaryChunk.o: \
- /home/kurisu/桌面/AST/test/BinaryChunk.cpp /usr/include/stdc-predef.h \
- /home/kurisu/桌面/AST/test/BinaryChunk.h /usr/include/inttypes.h \
+ /home/jabberwocky/桌面/AST/test/BinaryChunk.cpp \
+ /usr/include/stdc-predef.h \
+ /home/jabberwocky/桌面/AST/test/BinaryChunk.h /usr/include/inttypes.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \
  /usr/include/sys/cdefs.h /usr/include/bits/long-double.h \
@@ -10,7 +11,8 @@ CMakeFiles/AST.dir/BinaryChunk.o: \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/bits/time64.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-intn.h /usr/include/bits/stdint-uintn.h \
- /usr/include/bits/stdint-least.h /home/kurisu/桌面/AST/test/Buffer.h \
+ /usr/include/bits/stdint-least.h \
+ /home/jabberwocky/桌面/AST/test/Buffer.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
  /usr/include/c++/14.2.1/vector \
  /usr/include/c++/14.2.1/bits/requires_hosted.h \
@@ -64,8 +66,8 @@ CMakeFiles/AST.dir/BinaryChunk.o: \
  /usr/include/c++/14.2.1/bits/uses_allocator.h \
  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
  /usr/include/c++/14.2.1/tuple \
- /home/kurisu/桌面/AST/test/BufferStream.h \
- /home/kurisu/桌面/AST/test/Type.h /usr/include/string.h \
+ /home/jabberwocky/桌面/AST/test/BufferStream.h \
+ /home/jabberwocky/桌面/AST/test/Type.h /usr/include/string.h \
  /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
  /usr/include/strings.h /usr/include/stdio.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \

@@ -204,6 +204,7 @@ static vector<Upvalue> BinaryChunkReadUpvalues()
         Upvalue *temp = (Upvalue *)malloc(sizeof(Upvalue));
         temp->Idx = CBufferStreamReadUInt8(buffer_stream);
         temp->Instack = CBufferStreamReadUInt8(buffer_stream);
+        upvalues.push_back(*temp);
     }
     return upvalues;
 }

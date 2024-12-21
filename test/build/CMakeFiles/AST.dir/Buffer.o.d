@@ -1,4 +1,4 @@
-CMakeFiles/AST.dir/Buffer.o: /home/kurisu/桌面/AST/test/Buffer.cpp \
+CMakeFiles/AST.dir/Buffer.o: /home/jabberwocky/桌面/AST/test/Buffer.cpp \
  /usr/include/stdc-predef.h /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
@@ -39,4 +39,4 @@ CMakeFiles/AST.dir/Buffer.o: /home/kurisu/桌面/AST/test/Buffer.cpp \
  /usr/include/bits/stdlib-float.h /usr/include/c++/14.2.1/bits/std_abs.h \
  /usr/include/string.h /usr/include/strings.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
- /home/kurisu/桌面/AST/test/Buffer.h
+ /home/jabberwocky/桌面/AST/test/Buffer.h

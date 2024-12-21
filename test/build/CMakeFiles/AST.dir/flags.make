@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/kurisu/桌面/AST/test
+CXX_INCLUDES = -I/home/jabberwocky/桌面/AST/test
 
 CXX_FLAGS = 
 

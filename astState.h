@@ -31,5 +31,16 @@ typedef struct ast_State
     global_State *G_S;
 } ast_State;
 
+typedef struct ast_Stack
+{
+    TValue *Value;
+    int top;
+    int size;
+} ast_Stack;
+
+ast_Stack *ast_NewStack(int size);
+ast_Bool ast_StackPush(ast_Stack *L, TValue value);
+TValue ast_StackPop(ast_Stack *L);
+ast_Bool ast_StackCheck(ast_Stack *L, int n);
 ast_Bool ast_Init(ast_State *L, global_State *G_S);
 #endif

@@ -1,6 +1,8 @@
 #include "BinaryChunk.h"
 #include "Buffer.h"
 #include "utils.h"
+#include "opcodes.h"
+#include "instruction.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,6 +26,67 @@ void PrintHeader(Prototype *proto)
     printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants.size(), proto->Protos.size());
 }
 
+void PrintOperands(Instruction instruction)
+{
+    switch (InstructionOpMode(instruction))
+    {
+    case IABC:
+    {
+        TABC tabc = InstructionTABC(instruction);
+        printf("%d", tabc.a);
+        if (InstructionBMode(instruction) != OpArgN)
+        {
+            if (tabc.b > 0xff)
+            {
+                printf(" %d", -1 - (tabc.b & 0xff));
+            }
+            else
+            {
+                printf(" %d", tabc.b);
+            }
+        }
+        if (InstructionCMode(instruction) != OpArgN)
+        {
+            if (tabc.c > 0xff) // 常量表索引
+            {
+                printf(" %d", -1 - (tabc.c & 0xff));
+            }
+            else
+            {
+                printf(" %d", tabc.c);
+            }
+        }
+        break;
+    }
+    case IABx:
+    {
+        TABx tabx = InstructionTABx(instruction);
+        printf("%d", tabx.a);
+        if (InstructionBMode(instruction) == OpArgK)
+        {
+            printf(" %d", -1 - tabx.bx);
+        }
+        else
+        {
+            printf(" %d", tabx.bx);
+        }
+        break;
+    }
+    case IAsBx:
+    {
+        TAsBx tasbx = InstructionTAsBx(instruction);
+        printf("%d %d", tasbx.a, tasbx.sbx);
+        break;
+    }
+    case IAx:
+    {
+        int ax = InstructionTAX(instruction);
+        printf("%d", ax);
+        break;
+    }
+    }
+}
+
 void PrintCode(Prototype *proto)
 {
     vector<int> codes = proto->Code;
@@ -35,12 +98,13 @@ void PrintCode(Prototype *proto)
         uint32_t line = proto->LineInfo[i];
         if (flag)
         {
-            printf("\t%d\t[%d]\t0x%08x \t", i + 1, line, val);
+            printf("\t%d\t[%d]\t%s \t", i + 1, line, InstructionOpName((Instruction)val));
         }
         else
         {
             printf("\t%d\t[-]\t%s \t", i + 1);
         }
+        PrintOperands((Instruction)val);
         printf("\n");
     }
 }
@@ -115,29 +179,6 @@ void PrintDetail(Prototype *proto)
     }
 }
 
-// void Main(Prototype *proto)
-// {
-//     int nRegs = proto->MaxStackSize;
-//     LuaState lua_state = LuaStateAlloc(nRegs + 8, proto);
-//     LuaStateSetTop(lua_state, nRegs);
-//     for (;;)
-//     {
-//         int pc = LuaStatePC(lua_state);
-//         Instruction inst = LuaStateFetch(lua_state);
-//         if (InstructionOpcode(inst) != OP_RETURN)
-//         {
-//             InstructionExecute(inst, lua_state);
-//             printf("[%02d] %s", pc + 1, InstructionOpName(inst));
-
-//             PrintStack(lua_state);
-//         }
-//         else
-//         {
-//             break;
-//         }
-//     }
-// }
-
 int main(int argc, const char *const *argv)
 {
     const char *file_name = "luac.out";
@@ -150,6 +191,5 @@ int main(int argc, const char *const *argv)
     PrintHeader(proto);
     PrintCode(proto);
     PrintDetail(proto);
-    // LuaMain(proto);
     return 0;
 }

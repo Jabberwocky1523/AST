@@ -1,24 +1,19 @@
 #ifndef __OPCODES_H__
 #define __OPCODES_H__
-#include "instruction.h"
 #include "Type.h"
-
-typedef void *CBuffer;
-typedef void *LuaVM;
-
-typedef void (*InstructoinActionFuncType)(LuaVM vm, Instruction instruction);
+#include "Buffer.h"
 
 enum CodecMode
 {
-    IABC,
-    IABx,
-    IAsBx,
-    IAx,
+    IABC,  // 三操作数 8 9 9
+    IABx,  // 二操作数 8 18
+    IAsBx, // 二操作数 8 18 sBx-有符号整数
+    IAx,   // 一操作数 26
 };
 
-enum OperatorCode
+enum OperatorCode // 6bit
 {
-    OP_MOVE,
+    OP_MOVE = 0,
     OP_LOADK,
     OP_LOADKX,
     OP_LOADBOOL,
@@ -71,8 +66,8 @@ enum OperatorNum
 {
     OpArgN, // argument is not used
     OpArgU, // argument is used
-    OpArgR, // argument is a register or a jump offset
-    OpArgK, // argument is a constant or register/constant
+    OpArgR, // iABC-寄存器索引 iAsBx-跳转偏移
+    OpArgK, // 常量或者寄存器 iABx-常量表 iABC:最高位1-常量表
 };
 
 typedef struct
@@ -82,9 +77,58 @@ typedef struct
     unsigned char argBMode; // B arg mode
     unsigned char argCMode; // C arg mode
     unsigned char opMode;   // op mode
-    CBuffer name;
-    InstructoinActionFuncType action;
+    const char *name;
 } OpCode;
 
-extern OpCode g_opcodes[47];
+static OpCode g_opcodes[47] = {
+    /*T  A     B       C    mode    name */
+    {0, 1, OpArgR, OpArgN, IABC, "MOVE    "},
+    {0, 1, OpArgK, OpArgN, IABx, "LOADK   "},
+    {0, 1, OpArgN, OpArgN, IABx, "LOADKX  "},
+    {0, 1, OpArgU, OpArgU, IABC, "LOADBOOL"},
+    {0, 1, OpArgU, OpArgN, IABC, "LOADNIL "},
+    {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL"},
+    {0, 1, OpArgU, OpArgK, IABC, "GETTABUP"},
+    {0, 1, OpArgR, OpArgK, IABC, "GETTABLE"},
+    {0, 0, OpArgK, OpArgK, IABC, "SETTABUP"},
+    {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL"},
+    {0, 0, OpArgK, OpArgK, IABC, "SETTABLE"},
+    {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE"},
+    {0, 1, OpArgR, OpArgK, IABC, "SELF    "},
+    {0, 1, OpArgK, OpArgK, IABC, "ADD     "},
+    {0, 1, OpArgK, OpArgK, IABC, "SUB     "},
+    {0, 1, OpArgK, OpArgK, IABC, "MUL     "},
+    {0, 1, OpArgK, OpArgK, IABC, "MOD     "},
+    {0, 1, OpArgK, OpArgK, IABC, "POW     "},
+    {0, 1, OpArgK, OpArgK, IABC, "DIV     "},
+    {0, 1, OpArgK, OpArgK, IABC, "IDIV    "},
+    {0, 1, OpArgK, OpArgK, IABC, "BAND    "},
+    {0, 1, OpArgK, OpArgK, IABC, "BOR     "},
+    {0, 1, OpArgK, OpArgK, IABC, "BXOR    "},
+    {0, 1, OpArgK, OpArgK, IABC, "SHL     "},
+    {0, 1, OpArgK, OpArgK, IABC, "SHR     "},
+    {0, 1, OpArgR, OpArgN, IABC, "UNM     "},
+    {0, 1, OpArgR, OpArgN, IABC, "BNOT    "},
+    {0, 1, OpArgR, OpArgN, IABC, "NOT     "},
+    {0, 1, OpArgR, OpArgN, IABC, "LEN     "},
+    {0, 1, OpArgR, OpArgR, IABC, "CONCAT  "},
+    {0, 0, OpArgR, OpArgN, IAsBx, "JMP     "},
+    {1, 0, OpArgK, OpArgK, IABC, "EQ      "},
+    {1, 0, OpArgK, OpArgK, IABC, "LT      "},
+    {1, 0, OpArgK, OpArgK, IABC, "LE      "},
+    {1, 0, OpArgN, OpArgU, IABC, "TEST    "},
+    {1, 1, OpArgR, OpArgU, IABC, "TESTSET "},
+    {0, 1, OpArgU, OpArgU, IABC, "CALL    "},
+    {0, 1, OpArgU, OpArgU, IABC, "TAILCALL"},
+    {0, 0, OpArgU, OpArgN, IABC, "RETURN  "},
+    {0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP "},
+    {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP "},
+    {0, 0, OpArgN, OpArgU, IABC, "TFORCALL"},
+    {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP"},
+    {0, 0, OpArgU, OpArgU, IABC, "SETLIST "},
+    {0, 1, OpArgU, OpArgN, IABx, "CLOSURE "},
+    {0, 1, OpArgU, OpArgN, IABC, "VARARG  "},
+    {0, 0, OpArgU, OpArgU, IAx, "EXTRAARG"},
+};
+
 #endif

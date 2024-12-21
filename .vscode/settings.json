@@ -1,8 +1,8 @@
 {
     "files.associations": {
-        "astobject.h": "c",
-        "stdarg.h": "c",
-        "stdlib.h": "c",
+        "astobject.h": "cpp",
+        "stdarg.h": "cpp",
+        "stdlib.h": "cpp",
         "numbers": "cpp",
         "array": "cpp",
         "hash_map": "cpp",
@@ -17,12 +17,13 @@
         "fstream": "cpp",
         "streambuf": "cpp",
         "*.inc": "cpp",
-        "aststate.h": "c",
-        "ast.h": "c",
-        "stddef.h": "c",
-        "aststring.h": "c",
-        "astmem.h": "c",
-        "stdio.h": "c"
+        "aststate.h": "cpp",
+        "ast.h": "cpp",
+        "stddef.h": "cpp",
+        "aststring.h": "cpp",
+        "astmem.h": "cpp",
+        "stdio.h": "cpp",
+        "vector": "cpp"
     },
     "files.exclude": {
         "**/*.rpyc": true,
