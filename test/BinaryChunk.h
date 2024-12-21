@@ -2,8 +2,9 @@
 #define __BINARY_CHUNK_H__
 #include <inttypes.h>
 #include "Buffer.h"
-#include "Vector.h"
 #include <stdbool.h>
+#include "vector"
+using namespace std;
 
 typedef struct
 {
@@ -45,6 +46,8 @@ enum ConstantTypeTag
 
 typedef struct
 {
+
+    enum ConstantTypeTag tag;
     union
     {
         uint8_t tag_nil;
@@ -53,8 +56,6 @@ typedef struct
         double tag_number;
         CBuffer tag_str;
     } data;
-
-    enum ConstTypeTag tag;
 } ConstantType;
 
 typedef struct Prototype
@@ -65,13 +66,13 @@ typedef struct Prototype
     unsigned char NumParams;
     unsigned char IsVararg;
     unsigned char MaxStackSize;
-    CVector Code;         // uint32_t
-    CVector Constants;    // ConstantType
-    CVector Upvalues;     // Upvalue
-    CVector Protos;       // struct Prototype
-    CVector LineInfo;     // uint32_t
-    CVector LocVars;      // LocVar
-    CVector UpvalueNames; // CBuffer
+    vector<int> Code;                  // uint32_t
+    vector<ConstantType> constants;    // ConstantType
+    vector<Upvalue> Upvalues;          // Upvalue
+    vector<struct Prototype *> Protos; // struct Prototype
+    vector<int> LineInfo;              // uint32_t
+    vector<LocVar> LocVars;            // LocVar
+    vector<CBuffer> UpvalueNames;      // CBuffer
 } Prototype;
 
 typedef struct
@@ -86,7 +87,7 @@ typedef struct
 #define LUAC_FORMAT 0
 #define LUAC_DATA "\x19\x93\r\n\x1a\n"
 #define CINT_SIZE 4
-#define CSIZET_SIZE 4
+#define CSIZET_SIZE 8
 #define INSTRUCTION_SIZE 4
 #define LUA_INTEGER_SIZE 8
 #define LUA_NUMBER_SIZE 8

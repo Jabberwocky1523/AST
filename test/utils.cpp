@@ -14,7 +14,7 @@
         fseek(fp, 0, SEEK_END);                         \
         len = ftell(fp);                                \
         fseek(fp, 0, SEEK_SET);                         \
-        buffer = malloc(len);                           \
+        buffer = (char *)malloc(len);                   \
         fread(buffer, len, 1, fp);                      \
         fclose(fp);                                     \
     } while (0)

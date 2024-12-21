@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic -Wl,--dependency-file=CMakeFiles/AST.dir/link.d CMakeFiles/AST.dir/BinaryChunk.o CMakeFiles/AST.dir/Buffer.o CMakeFiles/AST.dir/BufferStream.o CMakeFiles/AST.dir/main.o CMakeFiles/AST.dir/utils.o -o AST

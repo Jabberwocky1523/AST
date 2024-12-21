@@ -2,9 +2,14 @@
 #define __C_BUFFER_STREAM_H__
 #include <stdbool.h>
 #include <inttypes.h>
-
-typedef void *CBufferStream;
-typedef void *CBuffer;
+#include "Buffer.h"
+typedef struct
+{
+    int size_;
+    char *data_;
+    int write_pos_;
+    int read_pos_;
+} *CBufferStream, StructCBufferStream;
 
 CBufferStream CBufferStreamAlloc(int size);
 

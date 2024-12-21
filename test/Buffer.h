@@ -2,7 +2,12 @@
 #define __C_BUFFER_H__
 #include <stdbool.h>
 
-typedef void *CBuffer;
+typedef struct
+{
+    int size_;
+    int data_size_;
+    char *data_;
+} *CBuffer, StructCBuffer;
 
 CBuffer CBufferAlloc(int size);
 

@@ -2,26 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-typedef struct
-{
-    int size_;
-    int data_size_;
-    char *data_;
-} *CBuffer, StructCBuffer;
+#include "Buffer.h"
 
 CBuffer CBufferAlloc(int size)
 {
-    CBuffer buffer = malloc(sizeof(StructCBuffer));
+    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
     buffer->size_ = size;
-    buffer->data_ = malloc(sizeof(char) * size);
+    buffer->data_ = (char *)malloc(sizeof(char) * size);
     buffer->data_size_ = 0;
     return buffer;
 }
 
 CBuffer CBufferFromCBuffer(CBuffer buffer)
 {
-    CBuffer ret = malloc(sizeof(StructCBuffer));
+    CBuffer ret = (CBuffer)malloc(sizeof(StructCBuffer));
     ret->size_ = buffer->size_;
     ret->data_ = buffer->data_;
     ret->data_size_ = buffer->data_size_;
@@ -31,16 +25,16 @@ CBuffer CBufferFromCBuffer(CBuffer buffer)
 
 CBuffer CBufferAllocFromCBuffer(CBuffer in_buffer)
 {
-    CBuffer buffer = malloc(sizeof(StructCBuffer));
+    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
     buffer->size_ = in_buffer->size_;
-    buffer->data_ = malloc(in_buffer->size_);
+    buffer->data_ = (char *)malloc(in_buffer->size_);
     buffer->data_size_ = in_buffer->data_size_;
     return buffer;
 }
 
 CBuffer CBufferFromStr(const char *data, int data_size)
 {
-    CBuffer buffer = malloc(sizeof(StructCBuffer));
+    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
     buffer->size_ = data_size;
     buffer->data_ = (char *)data;
     buffer->data_size_ = data_size;
@@ -64,7 +58,7 @@ void CBufferCopy(CBuffer dst, CBuffer src)
 {
     dst->data_size_ = src->data_size_;
     dst->size_ = src->size_;
-    dst->data_ = malloc(src->size_);
+    dst->data_ = (char *)malloc(src->size_);
     memcpy(dst->data_, src->data_, src->data_size_);
 }
 

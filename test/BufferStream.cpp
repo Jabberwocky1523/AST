@@ -3,21 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-
-typedef struct
-{
-    int size_;
-    char *data_;
-    int write_pos_;
-    int read_pos_;
-} *CBufferStream, StructCBufferStream;
-
-typedef struct
-{
-    int size_;
-    int data_size_;
-    char *data_;
-} *CBuffer, StructCBuffer;
+#include "BufferStream.h"
 
 #define BUFFER_STREAM_CAN_READ(pStream, len) (pStream->size_ - pStream->read_pos_ >= len)
 
@@ -29,9 +15,9 @@ typedef struct
 
 CBufferStream CBufferStreamAlloc(int size)
 {
-    CBufferStream buffer_stream = malloc(sizeof(StructCBufferStream));
+    CBufferStream buffer_stream = (CBufferStream)malloc(sizeof(StructCBufferStream));
     buffer_stream->size_ = size;
-    buffer_stream->data_ = malloc(sizeof(char) * size);
+    buffer_stream->data_ = (char *)malloc(sizeof(char) * size);
     buffer_stream->write_pos_ = 0;
     buffer_stream->read_pos_ = 0;
     return buffer_stream;
@@ -39,7 +25,7 @@ CBufferStream CBufferStreamAlloc(int size)
 
 CBufferStream CBufferStreamAllocFromCBuffer(CBuffer buffer)
 {
-    CBufferStream buffer_stream = malloc(sizeof(StructCBufferStream));
+    CBufferStream buffer_stream = (CBufferStream)malloc(sizeof(StructCBufferStream));
     buffer_stream->size_ = buffer->size_;
     buffer_stream->data_ = buffer->data_;
     buffer_stream->write_pos_ = 0;
@@ -78,16 +64,6 @@ bool CBufferStreamRead(CBufferStream buffer_stream, void *buffer, int buffer_siz
     {
         memcpy(buffer, buffer_stream->data_ + buffer_stream->read_pos_, buffer_size);
         BUFFER_STREAM_POP(buffer_stream, buffer_size);
-        return true;
-    }
-    return false;
-}
-
-bool CBufferStreamPeep(CBufferStream buffer_stream, void *buffer, int buffer_size)
-{
-    if (BUFFER_STREAM_CAN_READ(buffer_stream, buffer_size))
-    {
-        memcpy(buffer_stream->data_ + buffer_stream->read_pos_, buffer, buffer_size);
         return true;
     }
     return false;
