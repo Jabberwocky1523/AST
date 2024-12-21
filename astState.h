@@ -39,8 +39,11 @@ typedef struct ast_Stack
 } ast_Stack;
 
 ast_Stack *ast_NewStack(int size);
-ast_Bool ast_StackPush(ast_Stack *L, TValue value);
-TValue ast_StackPop(ast_Stack *L);
 ast_Bool ast_StackCheck(ast_Stack *L, int n);
+ast_Bool ast_StackPush(ast_Stack *L, TValue &value);
+TValue ast_StackPop(ast_Stack *L);
+ast_Bool ast_StackIdxIsValid(ast_Stack *L, int idx);
+TValue ast_StackGetTValue(ast_Stack *L, int idx);
+ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx);
 ast_Bool ast_Init(ast_State *L, global_State *G_S);
 #endif

@@ -53,6 +53,8 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
         PANIC("栈溢出");
     }
     L->Value[L->top++] = value;
+    printf("%d\n", L->Value[L->top - 1].tt);
+    return TRUE;
 }
 TValue ast_StackPop(ast_Stack *L)
 {
@@ -60,7 +62,8 @@ TValue ast_StackPop(ast_Stack *L)
     {
         PANIC("栈为空");
     }
-    TValue temp = L->Value[--L->top];
+    L->top--;
+    TValue temp = L->Value[L->top];
     L->Value[L->top].tt = AST_TNIL;
     L->Value[L->top].value.n = 0;
     return temp;

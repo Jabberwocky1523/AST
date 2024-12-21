@@ -1,6 +1,6 @@
-CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.cpp \
- /usr/include/stdc-predef.h /home/jabberwocky/桌面/AST/astState.h \
- /home/jabberwocky/桌面/AST/ast.h /usr/include/stdio.h \
+CMakeFiles/AST.dir/astState.o: /home/kurisu/桌面/AST/astState.cpp \
+ /usr/include/stdc-predef.h /home/kurisu/桌面/AST/astState.h \
+ /home/kurisu/桌面/AST/ast.h /usr/include/stdio.h \
  /usr/include/bits/libc-header-start.h /usr/include/features.h \
  /usr/include/features-time64.h /usr/include/bits/wordsize.h \
  /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \
@@ -84,4 +84,4 @@ CMakeFiles/AST.dir/astState.o: /home/jabberwocky/桌面/AST/astState.cpp \
  /usr/include/c++/14.2.1/cstddef \
  /usr/include/c++/14.2.1/bits/uses_allocator.h \
  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
- /usr/include/c++/14.2.1/tuple /home/jabberwocky/桌面/AST/astObject.h
+ /usr/include/c++/14.2.1/tuple /home/kurisu/桌面/AST/astObject.h
