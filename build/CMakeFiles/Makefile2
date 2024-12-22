@@ -54,10 +54,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kurisu/桌面/AST
+CMAKE_SOURCE_DIR = /home/jabberwocky/桌面/AST
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kurisu/桌面/AST/build
+CMAKE_BINARY_DIR = /home/jabberwocky/桌面/AST/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -85,14 +85,14 @@ clean: CMakeFiles/AST.dir/clean
 CMakeFiles/AST.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/kurisu/桌面/AST/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target AST"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target AST"
 .PHONY : CMakeFiles/AST.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/AST.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kurisu/桌面/AST/build/CMakeFiles 7
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabberwocky/桌面/AST/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/AST.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kurisu/桌面/AST/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabberwocky/桌面/AST/build/CMakeFiles 0
 .PHONY : CMakeFiles/AST.dir/rule
 
 # Convenience name for target.
@@ -102,7 +102,7 @@ AST: CMakeFiles/AST.dir/rule
 # codegen rule for target.
 CMakeFiles/AST.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/kurisu/桌面/AST/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Finished codegen for target AST"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/jabberwocky/桌面/AST/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Finished codegen for target AST"
 .PHONY : CMakeFiles/AST.dir/codegen
 
 # clean rule for target.

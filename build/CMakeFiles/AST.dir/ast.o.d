@@ -1,5 +1,5 @@
-CMakeFiles/AST.dir/ast.o: /home/kurisu/桌面/AST/ast.cpp \
- /usr/include/stdc-predef.h /home/kurisu/桌面/AST/ast.h \
+CMakeFiles/AST.dir/ast.o: /home/jabberwocky/桌面/AST/ast.cpp \
+ /usr/include/stdc-predef.h /home/jabberwocky/桌面/AST/ast.h \
  /usr/include/stdio.h /usr/include/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \

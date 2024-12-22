@@ -1,4 +1,4 @@
-# Install script for directory: /home/kurisu/桌面/AST
+# Install script for directory: /home/jabberwocky/桌面/AST
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,7 +45,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/kurisu/桌面/AST/build/install_local_manifest.txt"
+  file(WRITE "/home/jabberwocky/桌面/AST/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -61,6 +61,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/kurisu/桌面/AST/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/jabberwocky/桌面/AST/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -1,6 +1,7 @@
 #include "astState.h"
 #include "ast.h"
-
+#include "astString.h"
+#include "astObject.h"
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
 {
     g_s->StringBuff = realloc(NULL, 1024);
@@ -36,6 +37,11 @@ ast_Stack *ast_NewStack(int size)
 ast_Bool ast_StackCheck(ast_Stack *L, int n)
 {
     int free = L->size - L->top;
+    if (free < n)
+    {
+        realloc(L->Value, (L->size + n) * sizeof(TValue));
+        L->size = L->size + n;
+    }
     for (int i = free; i < n; i++)
     {
         TValue temp;
@@ -53,7 +59,6 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
         PANIC("栈溢出");
     }
     L->Value[L->top++] = value;
-    printf("%d\n", L->Value[L->top - 1].tt);
     return TRUE;
 }
 TValue ast_StackPop(ast_Stack *L)
@@ -106,4 +111,120 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
         return TRUE;
     }
     PANIC("无效的地址");
+}
+ast_Bool ast_StackReverse(ast_Stack *L, int idx1, int idx2)
+{
+    TValue *value = L->Value;
+    if (idx1 > L->top - 1 || idx2 > L->top - 1)
+    {
+        PANIC("无效地址");
+    }
+    for (; idx1 < idx2;)
+    {
+        swap(value[idx1], value[idx2]);
+        idx1++;
+        idx2--;
+    }
+    return TRUE;
+}
+ast_Bool ast_StackRotate(ast_Stack *L, int idx, int n)
+{
+    int top = L->top - 1;
+    int p = ast_StackAbsIndex(L, idx);
+    int m;
+    if (n >= 0)
+    {
+        m = top - n;
+    }
+    else
+    {
+        m = p - n - 1;
+    }
+    ast_StackReverse(L, p, m);
+    ast_StackReverse(L, m + 1, top);
+    ast_StackReverse(L, p, top);
+    return TRUE;
+}
+ast_Bool ast_StackSetTop(ast_Stack *L, int idx)
+{
+    int newtop = ast_StackAbsIndex(L, idx);
+    int n = newtop - L->top;
+    if (n > 0)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            TValue tt;
+            tt.tt = AST_TNIL;
+            tt.value.n = 0;
+            ast_StackPush(L, tt);
+        }
+    }
+    else
+    {
+        for (int i = n; i > 0; i--)
+        {
+            ast_StackPop(L);
+        }
+    }
+    return TRUE;
+}
+int ast_StackDataType(ast_Stack *L, int idx)
+{
+    if (ast_StackIdxIsValid(L, idx))
+    {
+        return L->Value[idx].tt;
+    }
+    return AST_TNONE;
+}
+ast_Bool ast_ConvertToBoolean(TValue val)
+{
+    switch (val.tt)
+    {
+    case AST_TNIL:
+        return FALSE;
+    case AST_TBOOLEAN:
+        return val.value.bo;
+    default:
+        return TRUE;
+    }
+}
+ast_Number ast_ConvertToNumber(TValue val, int &flag)
+{
+    switch (val.tt)
+    {
+    case AST_TNUMBER:
+        flag = 1;
+        return val.value.n;
+    default:
+        flag = 0;
+        return 0;
+    }
+}
+ast_String ast_ConvertToString(ast_State *L, TValue &val)
+{
+    switch (val.tt)
+    {
+    case AST_TSTRING:
+        return val.value.gc->ts;
+    case AST_TNUMBER:
+    {
+        ast_Number num = val.value.n;
+        char *tmp = (char *)malloc(sizeof(char) * 20);
+        sprintf(tmp, "%f", num);
+        val.tt = AST_TSTRING;
+        val.value.gc = (GCObject *)astString_NewLStr(L, tmp, sizeof(tmp) / sizeof(tmp[0]));
+        return val.value.gc->ts;
+    }
+    default:
+    {
+        ast_String def;
+        def.Tsv.hash = 0;
+        def.Tsv.len = 0;
+        def.Tsv.marked = 0;
+        def.Tsv.next = NULL;
+        def.Tsv.reserved = 0;
+        def.Tsv.tt = AST_TSTRING;
+        return def;
+    }
+    }
 }

@@ -63,12 +63,6 @@ typedef union GCObject
 // 判断数据对象是否可回收
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)
 
-#define ast_CopyTValue(obj1, obj2)     \
-    {                                  \
-        (obj1)->value = (obj2)->value; \
-        (obj1)->tt = (obj2)->tt;       \
-    }
-
 // 对common数据的封装
 
 #define setnvalue(obj, x)        \
@@ -82,5 +76,4 @@ typedef union GCObject
         (obj)->value.b = x;       \
         (obj)->tt = AST_TBOOLEAN; \
     }
-
 #endif
