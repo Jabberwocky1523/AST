@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include "vector"
 using namespace std;
-#define ast_Vector(obj) vector<obj>
+#define ast_Type int
 #define PANIC(fmt, ...)                                                                \
     printf("file:[%s], line:[%d] panic:" fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
     exit(-1);
@@ -41,5 +41,4 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_TFUNCTION 6
 #define AST_TUSERDATA 7
 #define AST_TTHREAD 8
-
 #endif
