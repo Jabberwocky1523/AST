@@ -18,13 +18,6 @@ ast_Bool ast_StackCheck(ast_Stack *L, int n)
         realloc(L->Value, (L->size + n) * sizeof(TValue));
         L->size = L->size + n;
     }
-    // for (int i = free; i < n; i++)
-    // {
-    //     TValue temp;
-    //     temp.tt = AST_TNIL;
-    //     temp.value.b = 0;
-    //     L->Value[L->top++] = temp;
-    // }
     return TRUE;
 }
 
@@ -137,7 +130,7 @@ ast_Bool ast_StackSetTop(ast_Stack *L, int idx)
     }
     else
     {
-        for (int i = n; i > 0; i--)
+        for (int i = abs(n); i > 0; i--)
         {
             ast_StackPop(L);
         }
@@ -164,13 +157,22 @@ ast_Bool ast_ConvertToBoolean(TValue val)
         return TRUE;
     }
 }
-ast_Number ast_ConvertToNumber(TValue val, int &flag)
+ast_Number ast_ConvertToNumber(TValue val, int *flag)
 {
     switch (val.tt)
     {
     case AST_TNUMBER:
-        flag = 1;
+        if (flag != nullptr)
+            *flag = 1;
         return val.value.n;
+    case AST_TSTRING:
+    {
+        ast_Number tmp;
+        assert(tmp = (ast_Number)atoll(getstr(&val.value.gc->ts)));
+        if (flag != nullptr)
+            *flag = 1;
+        return tmp;
+    }
     default:
         flag = 0;
         return 0;
@@ -185,7 +187,7 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
     case AST_TNUMBER:
     {
         ast_Number num = val.value.n;
-        char *tmp = (char *)malloc(sizeof(char) * 20);
+        char *tmp = (char *)malloc(sizeof(char) * 32);
         sprintf(tmp, "%f", num);
         val.tt = AST_TSTRING;
         val.value.gc = (GCObject *)astString_NewLStr(L, tmp, sizeof(tmp) / sizeof(tmp[0]));
@@ -200,6 +202,7 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
         def.Tsv.next = NULL;
         def.Tsv.reserved = 0;
         def.Tsv.tt = AST_TSTRING;
+        printf("无效变量类型,无法转化\n");
         return def;
     }
     }
@@ -223,20 +226,20 @@ ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type)
         ast_StackPush(L, tmp);
         return TRUE;
     }
-    case AST_TSTRING:
-    {
-        tmp.tt = AST_TNIL;
-        // tmp.value.gc = nullptr;
-        printf("%d ", val);
-        astString_NewLStr(S, (char *)val, strlen((char *)val));
-        ast_StackPush(L, tmp);
-        return TRUE;
-    }
     default:
     {
         return FALSE;
     }
     }
+}
+ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type)
+{
+    ast_Stack *Stack = L->stack;
+    TValue tmp;
+    tmp.tt = AST_TSTRING;
+    tmp.value.gc = (GCObject *)astString_NewLStr(L, val, strlen(val));
+    ast_StackPush(Stack, tmp);
+    return TRUE;
 }
 ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type)
 {
@@ -265,7 +268,7 @@ ast_Bool ast_PrintTValue(TValue &val)
         }
     case AST_TSTRING:
     {
-        printf("[%s] ", getstr(&val.value.gc->ts));
+        printf("[\"%s\"] ", getstr(&val.value.gc->ts));
         return TRUE;
     }
     case AST_TNUMBER:

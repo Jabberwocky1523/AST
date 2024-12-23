@@ -1,9 +1,11 @@
 #include "astState.h"
 #include "ast.h"
 #include "astString.h"
+#include "astStack.h"
 #include "astObject.h"
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
 {
+    ast_Stack *Stack = ast_NewStack(20);
     g_s->StringBuff = realloc(NULL, 1024);
     StringTable ts;
     GCObject **hashtable;
@@ -17,11 +19,6 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     ts.size = 16;
     g_s->stringtable = ts;
     L->G_S = g_s;
+    L->stack = Stack;
     return TRUE;
-}
-// 创建虚拟栈
-ast_State *ast_NewState(ast_Alloc func, void *ud)
-{
-    ast_State *L;
-    global_State *g;
 }

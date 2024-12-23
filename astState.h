@@ -32,7 +32,6 @@ typedef struct ast_State
 } ast_State;
 
 // 全局定义
-static ast_State *S = (ast_State *)malloc(sizeof(ast_State));
-static global_State *g_s = (global_State *)malloc(sizeof(global_State));
+
 ast_Bool ast_Init(ast_State *L, global_State *G_S);
 #endif

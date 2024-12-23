@@ -1,3 +1,0 @@
-/home/kurisu/桌面/AST/build/CMakeFiles/AST.dir
-/home/kurisu/桌面/AST/build/CMakeFiles/edit_cache.dir
-/home/kurisu/桌面/AST/build/CMakeFiles/rebuild_cache.dir

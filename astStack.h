@@ -48,7 +48,7 @@
 #define astack_SetTop(L, idx) ast_StackSetTop(L, idx)
 #define astack_DataType(L, idx) ast_StackDataType(L, idx);
 #define astack_ToNumber(L, idx, flag) ast_ConvertToNumber(L->Value[idx], flag)
-#define astack_ToString(L, idx) ast_ConvertToString(S, L->Value[idx])
+#define astack_ToString(L, idx) ast_ConvertToString(L, L->stack->Value[idx])
 ast_Stack *ast_NewStack(int size);
 ast_Bool ast_StackCheck(ast_Stack *L, int n);
 ast_Bool ast_StackPush(ast_Stack *L, TValue &value);
@@ -62,9 +62,10 @@ int ast_StackAbsIndex(ast_Stack *L, int idx);
 ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx);
 int ast_StackDataType(ast_Stack *L, int idx);
 ast_Bool ast_ConvertToBoolean(TValue val);
-ast_Number ast_ConvertToNumber(TValue val, int flag);
+ast_Number ast_ConvertToNumber(TValue val, int *flag);
 ast_String ast_ConvertToString(ast_State *L, TValue &val);
 ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type);
-ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val,ast_Type type);
+ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type);
+ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type);
 ast_Bool ast_PrintStack(ast_Stack *L);
 #endif

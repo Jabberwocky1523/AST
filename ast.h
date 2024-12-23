@@ -8,6 +8,7 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include "vector"
+#include <assert.h>
 using namespace std;
 #define ast_Type int
 #define PANIC(fmt, ...)                                                                \
