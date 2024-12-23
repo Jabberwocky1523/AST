@@ -12,7 +12,7 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     hashtable = (GCObject **)(malloc(sizeof(GCObject *) * 16));
     for (int i = 0; i < 16; i++)
     {
-        *(hashtable + i) = (GCObject *)malloc(sizeof(GCObject));
+        *(hashtable + i) = NULL;
     }
     ts.hashTable = hashtable;
     ts.Tnum = 0;

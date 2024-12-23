@@ -18,6 +18,10 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     ts->Tsv.next = tb->hashTable[hash];
     tb->hashTable[hash] = cast(GCObject *, ts);
     tb->Tnum++;
+    if (tb->Tnum > tb->size && tb->Tnum < (INT_MAX - 2) / 2)
+    {
+        astString_Resize(L, tb->size * 2);
+    }
     return ts;
 }
 ast_String *astString_NewLStr(ast_State *L, const char *str, size_t len)
@@ -39,4 +43,34 @@ ast_String *astString_NewLStr(ast_State *L, const char *str, size_t len)
         }
     }
     return NewLStr(L, str, len, h);
+}
+ast_Bool astString_Resize(ast_State *L, int newsize)
+{
+    StringTable *ts = &L->G_S->stringtable;
+    GCObject **newhashtable;
+    newhashtable = (GCObject **)(malloc(sizeof(GCObject *) * newsize));
+    for (int i = 0; i < newsize; i++)
+    {
+        *(newhashtable + i) = NULL;
+    }
+    for (int i = 0; i < ts->size; i++)
+    {
+        GCObject *p = ts->hashTable[i];
+        while (p)
+        {
+            GCObject *next = p->gch.next;
+            ast_Hash hash = p->ts.Tsv.hash;
+            int h1 = lmod(hash, newsize);
+            p->gch.next = newhashtable[h1];
+            newhashtable[h1] = p;
+            p = next;
+        }
+    }
+    for (int i = 0; i < ts->size; i++)
+    {
+        ts->hashTable[i] = NULL;
+        free(ts->hashTable[i]);
+    }
+    ts->hashTable = newhashtable;
+    ts->size = newsize;
 }
