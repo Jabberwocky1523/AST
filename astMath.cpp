@@ -217,6 +217,12 @@ TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
         tt.value.i = op.IntegerFunc(ast_ConvertToInteger(a), ast_ConvertToInteger(b));
         return tt;
     }
+    else if (op.IntegerFunc == NULL)
+    {
+        tt.tt = AST_TNUMBER;
+        tt.value.n = op.DoubleFunc(ast_ConvertToNumber(a), ast_ConvertToNumber(b));
+        return tt;
+    }
     else
     {
         if (a.tt == AST_TINTEGER && b.tt == AST_TINTEGER)
@@ -293,7 +299,7 @@ int _ast_Eq(ast_State *L, TValue a, TValue b)
         case AST_TNUMBER:
             return ((ast_Number)a.value.i) == b.value.n;
         default:
-            return a.value.i == ast_ConvertToInteger(b);
+            return (ast_Number)a.value.i == ast_ConvertToNumber(b);
         }
     }
     case AST_TNUMBER:
@@ -318,6 +324,7 @@ int _ast_Lt(ast_State *L, TValue a, TValue b)
             {
                 return 1;
             }
+            return 0;
         }
         break;
     case AST_TINTEGER:
@@ -329,7 +336,7 @@ int _ast_Lt(ast_State *L, TValue a, TValue b)
         case AST_TNUMBER:
             return (ast_Number)a.value.i < b.value.n;
         case AST_TSTRING:
-            if (strcmp(ast_CTS(L, b), getstr(&b.value.gc->ts)) < 0)
+            if (strcmp(ast_CTS(L, a), getstr(&b.value.gc->ts)) < 0)
             {
                 return 1;
             }
@@ -346,7 +353,7 @@ int _ast_Lt(ast_State *L, TValue a, TValue b)
         case AST_TNUMBER:
             return a.value.n < b.value.n;
         case AST_TSTRING:
-            if (strcmp(ast_CTS(L, b), getstr(&b.value.gc->ts)) < 0)
+            if (strcmp(ast_CTS(L, a), getstr(&b.value.gc->ts)) < 0)
             {
                 return 1;
             }
@@ -372,6 +379,7 @@ int _ast_Le(ast_State *L, TValue a, TValue b)
             {
                 return 1;
             }
+            return 0;
         }
         break;
     case AST_TINTEGER:
@@ -383,7 +391,7 @@ int _ast_Le(ast_State *L, TValue a, TValue b)
         case AST_TNUMBER:
             return (ast_Number)a.value.i <= b.value.n;
         case AST_TSTRING:
-            if (strcmp(ast_CTS(L, b), getstr(&b.value.gc->ts)) <= 0)
+            if (strcmp(ast_CTS(L, a), getstr(&b.value.gc->ts)) <= 0)
             {
                 return 1;
             }
@@ -400,7 +408,7 @@ int _ast_Le(ast_State *L, TValue a, TValue b)
         case AST_TNUMBER:
             return a.value.n <= b.value.n;
         case AST_TSTRING:
-            if (strcmp(ast_CTS(L, b), getstr(&b.value.gc->ts)) <= 0)
+            if (strcmp(ast_CTS(L, a), getstr(&b.value.gc->ts)) <= 0)
             {
                 return 1;
             }
@@ -456,8 +464,25 @@ ast_Bool ast_Concat(ast_State *L, int n)
         {
             if (ast_IsString(ast_StackGetTValue(PStack(L), -1)) && ast_IsString(ast_StackGetTValue(PStack(L), -2)))
             {
-                ast_ConvertToString(L);
+                ast_ConvertToString(L, PStack(L)->Value[ast_StackAbsIndex(PStack(L), -1)]);
+                ast_ConvertToString(L, PStack(L)->Value[ast_StackAbsIndex(PStack(L), -2)]);
+                TValue t1 = astack_Pop(PStack(L));
+                TValue t2 = astack_Pop(PStack(L));
+                char *a = (char *)malloc(sizeof(char) * (t1.value.gc->ts.Tsv.len + t2.value.gc->ts.Tsv.len) + 1);
+                memcpy(a, getstr(&t2.value.gc->ts), t2.value.gc->ts.Tsv.len);
+                memcpy(a + t2.value.gc->ts.Tsv.len, getstr(&t1.value.gc->ts), t1.value.gc->ts.Tsv.len);
+                memcpy(a + t2.value.gc->ts.Tsv.len + t1.value.gc->ts.Tsv.len, "\0", 1);
+                ast_String *s = astString_NewLStr(L, a, strlen(a));
+                TValue tt;
+                tt.value.gc = (GCObject *)s;
+                tt.tt = AST_TSTRING;
+                ast_StackPush(PStack(L), tt);
+            }
+            else
+            {
+                break;
             }
         }
     }
+    return TRUE;
 }

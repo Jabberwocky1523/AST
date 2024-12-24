@@ -177,15 +177,17 @@ ast_Number ast_ConvertToNumber(TValue val)
     case AST_TSTRING:
     {
         ast_Number tmp = 0;
-        if (ast_IsNumeric(getstr(&val.value.gc->ts)))
+        if (!ast_IsNumeric(getstr(&val.value.gc->ts)))
+        {
             PANIC("字符串包含非数字");
-        assert(tmp = (ast_Number)atoll(getstr(&val.value.gc->ts)));
+        }
+        assert(tmp = atof(getstr(&val.value.gc->ts)));
         return tmp;
     }
     case AST_TINTEGER:
         return (ast_Number)val.value.i;
     default:
-        return 0;
+        PANIC("该类型无法转换到Number");
     }
 }
 ast_Integer ast_ConvertToInteger(TValue val)
@@ -206,16 +208,18 @@ ast_Integer ast_ConvertToInteger(TValue val)
         return (ast_Integer)val.value.n;
     case AST_TSTRING:
     {
-        ast_Number tmp = 0;
-        if (ast_IsNumeric(getstr(&val.value.gc->ts)))
+        ast_Integer tmp = 0;
+        if (!ast_IsNumeric(getstr(&val.value.gc->ts)))
+        {
             PANIC("字符串包含非数字");
-        assert(tmp = (ast_Number)atoll(getstr(&val.value.gc->ts)));
+        }
+        assert(tmp = (ast_Integer)atoll(getstr(&val.value.gc->ts)));
         return (ast_Integer)tmp;
     }
     case AST_TINTEGER:
         return val.value.i;
     default:
-        return 0;
+        PANIC("该类型无法转换为Integer");
     }
 }
 ast_String ast_ConvertToString(ast_State *L, TValue &val)
@@ -226,7 +230,7 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
     {
         ast_Bool num = val.value.bo;
         char *tmp = (char *)malloc(sizeof(char) * 2);
-        sprintf(tmp, "%d", num);
+        sprintf(tmp, "%c", num);
         ast_String *st = astString_NewLStr(L, tmp, strlen(tmp));
         return *st;
     }
@@ -235,19 +239,27 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
     case AST_TNUMBER:
     {
         ast_Number num = val.value.n;
-        char *tmp = (char *)malloc(sizeof(char) * 32);
+        char *tmp = (char *)malloc(sizeof(char) * 128);
         sprintf(tmp, "%f", num);
         val.tt = AST_TSTRING;
-        val.value.gc = (GCObject *)astString_NewLStr(L, tmp, strlen(tmp));
+        char *str = (char *)malloc(sizeof(char) * strlen(tmp) + 1);
+        memcpy(str, tmp, strlen(tmp));
+        str[strlen(tmp)] = '\0';
+        val.value.gc = (GCObject *)astString_NewLStr(L, str, strlen(tmp));
+        free(tmp);
         return val.value.gc->ts;
     }
     case AST_TINTEGER:
     {
         ast_Integer num = val.value.i;
-        char *tmp = (char *)malloc(sizeof(char) * 32);
+        char *tmp = (char *)malloc(sizeof(char) * 128);
         sprintf(tmp, "%lld", num);
         val.tt = AST_TSTRING;
-        val.value.gc = (GCObject *)astString_NewLStr(L, tmp, sizeof(tmp) / sizeof(tmp[0]));
+        char *str = (char *)malloc(sizeof(char) * strlen(tmp) + 1);
+        memcpy(str, tmp, strlen(tmp));
+        str[strlen(tmp)] = '\0';
+        val.value.gc = (GCObject *)astString_NewLStr(L, str, strlen(tmp));
+        free(tmp);
         return val.value.gc->ts;
     }
     default:

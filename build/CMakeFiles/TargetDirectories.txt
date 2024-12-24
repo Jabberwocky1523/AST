@@ -1,3 +1,0 @@
-/home/jabberwocky/桌面/AST/build/CMakeFiles/AST.dir
-/home/jabberwocky/桌面/AST/build/CMakeFiles/edit_cache.dir
-/home/jabberwocky/桌面/AST/build/CMakeFiles/rebuild_cache.dir

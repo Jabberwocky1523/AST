@@ -5,41 +5,26 @@
 #include "astString.h"
 #include "astMath.h"
 #include "astStack.h"
+#include "astOpcode.h"
 int main()
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s);
-    printf("%d\n", L->G_S->stringtable.size);
-    for (int i = 0; i < 17; i++)
-    {
-        char *tmp = (char *)ast_Malloc(L, 32);
-        sprintf(tmp, "%f", (double)i);
+    printf("%d %d\n", L->G_S->stringtable.size);
+    ast_StackPush(PStack(L), (ast_Number)2.0, AST_TINTEGER);
+    ast_StackPush(PStack(L), -3.1, AST_TNUMBER);
 
-        ast_String *st = astString_NewLStr(L, tmp, strlen(tmp));
-        printf("%s\n", getstr(st));
-    }
-    printf("%d\n", L->G_S->stringtable.size);
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     Ta.value.n = i + 1;
-    //     ast_StackPush(L, Ta);
-    //     printf("%f ", Ta.value.n);
-    // }
-    // ast_StackPush(PStack(L), Tb);
-    // ast_StackPush(PStack(L), (ast_Integer)1, AST_TINTEGER);
-    // char *val = "2345";
-    // ast_StackPush(L, "", AST_TSTRING);
-    // ast_StackPush(PStack(L), (ast_Integer)1, AST_TNUMBER);
-    // ast_StackPush(PStack(L), NULL, AST_TNIL);
-    // ast_StackPush(PStack(L), FALSE, AST_TBOOLEAN);
+    // ast_StackPush(PStack(L), 122, AST_TINTEGER);
+    // ast_StackPush(PStack(L), 5, AST_TNUMBER);
+    // ast_Len(L, 0);
+    ast_PrintStack(PStack(L));
+    // ast_Arith(L, AST_OPADD);
+    ast_StackPush(L, "123", AST_TSTRING);
+    ast_StackPush(L, "123", AST_TSTRING);
 
-    // ast_StackPush(L, val, AST_TSTRING);
-    // ast_StackPush(L, "12321323r", AST_TSTRING);
-    // ast_PrintStack(PStack(L));
-    // astack_ToString(L, 1);
-    // ast_PrintStack(PStack(L));
-    // printf("%s\n", getstr(&L->stack->Value[1].value.gc->ts));
-    // ast_Number b = astack_ToNumber(PStack(L), 5, nullptr);
-    // printf("%f", b);
+    ast_PrintStack(PStack(L));
+    printf("%d", ast_Compare(L, 2, 3, AST_OPLE));
+    ast_Concat(L, 5);
+    ast_PrintStack(PStack(L));
 }

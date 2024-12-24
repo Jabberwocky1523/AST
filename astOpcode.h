@@ -1,3 +1,5 @@
+#ifndef AST_OPCODE_H
+#define AST_OPCODE_H
 enum OPARITHCODE
 {
     AST_OPADD = 0, // +
@@ -21,3 +23,4 @@ enum OPCOMPARECODE
     AST_OPLT,     // <
     AST_OPLE,     // <=
 };
+#endif
