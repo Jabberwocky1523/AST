@@ -1,6 +1,7 @@
 #include "astStack.h"
 #include "astState.h"
 #include "astString.h"
+#include "astMath.h"
 ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
@@ -157,24 +158,63 @@ ast_Bool ast_ConvertToBoolean(TValue val)
         return TRUE;
     }
 }
-ast_Number ast_ConvertToNumber(TValue val, int *flag)
+ast_Number ast_ConvertToNumber(TValue val)
 {
     switch (val.tt)
     {
+    case AST_TBOOLEAN:
+    {
+        switch (val.value.bo)
+        {
+        case FALSE:
+            return 0;
+        case TRUE:
+            return 1;
+        }
+    }
     case AST_TNUMBER:
-        if (flag != nullptr)
-            *flag = 1;
         return val.value.n;
     case AST_TSTRING:
     {
-        ast_Number tmp;
+        ast_Number tmp = 0;
+        if (ast_IsNumeric(getstr(&val.value.gc->ts)))
+            PANIC("字符串包含非数字");
         assert(tmp = (ast_Number)atoll(getstr(&val.value.gc->ts)));
-        if (flag != nullptr)
-            *flag = 1;
         return tmp;
     }
+    case AST_TINTEGER:
+        return (ast_Number)val.value.i;
     default:
-        flag = 0;
+        return 0;
+    }
+}
+ast_Integer ast_ConvertToInteger(TValue val)
+{
+    switch (val.tt)
+    {
+    case AST_TBOOLEAN:
+    {
+        switch (val.value.bo)
+        {
+        case FALSE:
+            return 0;
+        case TRUE:
+            return 1;
+        }
+    }
+    case AST_TNUMBER:
+        return (ast_Integer)val.value.n;
+    case AST_TSTRING:
+    {
+        ast_Number tmp = 0;
+        if (ast_IsNumeric(getstr(&val.value.gc->ts)))
+            PANIC("字符串包含非数字");
+        assert(tmp = (ast_Number)atoll(getstr(&val.value.gc->ts)));
+        return (ast_Integer)tmp;
+    }
+    case AST_TINTEGER:
+        return val.value.i;
+    default:
         return 0;
     }
 }
@@ -182,6 +222,14 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
 {
     switch (val.tt)
     {
+    case AST_TBOOLEAN:
+    {
+        ast_Bool num = val.value.bo;
+        char *tmp = (char *)malloc(sizeof(char) * 2);
+        sprintf(tmp, "%d", num);
+        ast_String *st = astString_NewLStr(L, tmp, strlen(tmp));
+        return *st;
+    }
     case AST_TSTRING:
         return val.value.gc->ts;
     case AST_TNUMBER:
@@ -189,6 +237,15 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
         ast_Number num = val.value.n;
         char *tmp = (char *)malloc(sizeof(char) * 32);
         sprintf(tmp, "%f", num);
+        val.tt = AST_TSTRING;
+        val.value.gc = (GCObject *)astString_NewLStr(L, tmp, strlen(tmp));
+        return val.value.gc->ts;
+    }
+    case AST_TINTEGER:
+    {
+        ast_Integer num = val.value.i;
+        char *tmp = (char *)malloc(sizeof(char) * 32);
+        sprintf(tmp, "%lld", num);
         val.tt = AST_TSTRING;
         val.value.gc = (GCObject *)astString_NewLStr(L, tmp, sizeof(tmp) / sizeof(tmp[0]));
         return val.value.gc->ts;
@@ -226,6 +283,13 @@ ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type)
         ast_StackPush(L, tmp);
         return TRUE;
     }
+    case AST_TINTEGER:
+    {
+        tmp.tt = AST_TINTEGER;
+        tmp.value.i = *(ast_Integer *)val;
+        ast_StackPush(L, tmp);
+        return TRUE;
+    }
     default:
     {
         return FALSE;
@@ -249,6 +313,29 @@ ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type)
     ast_StackPush(L, tmp);
     return TRUE;
 }
+ast_Bool ast_StackPush(ast_Stack *L, ast_Number val, ast_Type type)
+{
+
+    TValue tmp;
+    switch (type)
+    {
+    case AST_TNUMBER:
+    {
+        tmp.tt = AST_TNUMBER;
+        tmp.value.n = val;
+        break;
+    }
+    case AST_TINTEGER:
+    {
+        tmp.tt = AST_TINTEGER;
+        tmp.value.i = val;
+        break;
+    }
+    }
+    ast_StackPush(L, tmp);
+    return TRUE;
+}
+
 ast_Bool ast_PrintTValue(TValue &val)
 {
     switch (val.tt)
@@ -273,6 +360,9 @@ ast_Bool ast_PrintTValue(TValue &val)
     }
     case AST_TNUMBER:
         printf("[%f] ", val.value.n);
+        return TRUE;
+    case AST_TINTEGER:
+        printf("[%lld] ", val.value.i);
         return TRUE;
     default:
         return FALSE;

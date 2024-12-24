@@ -14,6 +14,7 @@
 typedef double ast_Number;
 typedef unsigned char ast_Byte;
 typedef unsigned int ast_Hash;
+typedef long long ast_Integer;
 // GC数据类型联合
 typedef union GCObject GCObject;
 #define GCCommonHeader \
@@ -31,6 +32,7 @@ typedef union
     union GCObject *gc;
     void *p;
     ast_Number n;
+    ast_Integer i;
     ast_Bool bo;
     int b;
 } Value;

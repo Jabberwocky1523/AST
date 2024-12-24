@@ -62,10 +62,12 @@ int ast_StackAbsIndex(ast_Stack *L, int idx);
 ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx);
 int ast_StackDataType(ast_Stack *L, int idx);
 ast_Bool ast_ConvertToBoolean(TValue val);
-ast_Number ast_ConvertToNumber(TValue val, int *flag);
+ast_Number ast_ConvertToNumber(TValue val);
+ast_Integer ast_ConvertToInteger(TValue val);
 ast_String ast_ConvertToString(ast_State *L, TValue &val);
 ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type);
 ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type);
+ast_Bool ast_StackPush(ast_Stack *L, ast_Number val, ast_Type type);
 ast_Bool ast_PrintStack(ast_Stack *L);
 #endif

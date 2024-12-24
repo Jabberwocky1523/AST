@@ -37,9 +37,11 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_TBOOLEAN 1
 #define AST_TLIGHTUSERDATA 2
 #define AST_TNUMBER 3
-#define AST_TSTRING 4
-#define AST_TTABLE 5
-#define AST_TFUNCTION 6
-#define AST_TUSERDATA 7
-#define AST_TTHREAD 8
+#define AST_TINTEGER 4
+#define AST_TSTRING 5
+#define AST_TTABLE 6
+#define AST_TFUNCTION 7
+#define AST_TUSERDATA 8
+#define AST_TTHREAD 9
+
 #endif

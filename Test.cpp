@@ -3,6 +3,7 @@
 #include "astState.h"
 #include "astMem.h"
 #include "astString.h"
+#include "astMath.h"
 #include "astStack.h"
 int main()
 {
@@ -26,11 +27,13 @@ int main()
     //     printf("%f ", Ta.value.n);
     // }
     // ast_StackPush(PStack(L), Tb);
-    // double a = 6;
-    // ast_StackPush(PStack(L), &a, AST_TNUMBER);
+    // ast_StackPush(PStack(L), (ast_Integer)1, AST_TINTEGER);
+    // char *val = "2345";
+    // ast_StackPush(L, "", AST_TSTRING);
+    // ast_StackPush(PStack(L), (ast_Integer)1, AST_TNUMBER);
     // ast_StackPush(PStack(L), NULL, AST_TNIL);
     // ast_StackPush(PStack(L), FALSE, AST_TBOOLEAN);
-    // char *val = "2345";
+
     // ast_StackPush(L, val, AST_TSTRING);
     // ast_StackPush(L, "12321323r", AST_TSTRING);
     // ast_PrintStack(PStack(L));

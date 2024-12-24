@@ -1,4 +1,5 @@
 #include "astString.h"
+#include <climits>
 
 // 分配一个新字符串
 ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
@@ -73,4 +74,13 @@ ast_Bool astString_Resize(ast_State *L, int newsize)
     }
     ts->hashTable = newhashtable;
     ts->size = newsize;
+    return TRUE;
+}
+ast_Bool ast_IsString(TValue t)
+{
+    if (t.tt == AST_TSTRING || t.tt == AST_TINTEGER || t.tt == AST_TNUMBER)
+    {
+        return TRUE;
+    }
+    return FALSE;
 }

@@ -34,4 +34,5 @@ typedef struct ast_State
 // 全局定义
 
 ast_Bool ast_Init(ast_State *L, global_State *G_S);
+
 #endif
