@@ -6,25 +6,24 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "unistd.h"
+CBufferStream buffer_stream;
 
-static CBufferStream buffer_stream;
-
-static void BinaryChunkInit(CBuffer buffer);
-static CBuffer BinaryChunkReadString();
-static vector<int> BinaryChunkReadCode();
-static ConstantType BinaryChunkReadConstant();
-static vector<ConstantType> BinaryChunkReadConstants();
-static vector<Upvalue> BinaryChunkReadUpvalues();
-static vector<Prototype *> BinaryChunkReadProtos(CBuffer parent);
-static vector<int> BinaryChunkReadLineInfos();
-static vector<LocVar> BinaryChunkReadLocVars();
-static vector<CBuffer> BinaryChunkReadUpvalueNames();
-static Prototype *BinaryChunkReadProto(CBuffer parent);
+CBuffer BinaryChunkReadString();
+vector<int> BinaryChunkReadCode();
+ConstantType BinaryChunkReadConstant();
+vector<ConstantType> BinaryChunkReadConstants();
+vector<Upvalue> BinaryChunkReadUpvalues();
+vector<Prototype *> BinaryChunkReadProtos(CBuffer parent);
+vector<int> BinaryChunkReadLineInfos();
+vector<LocVar> BinaryChunkReadLocVars();
+vector<CBuffer> BinaryChunkReadUpvalueNames();
+Prototype *BinaryChunkReadProto(CBuffer parent);
 
 Prototype *BinaryChunkUnDump(CBuffer buffer)
 {
-    BinaryChunkInit(buffer);
-    printf("%d\n", buffer_stream == NULL);
+    buffer_stream = CBufferStreamAllocFromCBuffer(buffer);
+    printf(" \b");
     if (!BinaryChunkCheckHead())
     {
         PANIC("CheckHeadError");
@@ -33,13 +32,7 @@ Prototype *BinaryChunkUnDump(CBuffer buffer)
     return BinaryChunkReadProto(NULL);
 }
 
-static void BinaryChunkInit(CBuffer buffer)
-{
-    assert(buffer_stream == NULL);
-    buffer_stream = CBufferStreamAllocFromCBuffer(buffer);
-}
-
-static CBuffer BinaryChunkReadString()
+CBuffer BinaryChunkReadString()
 {
     assert(buffer_stream != NULL);
     uint64_t len = CBufferStreamReadUInt8(buffer_stream);
@@ -139,7 +132,7 @@ bool BinaryChunkCheckHead()
     return false;
 }
 
-static vector<int> BinaryChunkReadCode()
+vector<int> BinaryChunkReadCode()
 {
     uint32_t code_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<int> codes;
@@ -150,7 +143,7 @@ static vector<int> BinaryChunkReadCode()
     return codes;
 }
 
-static ConstantType BinaryChunkReadConstant()
+ConstantType BinaryChunkReadConstant()
 {
     uint8_t tag = CBufferStreamReadUInt8(buffer_stream);
     ConstantType *type = (ConstantType *)malloc(sizeof(ConstantType));
@@ -184,7 +177,7 @@ static ConstantType BinaryChunkReadConstant()
     return *type;
 }
 
-static vector<ConstantType> BinaryChunkReadConstants()
+vector<ConstantType> BinaryChunkReadConstants()
 {
     uint32_t constant_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<ConstantType> Constants;
@@ -195,7 +188,7 @@ static vector<ConstantType> BinaryChunkReadConstants()
     return Constants;
 }
 
-static vector<Upvalue> BinaryChunkReadUpvalues()
+vector<Upvalue> BinaryChunkReadUpvalues()
 {
     uint32_t upvalue_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<Upvalue> upvalues;
@@ -209,7 +202,7 @@ static vector<Upvalue> BinaryChunkReadUpvalues()
     return upvalues;
 }
 
-static vector<Prototype *> BinaryChunkReadProtos(CBuffer parent)
+vector<Prototype *> BinaryChunkReadProtos(CBuffer parent)
 {
     uint32_t protos_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<Prototype *> protos;
@@ -227,7 +220,7 @@ static vector<Prototype *> BinaryChunkReadProtos(CBuffer parent)
     return protos;
 }
 
-static vector<int> BinaryChunkReadLineInfos()
+vector<int> BinaryChunkReadLineInfos()
 {
     uint32_t lineinfo_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<int> LineInfos;
@@ -241,7 +234,7 @@ static vector<int> BinaryChunkReadLineInfos()
     return LineInfos;
 }
 
-static vector<LocVar> BinaryChunkReadLocVars()
+vector<LocVar> BinaryChunkReadLocVars()
 {
     uint32_t locvar_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<LocVar> locvars;
@@ -257,7 +250,7 @@ static vector<LocVar> BinaryChunkReadLocVars()
     return locvars;
 }
 
-static vector<CBuffer> BinaryChunkReadUpvalueNames()
+vector<CBuffer> BinaryChunkReadUpvalueNames()
 {
     uint32_t upvaluenames_element_len = CBufferStreamReadUInt32(buffer_stream);
     vector<CBuffer> upvaluenames;
@@ -271,7 +264,7 @@ static vector<CBuffer> BinaryChunkReadUpvalueNames()
     return upvaluenames;
 }
 
-static Prototype *BinaryChunkReadProto(CBuffer parent)
+Prototype *BinaryChunkReadProto(CBuffer parent)
 {
     CBuffer source = BinaryChunkReadString();
     if (source == NULL)
@@ -288,7 +281,7 @@ static Prototype *BinaryChunkReadProto(CBuffer parent)
     proto->Code = BinaryChunkReadCode();
     proto->constants = BinaryChunkReadConstants();
     proto->Upvalues = BinaryChunkReadUpvalues();
-    proto->Protos = BinaryChunkReadProtos(parent);
+    proto->Protos = BinaryChunkReadProtos(source);
     proto->LineInfo = BinaryChunkReadLineInfos();
     proto->LocVars = BinaryChunkReadLocVars();
     proto->UpvalueNames = BinaryChunkReadUpvalueNames();

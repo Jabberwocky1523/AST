@@ -3,9 +3,10 @@
 #include "astString.h"
 #include "astStack.h"
 #include "astObject.h"
-ast_Bool ast_Init(ast_State *L, global_State *g_s)
+ast_Bool ast_Init(ast_State *L, global_State *g_s, Prototype *proto, int pc)
 {
-    ast_Stack *Stack = ast_NewStack(20);
+    int nRegs = proto->MaxStackSize;
+    ast_Stack *Stack = ast_NewStack(nRegs + 8);
     g_s->StringBuff = realloc(NULL, 1024);
     StringTable ts;
     GCObject **hashtable;
@@ -20,5 +21,7 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     g_s->stringtable = ts;
     L->G_S = g_s;
     L->stack = Stack;
+    L->pc = pc;
+    L->proto = proto;
     return TRUE;
 }

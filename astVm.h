@@ -6,12 +6,12 @@
 typedef struct
 {
     unsigned char testFlag; // operator is a test (next instruction muse be a jump)
-    unsigned char setAFlag; // instruction set register A
-    unsigned char argBMode; // B arg mode
-    unsigned char argCMode; // C arg mode
-    unsigned char opMode;   // op mode
+    unsigned char setAFlag;
+    unsigned char argBMode;
+    unsigned char argCMode;
+    unsigned char opMode;
     const char *name;
-    
+    ast_Bool (*ast_OpAction)(ast_State *L, Instruction i);
 } ast_OpCode;
 ast_Integer ast_GetPc(ast_State *L);
 ast_Bool ast_AddPc(ast_State *L, ast_Integer n);
@@ -26,6 +26,6 @@ ast_Bool _ast_Jmp(ast_State *L, Instruction i);
 
 // LOAD
 ast_Bool _ast_LoadNil(ast_State *L, Instruction i);
-
 // END
+ast_Bool ast_ExecuteOp(ast_State *L, Instruction i);
 #endif

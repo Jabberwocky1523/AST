@@ -1,5 +1,5 @@
-#ifndef __INSTRUCTION_H__
-#define __INSTRUCTION_H__
+#ifndef AST_INSTRUCTION_H__
+#define AST_INSTRUCTION_H__
 #include <inttypes.h>
 #include "astOpcode.h"
 typedef uint32_t Instruction;
@@ -24,7 +24,7 @@ typedef struct
 {
     int a;
 } TAX;
-int InstructionOpcode(Instruction i)
+inline int InstructionOpcode(Instruction i)
 {
     return i & 0x3f;
 }

@@ -108,9 +108,55 @@ ast_Bool _ast_BinaryArith(ast_State *L, Instruction i, int op)
     astack_ReplaceToIdx(PStack(L), n.a);
     return TRUE;
 }
+ast_Bool _ast_Add_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPADD);
+}
 
-
-
+ast_Bool _ast_Sub_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPSUB);
+}
+ast_Bool _ast_Mul_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPMUL);
+}
+ast_Bool _ast_Mod_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPMOD);
+}
+ast_Bool _ast_Pow_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPPOW);
+}
+ast_Bool _ast_Div_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPDIV);
+}
+ast_Bool _ast_Idiv_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPIDIV);
+}
+ast_Bool _ast_Band_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPBAND);
+}
+ast_Bool _ast_Bor_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPBOR);
+}
+ast_Bool _ast_Bxor_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPBXOR);
+}
+ast_Bool _ast_Shl_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPSHL);
+}
+ast_Bool _ast_Shr_(ast_State *L, Instruction i)
+{
+    return _ast_BinaryArith(L, i, AST_OPSHR);
+}
 
 ////一元运算 R(A) = op R(B); 将栈b位置覆盖a位置
 ast_Bool _ast_UnaryArith(ast_State *L, Instruction i, int op)
@@ -121,6 +167,14 @@ ast_Bool _ast_UnaryArith(ast_State *L, Instruction i, int op)
     ast_Arith(L, op);
     astack_ReplaceToIdx(PStack(L), n.a);
     return TRUE;
+}
+ast_Bool _ast_Bnot_(ast_State *L, Instruction i)
+{
+    return _ast_UnaryArith(L, i, AST_OPBNOT);
+}
+ast_Bool _ast_Unm_(ast_State *L, Instruction i)
+{
+    return _ast_UnaryArith(L, i, AST_OPUNM);
 }
 // END
 
@@ -164,6 +218,19 @@ ast_Bool _ast_Compare(ast_State *L, Instruction i, int op)
     ast_StackPop(PStack(L));
     return TRUE;
 }
+ast_Bool _ast_Eq_(ast_State *L, Instruction i)
+{
+    return _ast_Compare(L, i, AST_OPEQ);
+}
+ast_Bool _ast_Lt_(ast_State *L, Instruction i)
+{
+    return _ast_Compare(L, i, AST_OPLT);
+}
+ast_Bool _ast_Le_(ast_State *L, Instruction i)
+{
+    return _ast_Compare(L, i, AST_OPLE);
+}
+
 // END
 
 // 逻辑运算符
@@ -208,7 +275,8 @@ ast_Bool _ast_ForPrep(ast_State *L, Instruction i)
     ast_StackPush(PStack(L), tmp);
     ast_Arith(L, AST_OPSUB);
     astack_ReplaceToIdx(PStack(L), n.a);
-    ast_AddPc(L, 1);
+    ast_AddPc(L, n.sbx);
+    return TRUE;
 }
 ast_Bool _ast_ForLoop(ast_State *L, Instruction i)
 {
@@ -222,7 +290,7 @@ ast_Bool _ast_ForLoop(ast_State *L, Instruction i)
     ast_Bool isPositiveStep = (ast_Bool)(ast_ConvertToNumber(ast_StackGetTValue(PStack(L), n.a + 2)) >= 0);
     if ((isPositiveStep && ast_Compare(L, n.a, n.a + 1, AST_OPLE)) || (!isPositiveStep && ast_Compare(L, n.a + 1, n.a, AST_OPLE)))
     {
-        ast_AddPc(L, 1);
+        ast_AddPc(L, n.sbx);
         astack_Copy(PStack(L), n.a, n.a + 3);
     }
     return TRUE;
@@ -230,12 +298,12 @@ ast_Bool _ast_ForLoop(ast_State *L, Instruction i)
 // END
 
 ast_OpCode g_ast_opcodes[47] = {
-    /*T  A     B       C    mode    name */
-    {0, 1, OpArgR, OpArgN, IABC, "MOVE    "},
-    {0, 1, OpArgK, OpArgN, IABx, "LOADK   "},
-    {0, 1, OpArgN, OpArgN, IABx, "LOADKX  "},
-    {0, 1, OpArgU, OpArgU, IABC, "LOADBOOL"},
-    {0, 1, OpArgU, OpArgN, IABC, "LOADNIL "},
+    /*T  A     B       C    mode    name     action  */
+    {0, 1, OpArgR, OpArgN, IABC, "MOVE    ", _ast_Move},
+    {0, 1, OpArgK, OpArgN, IABx, "LOADK   ", _ast_LoadK},
+    {0, 1, OpArgN, OpArgN, IABx, "LOADKX  ", _ast_LoadKx},
+    {0, 1, OpArgU, OpArgU, IABC, "LOADBOOL", _ast_LoadBool},
+    {0, 1, OpArgU, OpArgN, IABC, "LOADNIL ", _ast_LoadNil},
     {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL"},
     {0, 1, OpArgU, OpArgK, IABC, "GETTABUP"},
     {0, 1, OpArgR, OpArgK, IABC, "GETTABLE"},
@@ -244,34 +312,34 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 0, OpArgK, OpArgK, IABC, "SETTABLE"},
     {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE"},
     {0, 1, OpArgR, OpArgK, IABC, "SELF    "},
-    {0, 1, OpArgK, OpArgK, IABC, "ADD     "},
-    {0, 1, OpArgK, OpArgK, IABC, "SUB     "},
-    {0, 1, OpArgK, OpArgK, IABC, "MUL     "},
-    {0, 1, OpArgK, OpArgK, IABC, "MOD     "},
-    {0, 1, OpArgK, OpArgK, IABC, "POW     "},
-    {0, 1, OpArgK, OpArgK, IABC, "DIV     "},
-    {0, 1, OpArgK, OpArgK, IABC, "IDIV    "},
-    {0, 1, OpArgK, OpArgK, IABC, "BAND    "},
-    {0, 1, OpArgK, OpArgK, IABC, "BOR     "},
-    {0, 1, OpArgK, OpArgK, IABC, "BXOR    "},
-    {0, 1, OpArgK, OpArgK, IABC, "SHL     "},
-    {0, 1, OpArgK, OpArgK, IABC, "SHR     "},
-    {0, 1, OpArgR, OpArgN, IABC, "UNM     "},
-    {0, 1, OpArgR, OpArgN, IABC, "BNOT    "},
-    {0, 1, OpArgR, OpArgN, IABC, "NOT     "},
-    {0, 1, OpArgR, OpArgN, IABC, "LEN     "},
-    {0, 1, OpArgR, OpArgR, IABC, "CONCAT  "},
-    {0, 0, OpArgR, OpArgN, IAsBx, "JMP     "},
-    {1, 0, OpArgK, OpArgK, IABC, "EQ      "},
-    {1, 0, OpArgK, OpArgK, IABC, "LT      "},
-    {1, 0, OpArgK, OpArgK, IABC, "LE      "},
-    {1, 0, OpArgN, OpArgU, IABC, "TEST    "},
-    {1, 1, OpArgR, OpArgU, IABC, "TESTSET "},
+    {0, 1, OpArgK, OpArgK, IABC, "ADD     ", _ast_Add_},
+    {0, 1, OpArgK, OpArgK, IABC, "SUB     ", _ast_Sub_},
+    {0, 1, OpArgK, OpArgK, IABC, "MUL     ", _ast_Mul_},
+    {0, 1, OpArgK, OpArgK, IABC, "MOD     ", _ast_Mod_},
+    {0, 1, OpArgK, OpArgK, IABC, "POW     ", _ast_Pow_},
+    {0, 1, OpArgK, OpArgK, IABC, "DIV     ", _ast_Div_},
+    {0, 1, OpArgK, OpArgK, IABC, "IDIV    ", _ast_Idiv_},
+    {0, 1, OpArgK, OpArgK, IABC, "BAND    ", _ast_Band_},
+    {0, 1, OpArgK, OpArgK, IABC, "BOR     ", _ast_Bor_},
+    {0, 1, OpArgK, OpArgK, IABC, "BXOR    ", _ast_Bxor_},
+    {0, 1, OpArgK, OpArgK, IABC, "SHL     ", _ast_Shl_},
+    {0, 1, OpArgK, OpArgK, IABC, "SHR     ", _ast_Shr_},
+    {0, 1, OpArgR, OpArgN, IABC, "UNM     ", _ast_Unm_},
+    {0, 1, OpArgR, OpArgN, IABC, "BNOT    ", _ast_Bnot_},
+    {0, 1, OpArgR, OpArgN, IABC, "NOT     ", _ast_Not},
+    {0, 1, OpArgR, OpArgN, IABC, "LEN     ", _ast_Length},
+    {0, 1, OpArgR, OpArgR, IABC, "CONCAT  ", _ast_Concat},
+    {0, 0, OpArgR, OpArgN, IAsBx, "JMP     ", _ast_Jmp},
+    {1, 0, OpArgK, OpArgK, IABC, "EQ      ", _ast_Eq_},
+    {1, 0, OpArgK, OpArgK, IABC, "LT      ", _ast_Lt_},
+    {1, 0, OpArgK, OpArgK, IABC, "LE      ", _ast_Le_},
+    {1, 0, OpArgN, OpArgU, IABC, "TEST    ", _ast_Test},
+    {1, 1, OpArgR, OpArgU, IABC, "TESTSET ", _ast_TestSet},
     {0, 1, OpArgU, OpArgU, IABC, "CALL    "},
     {0, 1, OpArgU, OpArgU, IABC, "TAILCALL"},
     {0, 0, OpArgU, OpArgN, IABC, "RETURN  "},
-    {0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP "},
-    {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP "},
+    {0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP ", _ast_ForLoop},
+    {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP ", _ast_ForPrep},
     {0, 0, OpArgN, OpArgU, IABC, "TFORCALL"},
     {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP"},
     {0, 0, OpArgU, OpArgU, IABC, "SETLIST "},
@@ -279,3 +347,17 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 1, OpArgU, OpArgN, IABC, "VARARG  "},
     {0, 0, OpArgU, OpArgU, IAx, "EXTRAARG"},
 };
+
+ast_Bool ast_ExecuteOp(ast_State *L, Instruction i)
+{
+    ast_OpCode code = g_ast_opcodes[InstructionOpcode(i)];
+    if (code.ast_OpAction != nullptr)
+    {
+        code.ast_OpAction(L, i);
+    }
+    else
+    {
+        PANIC("%s", code.name);
+    }
+    return TRUE;
+}
