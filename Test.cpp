@@ -27,4 +27,7 @@ int main()
     printf("%d", ast_Compare(L, 2, 3, AST_OPLE));
     ast_Concat(L, 5);
     ast_PrintStack(PStack(L));
+    printf("%s ", getstr(astString_FindStr(L, "123")));
+    printf("%d", astString_RemoveStr(L, "123"));
+    printf("%d ", (bool)astString_FindStr(L, "123"));
 }

@@ -25,6 +25,17 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     }
     return ts;
 }
+ast_Hash astString_GetHash(const char *str)
+{
+    ast_Hash h = cast(ast_Hash, strlen(str));
+    size_t step = (strlen(str) >> 5) + 1;
+    size_t l1;
+    for (l1 = strlen(str); l1 >= step; l1 -= step)
+    {
+        h = h ^ ((h << 5) + (h >> 2) + cast(unsigned char, str[l1 - 1]));
+    }
+    return h;
+}
 ast_String *astString_NewLStr(ast_State *L, const char *str, size_t len)
 {
     GCObject *Object;
@@ -83,4 +94,49 @@ ast_Bool ast_IsString(TValue t)
         return TRUE;
     }
     return FALSE;
+}
+ast_String *astString_FindStr(ast_State *L, const char *str)
+{
+    StringTable st = L->G_S->stringtable;
+    ast_Hash h = astString_GetHash(str);
+    GCObject *ans = st.hashTable[lmod(h, st.size)];
+    while (ans)
+    {
+        if (strcmp(str, getstr(&ans->ts)) == 0)
+        {
+            return &ans->ts;
+        }
+        ans = ans->gch.next;
+    }
+    return NULL;
+}
+ast_Bool astString_RemoveStr(ast_State *L, const char *str)
+{
+    StringTable st = L->G_S->stringtable;
+    ast_Hash h = astString_GetHash(str);
+    GCObject *ans = st.hashTable[lmod(h, st.size)];
+    GCObject *pre = ans;
+    while (ans)
+    {
+        if (strcmp(str, getstr(&ans->ts)) == 0)
+        {
+            break;
+        }
+        pre = ans;
+        ans = ans->gch.next;
+    }
+    if (ans == NULL)
+    {
+        return FALSE;
+    }
+    else if (pre == ans)
+    {
+        st.hashTable[lmod(h, st.size)] = ans->gch.next;
+    }
+    else
+    {
+        pre->gch.next = ans->gch.next;
+    }
+    free(ans);
+    return TRUE;
 }
