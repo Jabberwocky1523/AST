@@ -1,3 +1,0 @@
-/Users/tinakurisu/Desktop/AST/build/CMakeFiles/AST.dir
-/Users/tinakurisu/Desktop/AST/build/CMakeFiles/edit_cache.dir
-/Users/tinakurisu/Desktop/AST/build/CMakeFiles/rebuild_cache.dir
