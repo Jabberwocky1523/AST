@@ -389,3 +389,25 @@ ast_Bool ast_PrintStack(ast_Stack *L)
     printf("\n");
     return TRUE;
 }
+ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val)
+{
+    switch (val.tag)
+    {
+    case CONSTANT_TAG_NIL:
+        ast_StackPush(PStack(L), nullptr, AST_TNIL);
+        return TRUE;
+    case CONSTANT_TAG_BOOLEAN:
+        ast_StackPush(PStack(L), (ast_Bool)val.data.tag_boolean, AST_TBOOLEAN);
+        return TRUE;
+    case CONSTANT_TAG_NUMBER:
+        ast_StackPush(PStack(L), val.data.tag_number, AST_TNUMBER);
+        return TRUE;
+    case CONSTANT_TAG_INTEGER:
+        ast_StackPush(PStack(L), val.data.tag_integer, AST_TINTEGER);
+        return TRUE;
+    case CONSTANT_TAG_STR:
+        ast_StackPush(L, val.data.tag_str->data_, AST_TSTRING);
+        return TRUE;
+    }
+    return FALSE;
+}

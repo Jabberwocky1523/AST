@@ -6,6 +6,7 @@
 #define AST_STATE_H
 #include "ast.h"
 #include "astObject.h"
+#include "astBinaryChunk.h"
 typedef size_t ast_Mem;
 typedef struct StringTable
 {
@@ -26,9 +27,10 @@ typedef struct global_State
 typedef struct ast_State
 {
     GCCommonHeader;
-    ast_Byte status;
     global_State *G_S;
     ast_Stack *stack;
+    Prototype *proto;
+    ast_Integer pc;
 } ast_State;
 
 // 全局定义

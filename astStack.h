@@ -7,6 +7,7 @@
 #define astack_GetTop(L) L->top
 #define astack_CheckStack(L, n) ast_StackCheck(L, n)
 #define astack_Pop(L) ast_StackPop((L))
+// L为ast_Stack*
 #define astack_Copy(L, srcidx, toidx)               \
     {                                               \
         TValue tmp = ast_StackGetTValue(L, srcidx); \
@@ -69,5 +70,6 @@ ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type);
 ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Number val, ast_Type type);
+ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val);
 ast_Bool ast_PrintStack(ast_Stack *L);
 #endif
