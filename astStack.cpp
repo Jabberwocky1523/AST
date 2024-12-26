@@ -2,6 +2,7 @@
 #include "astState.h"
 #include "astString.h"
 #include "astMath.h"
+#include "string.h"
 ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));

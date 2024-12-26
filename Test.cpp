@@ -15,8 +15,8 @@ int main(int argc, const char *const *argv)
     {
         file_name = argv[1];
     }
-    CBuffer file_contont = LoadFileToCBuffer(file_name);
-    Prototype *proto = BinaryChunkUnDump(file_contont);
+    astBuffer file_contont = LoadFileToastBuffer(file_name);
+    Prototype *proto = astBinaryChunkUnDump(file_contont);
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s, proto, 0);

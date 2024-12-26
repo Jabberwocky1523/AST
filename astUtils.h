@@ -4,7 +4,7 @@
 #include "astBinaryChunk.h"
 char *LoadFileContent(const char *file_name);
 
-CBuffer LoadFileToCBuffer(const char *file_name);
+astBuffer LoadFileToastBuffer(const char *file_name);
 
 void PrintAst(Prototype *proto);
 #endif

@@ -1,7 +1,6 @@
 #ifndef AST_MEM_H
 #define AST_MEM_H
 #include "ast.h"
-#include "astObject.h"
 #include "stdlib.h"
 #include "string.h"
 #include "astState.h"

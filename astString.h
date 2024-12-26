@@ -3,7 +3,6 @@
 #include "ast.h"
 #include "astObject.h"
 #include "astState.h"
-#include "astMem.h"
 /*
 param:ts类型为 *ast_String
 */

@@ -4,18 +4,18 @@
 #include <stdbool.h>
 #include "astBuffer.h"
 
-CBuffer CBufferAlloc(int size)
+astBuffer astBufferAlloc(int size)
 {
-    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
+    astBuffer buffer = (astBuffer)malloc(sizeof(StructastBuffer));
     buffer->size_ = size;
     buffer->data_ = (char *)malloc(sizeof(char) * size);
     buffer->data_size_ = 0;
     return buffer;
 }
 
-CBuffer CBufferFromCBuffer(CBuffer buffer)
+astBuffer astBufferFromastBuffer(astBuffer buffer)
 {
-    CBuffer ret = (CBuffer)malloc(sizeof(StructCBuffer));
+    astBuffer ret = (astBuffer)malloc(sizeof(StructastBuffer));
     ret->size_ = buffer->size_;
     ret->data_ = buffer->data_;
     ret->data_size_ = buffer->data_size_;
@@ -23,25 +23,25 @@ CBuffer CBufferFromCBuffer(CBuffer buffer)
     return ret;
 }
 
-CBuffer CBufferAllocFromCBuffer(CBuffer in_buffer)
+astBuffer astBufferAllocFromastBuffer(astBuffer in_buffer)
 {
-    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
+    astBuffer buffer = (astBuffer)malloc(sizeof(StructastBuffer));
     buffer->size_ = in_buffer->size_;
     buffer->data_ = (char *)malloc(in_buffer->size_);
     buffer->data_size_ = in_buffer->data_size_;
     return buffer;
 }
 
-CBuffer CBufferFromStr(const char *data, int data_size)
+astBuffer astBufferFromStr(const char *data, int data_size)
 {
-    CBuffer buffer = (CBuffer)malloc(sizeof(StructCBuffer));
+    astBuffer buffer = (astBuffer)malloc(sizeof(StructastBuffer));
     buffer->size_ = data_size;
     buffer->data_ = (char *)data;
     buffer->data_size_ = data_size;
     return buffer;
 }
 
-void CBufferFree(CBuffer buffer)
+void astBufferFree(astBuffer buffer)
 {
     if (buffer != NULL)
     {
@@ -54,7 +54,7 @@ void CBufferFree(CBuffer buffer)
     }
 }
 
-void CBufferCopy(CBuffer dst, CBuffer src)
+void astBufferCopy(astBuffer dst, astBuffer src)
 {
     dst->data_size_ = src->data_size_;
     dst->size_ = src->size_;
@@ -62,27 +62,27 @@ void CBufferCopy(CBuffer dst, CBuffer src)
     memcpy(dst->data_, src->data_, src->data_size_);
 }
 
-char *CBufferData(CBuffer buffer)
+char *astBufferData(astBuffer buffer)
 {
     return buffer->data_;
 }
 
-int CBufferSize(CBuffer buffer)
+int astBufferSize(astBuffer buffer)
 {
     return buffer->size_;
 }
 
-void CBufferSetDataSize(CBuffer buffer, int size)
+void astBufferSetDataSize(astBuffer buffer, int size)
 {
     buffer->data_size_ = size;
 }
 
-int CBufferDataSize(CBuffer buffer)
+int astBufferDataSize(astBuffer buffer)
 {
     return buffer->data_size_;
 }
 
-bool CBufferPush(CBuffer buffer, const char *data, int data_size)
+bool astBufferPush(astBuffer buffer, const char *data, int data_size)
 {
     if (buffer->data_size_ + data_size > buffer->size_)
     {
@@ -93,7 +93,7 @@ bool CBufferPush(CBuffer buffer, const char *data, int data_size)
     return true;
 }
 
-void CBufferPop(CBuffer buffer, int size)
+void astBufferPop(astBuffer buffer, int size)
 {
     int remain_len = buffer->data_size_ - size;
     if (remain_len >= 0)
@@ -107,12 +107,12 @@ void CBufferPop(CBuffer buffer, int size)
     }
 }
 
-void CBufferClear(CBuffer buffer)
+void astBufferClear(astBuffer buffer)
 {
     buffer->data_size_ = 0;
 }
 
-bool CBufferCompare(CBuffer buffer, CBuffer buffer2)
+bool astBufferCompare(astBuffer buffer, astBuffer buffer2)
 {
     if (buffer->data_size_ != buffer2->data_size_)
     {

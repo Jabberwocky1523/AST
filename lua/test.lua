@@ -1,7 +1,4 @@
 local sum = 0;
-function a(sum)
-    for i = 1, 100 do
-        sum = sum + i
-    end
+for i = 1, 100 do
+    sum = sum + i
 end
-a(sum)

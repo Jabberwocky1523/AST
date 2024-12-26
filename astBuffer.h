@@ -7,34 +7,34 @@ typedef struct
     int size_;
     int data_size_;
     char *data_;
-} *CBuffer, StructCBuffer;
+} *astBuffer, StructastBuffer;
 
-CBuffer CBufferAlloc(int size);
+astBuffer astBufferAlloc(int size);
 
-CBuffer CBufferFromCBuffer(CBuffer buffer);
+astBuffer astBufferFromastBuffer(astBuffer buffer);
 
-CBuffer CBufferAllocFromCBuffer(CBuffer buffer);
+astBuffer astBufferAllocFromastBuffer(astBuffer buffer);
 
-CBuffer CBufferFromStr(const char *data, int data_size);
+astBuffer astBufferFromStr(const char *data, int data_size);
 
-void CBufferFree(CBuffer buffer);
+void astBufferFree(astBuffer buffer);
 
-void CBufferCopy(CBuffer dst, CBuffer src);
+void astBufferCopy(astBuffer dst, astBuffer src);
 
-char *CBufferData(CBuffer buffer);
+char *astBufferData(astBuffer buffer);
 
-int CBufferSize(CBuffer buffer);
+int astBufferSize(astBuffer buffer);
 
-void CBufferSetDataSize(CBuffer buffer, int size);
+void astBufferSetDataSize(astBuffer buffer, int size);
 
-int CBufferDataSize(CBuffer buffer);
+int astBufferDataSize(astBuffer buffer);
 
-bool CBufferPush(CBuffer buffer, const char *data, int data_size);
+bool astBufferPush(astBuffer buffer, const char *data, int data_size);
 
-void CBufferPop(CBuffer buffer, int size);
+void astBufferPop(astBuffer buffer, int size);
 
-void CBufferClear(CBuffer buffer);
+void astBufferClear(astBuffer buffer);
 
-bool CBufferCompare(CBuffer buffer, CBuffer buffer2);
+bool astBufferCompare(astBuffer buffer, astBuffer buffer2);
 
 #endif

@@ -6,7 +6,8 @@
 #include "astStack.h"
 #include "astString.h"
 #include "string.h"
-ast_Operator g_operators[14] = {
+#include "astOpcode.h"
+ast_Operator g_Arith_operators[14] = {
     {ast_IntegerAdd, ast_NumberAdd},
     {ast_IntegerSub, ast_NumberSub},
     {ast_IntegerMul, ast_NumberMul},
@@ -21,7 +22,7 @@ ast_Operator g_operators[14] = {
     {ast_Shr, NULL},
     {ast_IntegerUnm, ast_NumberUnm},
     {ast_Bnot, NULL}};
-int ast_IsNumeric(const char *str)
+ast_Bool ast_IsNumeric(const char *str)
 {
     regex_t regex;
     int reti;
@@ -37,12 +38,12 @@ int ast_IsNumeric(const char *str)
     if (!reti)
     {
         regfree(&regex);
-        return 1;
+        return TRUE;
     }
     else if (reti == REG_NOMATCH)
     {
         regfree(&regex);
-        return 0;
+        return FALSE;
     }
     else
     {
@@ -52,7 +53,7 @@ int ast_IsNumeric(const char *str)
     }
 
     regfree(&regex);
-    return 0;
+    return FALSE;
 }
 ast_Integer ast_IFloorDiv(ast_Integer a, ast_Integer b)
 {
@@ -69,7 +70,7 @@ ast_Number ast_FFloorDiv(ast_Number a, ast_Number b)
 {
     return ast_IFloorDiv(a, b);
 }
-ast_Integer ast_DoubleToInteger(double src, int *flag)
+ast_Integer ast_DoubleToInteger(ast_Number src, ast_Integer *flag)
 {
     ast_Number tmp = src;
     src = (ast_Integer)src;
@@ -255,7 +256,7 @@ ast_Bool ast_Arith(ast_State *S, int op)
     {
         a = b;
     }
-    ast_Operator ope = g_operators[op];
+    ast_Operator ope = g_Arith_operators[op];
     TValue result = _ast_Arith(a, b, ope);
     if (result.tt != AST_TNIL)
     {

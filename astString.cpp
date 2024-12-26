@@ -1,6 +1,6 @@
 #include "astString.h"
 #include <climits>
-
+#include "astMem.h"
 // 分配一个新字符串
 ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
 {

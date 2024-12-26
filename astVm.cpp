@@ -1,6 +1,7 @@
 #include "astVm.h"
 #include "astMath.h"
 #include "astStack.h"
+#include "astOpcode.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
     return L->pc;

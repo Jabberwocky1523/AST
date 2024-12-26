@@ -2,10 +2,9 @@
 #define AST_INSTRUCTION_H__
 #include <inttypes.h>
 #include "astOpcode.h"
-typedef uint32_t Instruction;
 #define MAXARG_Bx ((1 << 18) - 1)
 #define MAXARG_sBx ((MAXARG_Bx) >> 1)
-
+extern ast_OpCode g_ast_opcodes[47];
 typedef struct
 {
     int a, b, c;
@@ -61,22 +60,22 @@ inline int InstructionTAX(Instruction i)
 
 inline const char *InstructionOpName(Instruction i)
 {
-    return g_opcodes[InstructionOpcode(i)].name;
+    return g_ast_opcodes[InstructionOpcode(i)].name;
 }
 
 inline unsigned char InstructionOpMode(Instruction i)
 {
-    return g_opcodes[InstructionOpcode(i)].opMode;
+    return g_ast_opcodes[InstructionOpcode(i)].opMode;
 }
 
 inline unsigned char InstructionBMode(Instruction i)
 {
-    return g_opcodes[InstructionOpcode(i)].argBMode;
+    return g_ast_opcodes[InstructionOpcode(i)].argBMode;
 }
 
 inline unsigned char InstructionCMode(Instruction i)
 {
-    return g_opcodes[InstructionOpcode(i)].argCMode;
+    return g_ast_opcodes[InstructionOpcode(i)].argCMode;
 }
 
 #endif

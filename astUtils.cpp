@@ -30,12 +30,12 @@ char *LoadFileContent(const char *file_name)
     return buffer;
 }
 
-CBuffer LoadFileToCBuffer(const char *file_name)
+astBuffer LoadFileToastBuffer(const char *file_name)
 {
     char *buffer = NULL;
     int len = 0;
     OPENANDREAD(file_name, buffer, len);
-    return CBufferFromStr(buffer, len);
+    return astBufferFromStr(buffer, len);
 }
 void PrintHeader(Prototype *proto)
 {
@@ -51,7 +51,7 @@ void PrintHeader(Prototype *proto)
     }
 
     char buffer[1024] = {0};
-    memcpy(buffer, CBufferData(proto->Source), CBufferSize(proto->Source));
+    memcpy(buffer, astBufferData(proto->Source), astBufferSize(proto->Source));
     printf("%s <%s:%d, %d> (%d instruction)\n", func_type, buffer, proto->LineDefined, proto->LastLineDefined, proto->Code.size());
     printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.size());
     printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants.size(), proto->Protos.size());
@@ -159,7 +159,7 @@ void PrintConstant(ConstantType *constant, int i)
     case CONSTANT_TAG_STR:
     {
         char buffer[1024] = {0};
-        memcpy(buffer, CBufferData(constant->data.tag_str), CBufferDataSize(constant->data.tag_str));
+        memcpy(buffer, astBufferData(constant->data.tag_str), astBufferDataSize(constant->data.tag_str));
         printf("\t%d\t%s\n", i + 1, buffer);
         break;
     }
@@ -183,12 +183,12 @@ void PrintDetail(Prototype *proto)
     {
         LocVar *cur = &(locvars[i]);
         char buffer[1024] = {0};
-        memcpy(buffer, CBufferData(cur->VarName), CBufferDataSize(cur->VarName));
+        memcpy(buffer, astBufferData(cur->VarName), astBufferDataSize(cur->VarName));
         printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->StartPC + 1, cur->EndPC + 1);
     }
 
     vector<Upvalue> upval = proto->Upvalues;
-    vector<CBuffer> upvalName = proto->UpvalueNames;
+    vector<astBuffer> upvalName = proto->UpvalueNames;
     len = upval.size();
     printf("upvalues (%d):\n", len);
 
@@ -198,9 +198,9 @@ void PrintDetail(Prototype *proto)
         Upvalue *cur = &(upval[i]);
         if (flag)
         {
-            CBuffer *upname = &(upvalName[i]);
+            astBuffer *upname = &(upvalName[i]);
             char buffer[1024] = {0};
-            memcpy(buffer, CBufferData(*upname), CBufferDataSize(*upname));
+            memcpy(buffer, astBufferData(*upname), astBufferDataSize(*upname));
             printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->Instack, cur->Idx);
         }
         else

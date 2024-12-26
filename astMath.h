@@ -2,14 +2,13 @@
 #define AST_MATH_H
 #include "ast.h"
 #include "math.h"
-#include "astOpcode.h"
 #include "astState.h"
 ast_Integer ast_IFloorDiv(ast_Integer a, ast_Integer b);
 ast_Number ast_FFloorDiv(ast_Number a, ast_Number b);
-ast_Integer ast_DoubleToInteger(double src, int *flag);
+ast_Integer ast_DoubleToInteger(ast_Number src, ast_Integer *flag);
 ast_Integer ast_StringToInteger(const char *str);
-int ast_IsNumeric(const char *str);
 ast_Number ast_StringToDouble(const char *str);
+ast_Bool ast_IsNumeric(const char *str);
 ast_Integer ast_IntegerAdd(ast_Integer a, ast_Integer b);
 ast_Number ast_NumberAdd(ast_Number a, ast_Number b);
 ast_Integer ast_IntegerSub(ast_Integer a, ast_Integer b);

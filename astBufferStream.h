@@ -9,64 +9,64 @@ typedef struct
     char *data_;
     int write_pos_;
     int read_pos_;
-} *CBufferStream, StructCBufferStream;
+} *astBufferStream, StructastBufferStream;
 
-CBufferStream CBufferStreamAlloc(int size);
+astBufferStream astBufferStreamAlloc(int size);
 
-CBufferStream CBufferStreamAllocFromCBuffer(CBuffer buffer);
+astBufferStream astBufferStreamAllocFromastBuffer(astBuffer buffer);
 
-void CBufferStreamFree(CBufferStream buffer_stream);
+void astBufferStreamFree(astBufferStream buffer_stream);
 
-char *CBufferStreamData(CBufferStream buffer_stream);
+char *astBufferStreamData(astBufferStream buffer_stream);
 
-int CBufferStreamSize(CBufferStream buffer_stream);
+int astBufferStreamSize(astBufferStream buffer_stream);
 
-bool CBufferStreamRead(CBufferStream buffer_stream, void *buffer, int buffer_size);
+bool astBufferStreamRead(astBufferStream buffer_stream, void *buffer, int buffer_size);
 
-bool CBufferStreamPeep(CBufferStream buffer_stream, void *buffer, int buffer_size);
+bool astBufferStreamPeep(astBufferStream buffer_stream, void *buffer, int buffer_size);
 
-bool CBufferStreamReadToCBuffer(CBufferStream buffer_stream, CBuffer buffer);
+bool astBufferStreamReadToastBuffer(astBufferStream buffer_stream, astBuffer buffer);
 
-bool CBufferStreamWrite(CBufferStream buffer_stream, void *buffer, int buffer_size);
+bool astBufferStreamWrite(astBufferStream buffer_stream, void *buffer, int buffer_size);
 
-int8_t CBufferStreamReadInt8(CBufferStream buffer_stream);
+int8_t astBufferStreamReadInt8(astBufferStream buffer_stream);
 
-int16_t CBufferStreamReadInt16(CBufferStream buffer_stream);
+int16_t astBufferStreamReadInt16(astBufferStream buffer_stream);
 
-int32_t CBufferStreamReadInt32(CBufferStream buffer_stream);
+int32_t astBufferStreamReadInt32(astBufferStream buffer_stream);
 
-int64_t CBufferStreamReadInt64(CBufferStream buffer_stream);
+int64_t astBufferStreamReadInt64(astBufferStream buffer_stream);
 
-uint8_t CBufferStreamReadUInt8(CBufferStream buffer_stream);
+uint8_t astBufferStreamReadUInt8(astBufferStream buffer_stream);
 
-uint16_t CBufferStreamReadUInt16(CBufferStream buffer_stream);
+uint16_t astBufferStreamReadUInt16(astBufferStream buffer_stream);
 
-uint32_t CBufferStreamReadUInt32(CBufferStream buffer_stream);
+uint32_t astBufferStreamReadUInt32(astBufferStream buffer_stream);
 
-uint64_t CBufferStreamReadUInt64(CBufferStream buffer_stream);
+uint64_t astBufferStreamReadUInt64(astBufferStream buffer_stream);
 
-float CBufferStreamReadFloat(CBufferStream buffer_stream);
+float astBufferStreamReadFloat(astBufferStream buffer_stream);
 
-double CBufferStreamReadDouble(CBufferStream buffer_stream);
+double astBufferStreamReadDouble(astBufferStream buffer_stream);
 
-bool CBufferStreamWriteInt8(CBufferStream buffer_stream, int8_t data);
+bool astBufferStreamWriteInt8(astBufferStream buffer_stream, int8_t data);
 
-bool CBufferStreamWriteInt16(CBufferStream buffer_stream, int16_t data);
+bool astBufferStreamWriteInt16(astBufferStream buffer_stream, int16_t data);
 
-bool CBufferStreamWriteInt32(CBufferStream buffer_stream, int32_t data);
+bool astBufferStreamWriteInt32(astBufferStream buffer_stream, int32_t data);
 
-bool CBufferStreamWriteInt64(CBufferStream buffer_stream, int64_t data);
+bool astBufferStreamWriteInt64(astBufferStream buffer_stream, int64_t data);
 
-bool CBufferStreamWriteUInt8(CBufferStream buffer_stream, uint8_t data);
+bool astBufferStreamWriteUInt8(astBufferStream buffer_stream, uint8_t data);
 
-bool CBufferStreamWriteUInt16(CBufferStream buffer_stream, uint16_t data);
+bool astBufferStreamWriteUInt16(astBufferStream buffer_stream, uint16_t data);
 
-bool CBufferStreamWriteUInt32(CBufferStream buffer_stream, uint32_t data);
+bool astBufferStreamWriteUInt32(astBufferStream buffer_stream, uint32_t data);
 
-bool CBufferStreamWriteUInt64(CBufferStream buffer_stream, uint64_t data);
+bool astBufferStreamWriteUInt64(astBufferStream buffer_stream, uint64_t data);
 
-bool CBufferStreamWriteFloat(CBufferStream buffer_stream, float data);
+bool astBufferStreamWriteFloat(astBufferStream buffer_stream, float data);
 
-bool CBufferStreamWriteDouble(CBufferStream buffer_stream, double data);
+bool astBufferStreamWriteDouble(astBufferStream buffer_stream, double data);
 
 #endif
