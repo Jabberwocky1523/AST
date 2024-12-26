@@ -8,7 +8,6 @@
 #define AST_OBJECT_H
 #include <stdarg.h>
 #include "ast.h"
-
 #define cast(t, exp) ((t)(exp)) // 类型转换
 #define lmod(s, size) cast(int, (s) & ((size) - 1))
 typedef double ast_Number;
@@ -56,13 +55,34 @@ typedef union ast_TString
         size_t len;
     } Tsv;
 } ast_String;
+// 哈希表
+typedef struct ast_MapNode
+{
+    TValue key;
+    TValue val;
+    struct ast_MapNode *next;
+} ast_MapNode;
+
+typedef struct ast_Map
+{
+    ast_MapNode **map;
+    ast_Integer size;
+    ast_Integer Mnum;
+} ast_Map;
+typedef struct ast_Table
+{
+    GCCommonHeader;
+    ast_Map *HashMap;
+    TValue *arr;
+} ast_Table;
 
 typedef union GCObject
 {
     GCHeader gch;
     ast_String ts;
+    ast_Table tb;
 } GCObject;
-
+// 栈作为虚拟寄存器
 typedef struct ast_Stack
 {
     TValue *Value;
@@ -85,4 +105,6 @@ typedef struct ast_Stack
         (obj)->value.b = x;       \
         (obj)->tt = AST_TBOOLEAN; \
     }
+ast_Bool ast_TValueCmp(TValue val1, TValue val2);
+ast_Integer ast_GetTValueHash(TValue val1);
 #endif

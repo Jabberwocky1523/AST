@@ -1,5 +1,7 @@
 {
     "files.associations": {
+        "*.ndjson": "jsonl",
+        "*.dbclient-js": "javascript",
         "astobject.h": "cpp",
         "stdarg.h": "cpp",
         "stdlib.h": "cpp",
@@ -23,7 +25,16 @@
         "aststring.h": "cpp",
         "astmem.h": "cpp",
         "stdio.h": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "functional": "cpp",
+        "memory": "cpp",
+        "optional": "cpp",
+        "system_error": "cpp",
+        "text_encoding": "cpp",
+        "variant": "cpp"
     },
     "files.exclude": {
         "**/*.rpyc": true,

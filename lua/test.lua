@@ -1,4 +1,5 @@
-local sum = 0;
-for i = 1, 100 do
-    sum = sum + i
-end
+local sum = {}
+sum["1"] = "1"
+sum["2"] = "2"
+sum[sum] = 1
+print(sum[sum])

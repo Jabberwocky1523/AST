@@ -8,7 +8,7 @@
 #include "astOpcode.h"
 #include "astUtils.h"
 #include "astVm.h"
-int main(int argc, const char *const *argv)
+int main1(int argc, const char *const *argv)
 {
     const char *file_name = "luac.out";
     if (argc >= 2)

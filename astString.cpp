@@ -19,7 +19,7 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     ts->Tsv.next = tb->hashTable[hash];
     tb->hashTable[hash] = cast(GCObject *, ts);
     tb->Tnum++;
-    if (tb->Tnum > tb->size && tb->Tnum < (INT_MAX - 2) / 2)
+    if (tb->Tnum > tb->size && tb->size < (INT_MAX - 2) / 2)
     {
         astString_Resize(L, tb->size * 2);
     }
@@ -137,6 +137,7 @@ ast_Bool astString_RemoveStr(ast_State *L, const char *str)
     {
         pre->gch.next = ans->gch.next;
     }
+    ans->gch.next = nullptr;
     free(ans);
     return TRUE;
 }
