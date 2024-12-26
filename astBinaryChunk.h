@@ -2,6 +2,7 @@
 #define __BINARY_CHUNK_H__
 #include <inttypes.h>
 #include "astBuffer.h"
+#include "astBufferStream.h"
 #include <stdbool.h>
 #include "vector"
 using namespace std;
@@ -101,14 +102,14 @@ typedef struct
 #define TAG_SHORT_STR 0x04
 #define TAG_LONG_STR 0x14
 
-bool BinaryChunkCheckHead();
+bool BinaryChunkCheckHead(CBufferStream buffer_stream);
 
 Prototype *BinaryChunkUnDump(CBuffer buffer);
 
-uint8_t BinaryChunkReadByte();
+uint8_t BinaryChunkReadByte(CBufferStream buffer_stream);
 
-uint64_t BinaryChunkReadLuaInteger();
+uint64_t BinaryChunkReadLuaInteger(CBufferStream buffer_stream);
 
-double BinaryChunkReadLuaNumber();
+double BinaryChunkReadLuaNumber(CBufferStream buffer_stream);
 
 #endif
