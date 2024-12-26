@@ -74,6 +74,7 @@ typedef struct ast_Table
     GCCommonHeader;
     ast_Map *HashMap;
     TValue *arr;
+    ast_Integer arrSize;
 } ast_Table;
 
 typedef union GCObject
@@ -91,7 +92,7 @@ typedef struct ast_Stack
 } ast_Stack;
 // 判断数据对象是否可回收
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)
-
+#define IsNum(o) ((o.tt == AST_TINTEGER || o.tt == AST_TNUMBER))
 // 对common数据的封装
 
 #define setnvalue(obj, x)        \

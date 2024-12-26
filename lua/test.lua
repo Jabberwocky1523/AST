@@ -1,5 +1,3 @@
-local sum = {}
-sum["1"] = "1"
-sum["2"] = "2"
-sum[sum] = 1
-print(sum[sum])
+local sum = { 1, 2, 3 }
+
+print(sum[1.2])

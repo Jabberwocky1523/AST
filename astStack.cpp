@@ -206,7 +206,51 @@ ast_Integer ast_ConvertToInteger(TValue val)
         }
     }
     case AST_TNUMBER:
+    {
+        ast_Integer flag = 0;
+        ast_Integer tmp = ast_DoubleToInteger(val.value.n, &flag);
+        if (!flag)
+        {
+            return 0;
+        }
         return (ast_Integer)val.value.n;
+    }
+
+    case AST_TSTRING:
+    {
+        ast_Integer tmp = 0;
+        if (!ast_IsNumeric(getstr(&val.value.gc->ts)))
+        {
+            PANIC("字符串包含非数字");
+        }
+        assert(tmp = (ast_Integer)atoll(getstr(&val.value.gc->ts)));
+        return (ast_Integer)tmp;
+    }
+    case AST_TINTEGER:
+        return val.value.i;
+    default:
+        PANIC("该类型无法转换为Integer");
+    }
+}
+ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
+{
+    switch (val.tt)
+    {
+    case AST_TBOOLEAN:
+    {
+        switch (val.value.bo)
+        {
+        case FALSE:
+            return 0;
+        case TRUE:
+            return 1;
+        }
+    }
+    case AST_TNUMBER:
+    {
+        ast_Integer tmp = ast_DoubleToInteger(val.value.n, flag);
+        return tmp;
+    }
     case AST_TSTRING:
     {
         ast_Integer tmp = 0;
