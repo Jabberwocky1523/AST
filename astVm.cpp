@@ -2,6 +2,7 @@
 #include "astMath.h"
 #include "astStack.h"
 #include "astOpcode.h"
+#include "astTable.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
     return L->pc;
@@ -298,6 +299,62 @@ ast_Bool _ast_ForLoop(ast_State *L, Instruction i)
 }
 // END
 
+// TABLE
+////R(A) = {}(size = B,C)
+ast_Bool _ast_NewTable(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_CreateTableAndPush(L, FbToInt(n.b), FbToInt(n.c));
+    astack_ReplaceToIdx(PStack(L), n.a);
+    return TRUE;
+}
+////R(A) = R(B)[RK(C)]
+ast_Bool _ast_GetTable(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_GetRk(L, n.c);
+    ast_GetTableFromIdx(L, n.b);
+    astack_ReplaceToIdx(PStack(L), n.a);
+    return TRUE;
+}
+////R(A)[RK(B)] = RK(C)
+ast_Bool _ast_SetTable(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_GetRk(L, n.b);
+    ast_GetRk(L, n.c);
+    ast_SetTableFromIdx(L, n.a);
+    return TRUE;
+}
+////R(A)[(C - 1) * FPF + i] = R(A + i) 1 <= i <= B 给数组赋值
+ast_Bool _ast_SetList(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    if (n.c > 0)
+    {
+        n.c -= 1;
+    }
+    else
+    {
+        int nn = InstructionTAX(ast_Fetch(L));
+        n.c = nn;
+    }
+    int idx = (n.c * FPF);
+    TValue tt;
+    tt.tt = AST_TINTEGER;
+
+    for (int i = 1; i <= n.b; i++)
+    {
+        idx++;
+        TValue tmp = ast_StackGetTValue(PStack(L), n.a + i);
+        ast_StackPush(PStack(L), tmp);
+        tt.value.i = idx;
+        ast_SetTableFromNum(L, n.a, tt);
+    }
+    return TRUE;
+}
+// END
+
 ast_OpCode g_ast_opcodes[47] = {
     /*T  A     B       C    mode    name     action  */
     {0, 1, OpArgR, OpArgN, IABC, "MOVE    ", _ast_Move},
@@ -307,11 +364,11 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 1, OpArgU, OpArgN, IABC, "LOADNIL ", _ast_LoadNil},
     {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL"},
     {0, 1, OpArgU, OpArgK, IABC, "GETTABUP"},
-    {0, 1, OpArgR, OpArgK, IABC, "GETTABLE"},
+    {0, 1, OpArgR, OpArgK, IABC, "GETTABLE", _ast_GetTable},
     {0, 0, OpArgK, OpArgK, IABC, "SETTABUP"},
     {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL"},
-    {0, 0, OpArgK, OpArgK, IABC, "SETTABLE"},
-    {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE"},
+    {0, 0, OpArgK, OpArgK, IABC, "SETTABLE", _ast_SetTable},
+    {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE", _ast_NewTable},
     {0, 1, OpArgR, OpArgK, IABC, "SELF    "},
     {0, 1, OpArgK, OpArgK, IABC, "ADD     ", _ast_Add_},
     {0, 1, OpArgK, OpArgK, IABC, "SUB     ", _ast_Sub_},
@@ -343,7 +400,7 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP ", _ast_ForPrep},
     {0, 0, OpArgN, OpArgU, IABC, "TFORCALL"},
     {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP"},
-    {0, 0, OpArgU, OpArgU, IABC, "SETLIST "},
+    {0, 0, OpArgU, OpArgU, IABC, "SETLIST ", _ast_SetList},
     {0, 1, OpArgU, OpArgN, IABx, "CLOSURE "},
     {0, 1, OpArgU, OpArgN, IABC, "VARARG  "},
     {0, 0, OpArgU, OpArgU, IAx, "EXTRAARG"},

@@ -11,6 +11,7 @@
 #include <assert.h>
 using namespace std;
 #define ast_Type int
+#define FPF 50
 #define PANIC(fmt, ...)                                                                \
     printf("file:[%s], line:[%d] panic:" fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
     exit(-1);

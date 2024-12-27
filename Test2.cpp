@@ -9,26 +9,29 @@
 #include "astUtils.h"
 #include "astMap.h"
 #include "astVm.h"
-int main(int argc, const char *const *argv)
+#include "astTable.h"
+int main2(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s, NULL, 0);
-    ast_Map *map = astMap_Init((ast_Integer)8);
+    ast_Table *tb = astTable_Init(8, 8);
     TValue key, val;
-    for (int i = 0; i < 30; i++)
+    key.tt = AST_TNUMBER;
+    val.tt = AST_TNUMBER;
+    key.value.n = 3;
+    val.value.n = 2;
+    astTable_PushVal(tb, key, val);
+    TValue key1 = key;
+    for (int i = 0; i < 3; i++)
     {
-        key.tt = AST_TSTRING;
-        val.tt = AST_TSTRING;
-        char *a = (char *)malloc(sizeof(char));
-        sprintf(a, "%d", i);
-        ast_String *st = astString_NewLStr(L, a, strlen(a));
-        key.value.gc = (GCObject *)st;
-        val.value.gc = (GCObject *)st;
-        astMap_PushKeyVal(map, key, val);
-        printf("%d %d\n", map->size, map->Mnum);
+        key.tt = AST_TNUMBER;
+        key.value.n = i;
+        val.tt = AST_TINTEGER;
+        val.value.i = i + 1;
+        astTable_PushVal(tb, key, val);
+        printf("%d %d %d %d\n", tb->arrtop, tb->arrSize, tb->HashMap->Mnum, tb->HashMap->size);
     }
-    TValue tt = astMap_GetValFromKey(map, key);
-    printf("%s", getstr(&tt.value.gc->ts));
-    printf("\n%d", L->G_S->stringtable.size);
+    val.tt = AST_TNIL;
+    astTable_PushVal(tb, key, val);
 }

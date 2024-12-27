@@ -75,8 +75,9 @@ typedef struct ast_Table
     ast_Map *HashMap;
     TValue *arr;
     ast_Integer arrSize;
+    ast_Integer arrtop;
 } ast_Table;
-
+#define TableArrLen(o) ((o)->arrtop)
 typedef union GCObject
 {
     GCHeader gch;

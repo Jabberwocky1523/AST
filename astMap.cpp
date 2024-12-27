@@ -15,6 +15,10 @@ ast_Map *astMap_Init(ast_Integer size)
 }
 ast_MapNode *astMap_FindNodeFromKey(ast_Map *map, TValue key)
 {
+    if (map == nullptr)
+    {
+        return nullptr;
+    }
     ast_Hash h = ast_GetTValueHash(key);
     ast_MapNode *cur = map->map[lmod(h, map->size)];
     while (cur)
@@ -25,7 +29,7 @@ ast_MapNode *astMap_FindNodeFromKey(ast_Map *map, TValue key)
         }
         cur = cur->next;
     }
-    return NULL;
+    return nullptr;
 }
 ast_Bool astMap_Resize(ast_Map *map, ast_Integer newsize)
 {
@@ -89,6 +93,10 @@ TValue astMap_GetValFromKey(ast_Map *map, TValue key)
 }
 ast_Bool astMap_RemoveFromKey(ast_Map *map, TValue key)
 {
+    if (map == nullptr)
+    {
+        return FALSE;
+    }
     ast_Hash h = ast_GetTValueHash(key);
     ast_MapNode *cur = map->map[lmod(h, map->size)];
     ast_MapNode *pre = cur;
@@ -114,6 +122,7 @@ ast_Bool astMap_RemoveFromKey(ast_Map *map, TValue key)
         pre->next = cur->next;
     }
     cur->next = nullptr;
+    map->Mnum--;
     free(cur);
     return TRUE;
 }

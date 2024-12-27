@@ -3,9 +3,14 @@
 #include "ast.h"
 #include "astString.h"
 #include "astState.h"
+#include "astStack.h"
 ast_Bool ast_TValueCmp(TValue val1, TValue val2)
 {
-    if (val1.tt != val2.tt)
+    if (IsNum(val1) && IsNum(val2))
+    {
+        return (ast_Bool)(ast_ConvertToNumber(val1) == ast_ConvertToNumber(val2));
+    }
+    if ((val1.tt != val2.tt))
     {
         return FALSE;
     }
@@ -13,10 +18,6 @@ ast_Bool ast_TValueCmp(TValue val1, TValue val2)
     {
     case AST_TBOOLEAN:
         return (ast_Bool)(val1.value.bo == val2.value.bo);
-    case AST_TINTEGER:
-        return (ast_Bool)(val1.value.i == val2.value.i);
-    case AST_TNUMBER:
-        return (ast_Bool)(val1.value.n == val2.value.n);
     case AST_TSTRING:
     {
         return (ast_Bool)(val1.value.gc == val2.value.gc);
@@ -40,7 +41,7 @@ ast_Integer ast_GetTValueHash(TValue val1)
     case AST_TINTEGER:
         return hash<long long>()(val1.value.i);
     case AST_TNUMBER:
-        return hash<double>()(val1.value.i);
+        return hash<long long>()((ast_Integer)val1.value.n);
     case AST_TSTRING:
     case AST_TTABLE:
         return hash<GCObject *>()(val1.value.gc);

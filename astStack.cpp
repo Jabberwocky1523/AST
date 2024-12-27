@@ -243,6 +243,7 @@ ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
     {
     case AST_TBOOLEAN:
     {
+        *flag = 1;
         switch (val.value.bo)
         {
         case FALSE:
@@ -258,15 +259,17 @@ ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
     }
     case AST_TSTRING:
     {
-        ast_Integer tmp = 0;
+        ast_Number tmp = 0;
         if (!ast_IsNumeric(getstr(&val.value.gc->ts)))
         {
             PANIC("字符串包含非数字");
         }
-        assert(tmp = (ast_Integer)atoll(getstr(&val.value.gc->ts)));
+        assert(tmp = (ast_Number)atof(getstr(&val.value.gc->ts)));
+        tmp = ast_DoubleToInteger(tmp, flag);
         return (ast_Integer)tmp;
     }
     case AST_TINTEGER:
+        *flag = 1;
         return val.value.i;
     default:
         PANIC("该类型无法转换为Integer");
@@ -426,6 +429,9 @@ ast_Bool ast_PrintTValue(TValue &val)
     case AST_TINTEGER:
         printf("[%lld] ", val.value.i);
         return TRUE;
+    case AST_TTABLE:
+        printf("[table] ");
+        return TRUE;
     default:
         return FALSE;
     }
@@ -456,8 +462,14 @@ ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val)
         ast_StackPush(PStack(L), val.data.tag_integer, AST_TINTEGER);
         return TRUE;
     case CONSTANT_TAG_STR:
-        ast_StackPush(L, val.data.tag_str->data_, AST_TSTRING);
+    {
+        char buffer[1024] = {0};
+        memcpy(buffer, astBufferData(val.data.tag_str), astBufferDataSize(val.data.tag_str));
+        char *a = (char *)malloc(sizeof(char));
+        sprintf(a, "%s", buffer);
+        ast_StackPush(L, a, AST_TSTRING);
         return TRUE;
     }
-    return FALSE;
+        return FALSE;
+    }
 }

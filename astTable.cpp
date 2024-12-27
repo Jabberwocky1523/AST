@@ -11,20 +11,36 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
         tb->arrSize = arrSize;
         tb->arr = arr;
     }
-    else if (MapSize > 0)
+    if (MapSize > 0)
     {
         ast_Map *map = astMap_Init(MapSize);
         tb->HashMap = map;
     }
     tb->next = NULL;
     tb->tt = AST_TTABLE;
+    tb->arrtop = 0;
     return tb;
+}
+ast_Bool astTableArr_Push(ast_Table *tb, TValue val)
+{
+    if (tb->arrtop == tb->arrSize)
+    {
+        TValue *NewArr = (TValue *)realloc(tb->arr, sizeof(TValue) * (tb->arrSize * 2));
+        if (NewArr == nullptr)
+        {
+            PANIC("栈已满");
+        }
+        tb->arr = NewArr;
+        tb->arrSize *= 2;
+    }
+    tb->arr[tb->arrtop++] = val;
+    return TRUE;
 }
 TValue astTable_GetVal(ast_Table *tb, TValue key)
 {
     ast_Integer flag = 0;
     ast_Integer res = ast_ConvertToIntegerAndGetFlag(key, &flag);
-    if (flag && res >= 0 && res < tb->arrSize && (IsNum(key)))
+    if (flag && res >= 0 && res < TableArrLen(tb) && (IsNum(key)))
     {
         return tb->arr[res];
     }
@@ -32,7 +48,8 @@ TValue astTable_GetVal(ast_Table *tb, TValue key)
 }
 ast_Bool _astTable_ShrinkTableNil(ast_Table *tb)
 {
-    int i = tb->arrSize - 1;
+    printf("do!");
+    int i = TableArrLen(tb) - 1;
     for (; i >= 0; i--)
     {
         if (tb[i].tt != AST_TNIL)
@@ -40,31 +57,29 @@ ast_Bool _astTable_ShrinkTableNil(ast_Table *tb)
             break;
         }
     }
-    TValue *NewArr = (TValue *)realloc(tb->arr, i + 1);
-    if (NewArr != nullptr)
-    {
-        tb->arr = NewArr;
-    }
-    tb->arrSize = i + 1;
+    tb->arrtop = i + 1;
     return TRUE;
 }
 ast_Bool _astTable_Expand(ast_Table *tb)
 {
     int sum = 0;
-    for (int i = tb->arrSize; true; i++)
+    for (int i = TableArrLen(tb); true; i++)
     {
         TValue tt;
         tt.tt = AST_TINTEGER;
         tt.value.i = (ast_Integer)i;
         if (!astMap_FindNodeFromKey(tb->HashMap, tt))
         {
-            break;
+            return FALSE;
         }
+        TValue tmp = tt;
         tt = astMap_GetValFromKey(tb->HashMap, tt);
-        TValue *NewTable = (TValue *)realloc(tb->arr, i + 1);
+        astMap_RemoveFromKey(tb->HashMap, tmp);
+        astTableArr_Push(tb, tt);
     }
+    return TRUE;
 }
-TValue astTable_PutVal(ast_Table *tb, TValue key, TValue val)
+ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
 {
     ast_Integer num = 0;
     if (key.tt == AST_TNIL)
@@ -75,24 +90,117 @@ TValue astTable_PutVal(ast_Table *tb, TValue key, TValue val)
     {
         ast_Integer flag = 0;
         num = ast_ConvertToIntegerAndGetFlag(key, &flag);
-        if (!flag)
+        if (!flag && key.tt == AST_TNUMBER)
         {
             PANIC("无法转换为整数的浮点数无法作为key");
         }
-        if (num >= 0 && num < tb->arrSize)
+        if (num >= 0 && num < TableArrLen(tb))
         {
             tb->arr[num] = val;
+            if (num == TableArrLen(tb) - 1 && val.tt == AST_TNIL)
+            {
+                _astTable_ShrinkTableNil(tb);
+            }
+            return TRUE;
         }
-        else if (num == tb->arrSize - 1 && val.tt == AST_TNIL)
+        else if (num == TableArrLen(tb))
         {
             if (tb->HashMap != nullptr)
             {
                 astMap_RemoveFromKey(tb->HashMap, key);
             }
-            _astTable_ShrinkTableNil(tb);
-        }
-        else if (num == tb->arrSize)
-        {
+            if (val.tt != AST_TNIL)
+            {
+                astTableArr_Push(tb, val);
+                _astTable_Expand(tb);
+            }
+            return TRUE;
         }
     }
+    if (val.tt != AST_TNIL)
+    {
+        if (tb->HashMap == nullptr)
+        {
+            tb->HashMap = astMap_Init(8);
+        }
+        astMap_PushKeyVal(tb->HashMap, key, val);
+    }
+    else
+    {
+        return astMap_RemoveFromKey(tb->HashMap, key);
+    }
+    return TRUE;
+}
+ast_Bool ast_CreateTableAndPush(ast_State *L, ast_Integer arrSize, ast_Integer mapsize)
+{
+    ast_Table *tb = astTable_Init(arrSize, mapsize);
+    TValue tt;
+    tt.value.gc = (GCObject *)tb;
+    tt.tt = AST_TTABLE;
+    ast_StackPush(PStack(L), tt);
+    return TRUE;
+}
+ast_Bool ast_NewTable(ast_State *L)
+{
+    return ast_CreateTableAndPush(L, 0, 0);
+}
+// 将表中key对应val压入stack
+ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key)
+{
+    if (tb.tt != AST_TTABLE)
+    {
+        PANIC("取到的不是表");
+    }
+    TValue val = astTable_GetVal(&tb.value.gc->tb, key);
+    ast_StackPush(PStack(L), val);
+    return val.tt;
+}
+// 从idx获取表，根据栈顶值从表中取值，然后将值push到栈顶
+ast_Type ast_GetTableFromIdx(ast_State *L, ast_Integer idx)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    TValue key = astack_Pop(PStack(L));
+    return _ast_GetTable(L, tb, key);
+}
+// 与ast_GetTableFromIdx类似，值变为自定义char *(HashMap)
+ast_Type ast_GetTableFromString(ast_State *L, ast_Integer idx, TValue str)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    return _ast_GetTable(L, tb, str);
+}
+// 与ast_GetTableFromIdx类似，值变为自定义数值（数组）
+ast_Type ast_GetTableFromNum(ast_State *L, ast_Integer idx, TValue num)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    return _ast_GetTable(L, tb, num);
+}
+ast_Bool _ast_SetTable(TValue tb, TValue key, TValue val)
+{
+    if (tb.tt != AST_TTABLE)
+    {
+        PANIC("取到的不是表");
+    }
+    return astTable_PushVal(&tb.value.gc->tb, key, val);
+}
+// 栈顶弹出两个值分别为val,key(先v后k) 然后传给idx位置的表
+ast_Bool ast_SetTableFromIdx(ast_State *L, ast_Integer idx)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    TValue val = ast_StackPop(PStack(L));
+    TValue key = ast_StackPop(PStack(L));
+    return _ast_SetTable(tb, key, val);
+}
+// idx确定表位置，val由stackpop,指定str类型的key
+ast_Bool ast_SetTableFromString(ast_State *L, ast_Integer idx, TValue StrKey)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    TValue val = ast_StackPop(PStack(L));
+    return _ast_SetTable(tb, StrKey, val);
+}
+// idx确定表位置，val由stackpop,指定num类型的key
+ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    TValue val = ast_StackPop(PStack(L));
+    return _ast_SetTable(tb, NumKey, val);
 }

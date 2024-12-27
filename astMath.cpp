@@ -453,6 +453,12 @@ ast_Bool ast_Len(ast_State *L, int idx)
         ast_StackPush(PStack(L), &len, AST_TINTEGER);
         return TRUE;
     }
+    case AST_TTABLE:
+    {
+        ast_Integer len = TableArrLen(&tmp.value.gc->tb);
+        ast_StackPush(PStack(L), &len, AST_TINTEGER);
+        return TRUE;
+    }
     default:
         PANIC("长度计算错误，不是字符串或表");
     }
@@ -491,4 +497,34 @@ ast_Bool ast_Concat(ast_State *L, int n)
         }
     }
     return TRUE;
+}
+int IntToFb(int x)
+{
+    int e = 0;
+    if (x < 8)
+    {
+        return x;
+    }
+    for (; x >= (8 << 4);)
+    {
+        x = (x + 0xf) >> 4;
+        e += 4;
+    }
+    for (; x >= (8 << 1);)
+    {
+        x = (x + 1) >> 1;
+        e++;
+    }
+    return ((e + 1) << 3) | (x - 8);
+}
+int FbToInt(int x)
+{
+    if (x < 8)
+    {
+        return x;
+    }
+    else
+    {
+        return ((x & 7) + 8) << uint((x >> 3) - 1);
+    }
 }

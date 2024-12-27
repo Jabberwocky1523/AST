@@ -37,4 +37,6 @@ ast_Bool ast_Arith(ast_State *L, int op);
 ast_Bool ast_Compare(ast_State *L, int idx1, int idx2, int op);
 ast_Bool ast_Len(ast_State *L, int idx);
 ast_Bool ast_Concat(ast_State *L, int n);
+int IntToFb(int x);
+int FbToInt(int x);
 #endif
