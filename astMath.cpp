@@ -132,7 +132,12 @@ ast_Number ast_NumberMod(ast_Number a, ast_Number b)
 }
 ast_Number ast_NumberDiv(ast_Number a, ast_Number b)
 {
+#ifdef __APPLE__
+    return a / b;
+#endif
+#ifdef __linux__
     return ddivl(a, b);
+#endif
 }
 ast_Number ast_NumberPow(ast_Number a, ast_Number b)
 {

@@ -26,9 +26,43 @@ TValue astTable_GetVal(ast_Table *tb, TValue key)
     ast_Integer res = ast_ConvertToIntegerAndGetFlag(key, &flag);
     if (flag && res >= 0 && res < tb->arrSize && (IsNum(key)))
     {
-        return tb->arr[flag];
+        return tb->arr[res];
     }
     return astMap_GetValFromKey(tb->HashMap, key);
+}
+ast_Bool _astTable_ShrinkTableNil(ast_Table *tb)
+{
+    int i = tb->arrSize - 1;
+    for (; i >= 0; i--)
+    {
+        if (tb[i].tt != AST_TNIL)
+        {
+            break;
+        }
+    }
+    TValue *NewArr = (TValue *)realloc(tb->arr, i + 1);
+    if (NewArr != nullptr)
+    {
+        tb->arr = NewArr;
+    }
+    tb->arrSize = i + 1;
+    return TRUE;
+}
+ast_Bool _astTable_Expand(ast_Table *tb)
+{
+    int sum = 0;
+    for (int i = tb->arrSize; true; i++)
+    {
+        TValue tt;
+        tt.tt = AST_TINTEGER;
+        tt.value.i = (ast_Integer)i;
+        if (!astMap_FindNodeFromKey(tb->HashMap, tt))
+        {
+            break;
+        }
+        tt = astMap_GetValFromKey(tb->HashMap, tt);
+        TValue *NewTable = (TValue *)realloc(tb->arr, i + 1);
+    }
 }
 TValue astTable_PutVal(ast_Table *tb, TValue key, TValue val)
 {
@@ -51,8 +85,14 @@ TValue astTable_PutVal(ast_Table *tb, TValue key, TValue val)
         }
         else if (num == tb->arrSize - 1 && val.tt == AST_TNIL)
         {
-
+            if (tb->HashMap != nullptr)
+            {
+                astMap_RemoveFromKey(tb->HashMap, key);
+            }
+            _astTable_ShrinkTableNil(tb);
         }
-        
+        else if (num == tb->arrSize)
+        {
+        }
     }
 }

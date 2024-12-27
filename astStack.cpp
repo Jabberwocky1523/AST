@@ -17,7 +17,12 @@ ast_Bool ast_StackCheck(ast_Stack *L, int n)
     int free = L->size - L->top;
     if (free < n)
     {
-        realloc(L->Value, (L->size + n) * sizeof(TValue));
+
+        TValue *newP = (TValue *)realloc(L->Value, (L->size + n) * sizeof(TValue));
+        if (newP != nullptr)
+        {
+            L->Value = newP;
+        }
         L->size = L->size + n;
     }
     return TRUE;
