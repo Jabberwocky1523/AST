@@ -7,6 +7,13 @@
 #include "ast.h"
 #include "astObject.h"
 #include "astBinaryChunk.h"
+#define Int2Ob(o) ast_ObjectToTValue(NULL, (void *)&o, AST_TINTEGER, 0)
+#define Dou2Ob(o) ast_ObjectToTValue(NULL, (void *)&o, AST_TNUMBE, 0)
+#define Char2Ob(L, o) ast_ObjectToTValue(L, (void *)o, AST_TSTRING, 0)
+#define Str2Ob(L, o) ast_ObjectToTValue(L, (void *)o, AST_TSTRING, 1)
+#define Nil2Ob() ast_ObjectToTValue(nullptr, nullptr, AST_TNIL, 0)
+#define Bool2Ob(o) ast_ObjectToTValue(nullptr, (void *)&o, AST_TBOOLEAN, 0)
+#define Tb2Ob(o) ast_ObjectToTValue(nullptr, (void *)o, AST_TTABLE, 0)
 typedef size_t ast_Mem;
 typedef struct StringTable
 {
@@ -36,5 +43,5 @@ typedef struct ast_State
 // 全局定义
 
 ast_Bool ast_Init(ast_State *L, global_State *G_S, Prototype *proto, int pc);
-
+TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag);
 #endif

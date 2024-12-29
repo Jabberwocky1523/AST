@@ -1,5 +1,7 @@
 #include "astMap.h"
 #include "astObject.h"
+#include "log.h"
+#include "astStack.h"
 ast_Map *astMap_Init(ast_Integer size)
 {
     ast_Map *map = (ast_Map *)malloc(sizeof(ast_Map));
@@ -66,6 +68,10 @@ ast_Bool astMap_PushKeyVal(ast_Map *map, TValue key, TValue val)
     {
         return FALSE;
     }
+    else if (map == NULL)
+    {
+        return FALSE;
+    }
     ast_Hash h = ast_GetTValueHash(key);
     ast_MapNode *newnode = (ast_MapNode *)malloc(sizeof(ast_MapNode));
     newnode->key = key;
@@ -124,5 +130,26 @@ ast_Bool astMap_RemoveFromKey(ast_Map *map, TValue key)
     cur->next = nullptr;
     map->Mnum--;
     free(cur);
+    return TRUE;
+}
+ast_Bool ast_PrintMap(ast_Map *map)
+{
+    if (map == nullptr)
+    {
+        return FALSE;
+    }
+    printf("Map: ");
+    for (int i = 0; i < map->size; i++)
+    {
+        ast_MapNode *cur = map->map[i];
+        while (cur)
+        {
+            ast_PrintTValue(cur->key);
+            printf(":");
+            ast_PrintTValue(cur->val);
+            cur = cur->next;
+        }
+    }
+    printf("\n");
     return TRUE;
 }

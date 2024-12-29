@@ -20,4 +20,5 @@ ast_Bool ast_SetTableFromIdx(ast_State *L, ast_Integer idx);
 ast_Bool ast_SetTableFromString(ast_State *L, ast_Integer idx, TValue StrKey);
 // idx确定表位置，val由stackpop,指定num类型的key
 ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey);
+ast_Bool ast_PrintTable(ast_Table tb);
 #endif

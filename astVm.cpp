@@ -2,6 +2,7 @@
 #include "astMath.h"
 #include "astStack.h"
 #include "astOpcode.h"
+#include "log.h"
 #include "astTable.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
@@ -324,6 +325,7 @@ ast_Bool _ast_SetTable(ast_State *L, Instruction i)
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
     ast_SetTableFromIdx(L, n.a);
+    ast_PrintTable(L->stack->Value->value.gc->tb);
     return TRUE;
 }
 ////R(A)[(C - 1) * FPF + i] = R(A + i) 1 <= i <= B 给数组赋值
@@ -346,11 +348,13 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
     for (int i = 1; i <= n.b; i++)
     {
         idx++;
+        tt.value.i = idx;
         TValue tmp = ast_StackGetTValue(PStack(L), n.a + i);
         ast_StackPush(PStack(L), tmp);
-        tt.value.i = idx;
         ast_SetTableFromNum(L, n.a, tt);
     }
+    ast_Table *tb = &L->stack[n.a].Value->value.gc->tb;
+    ast_PrintTable(*tb);
     return TRUE;
 }
 // END

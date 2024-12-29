@@ -1,10 +1,14 @@
 #include "astTable.h"
 #include "astMap.h"
+#include "astMath.h"
 #include "astStack.h"
 #include "astString.h"
+#include "log.h"
 ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
 {
     ast_Table *tb = (ast_Table *)malloc(sizeof(ast_Table));
+    tb->HashMap = nullptr;
+    tb->arr = nullptr;
     if (arrSize > 0)
     {
         TValue *arr = (TValue *)malloc(sizeof(TValue) * arrSize);
@@ -39,10 +43,14 @@ ast_Bool astTableArr_Push(ast_Table *tb, TValue val)
 TValue astTable_GetVal(ast_Table *tb, TValue key)
 {
     ast_Integer flag = 0;
-    ast_Integer res = ast_ConvertToIntegerAndGetFlag(key, &flag);
-    if (flag && res >= 0 && res < TableArrLen(tb) && (IsNum(key)))
+    if (IsNum(key))
     {
-        return tb->arr[res];
+        ast_Integer res = ast_ConvertToIntegerAndGetFlag(key, &flag);
+        res--;
+        if (flag && res >= 0 && res < TableArrLen(tb))
+        {
+            return tb->arr[res];
+        }
     }
     return astMap_GetValFromKey(tb->HashMap, key);
 }
@@ -89,7 +97,8 @@ ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
     else if (IsNum(key))
     {
         ast_Integer flag = 0;
-        num = ast_ConvertToIntegerAndGetFlag(key, &flag);
+        num = ast_ConvertToInteger(key);
+        num--;
         if (!flag && key.tt == AST_TNUMBER)
         {
             PANIC("无法转换为整数的浮点数无法作为key");
@@ -180,7 +189,7 @@ ast_Bool _ast_SetTable(TValue tb, TValue key, TValue val)
     {
         PANIC("取到的不是表");
     }
-    return astTable_PushVal(&tb.value.gc->tb, key, val);
+    return astTable_PushVal(&(tb.value.gc->tb), key, val);
 }
 // 栈顶弹出两个值分别为val,key(先v后k) 然后传给idx位置的表
 ast_Bool ast_SetTableFromIdx(ast_State *L, ast_Integer idx)
@@ -203,4 +212,24 @@ ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey)
     TValue tb = ast_StackGetTValue(PStack(L), idx);
     TValue val = ast_StackPop(PStack(L));
     return _ast_SetTable(tb, NumKey, val);
+}
+ast_Bool ast_PrintTableArr(ast_Table tb)
+{
+    if (tb.arr == nullptr)
+    {
+        return FALSE;
+    }
+    printf("Arr: ");
+    for (int i = 0; i < tb.arrtop; i++)
+    {
+        ast_PrintTValue(tb.arr[i]);
+    }
+    printf("\n");
+    return TRUE;
+}
+ast_Bool ast_PrintTable(ast_Table tb)
+{
+    ast_PrintTableArr(tb);
+    ast_PrintMap(tb.HashMap);
+    return TRUE;
 }

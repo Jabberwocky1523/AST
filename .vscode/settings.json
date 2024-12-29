@@ -34,7 +34,10 @@
         "optional": "cpp",
         "system_error": "cpp",
         "text_encoding": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "stat.h": "c",
+        "cmath": "cpp",
+        "complex": "cpp"
     },
     "files.exclude": {
         "**/*.rpyc": true,

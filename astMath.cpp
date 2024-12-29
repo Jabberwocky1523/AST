@@ -7,6 +7,7 @@
 #include "astString.h"
 #include "string.h"
 #include "astOpcode.h"
+#include "log.h"
 ast_Operator g_Arith_operators[14] = {
     {ast_IntegerAdd, ast_NumberAdd},
     {ast_IntegerSub, ast_NumberSub},
