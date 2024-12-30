@@ -10,6 +10,10 @@ ast_Stack *ast_NewStack(int size)
     L->top = 0;
     L->size = size;
     L->Value = Value;
+    L->pc = 0;
+    L->closure = nullptr;
+    L->prev = nullptr;
+    L->varargs = nullptr;
     return L;
 }
 ast_Bool ast_StackCheck(ast_Stack *L, int n)
@@ -431,6 +435,9 @@ ast_Bool ast_PrintTValue(TValue &val)
         return TRUE;
     case AST_TTABLE:
         printf("[table] ");
+        return TRUE;
+    case AST_TFUNCTION:
+        printf("[FUNCTION] ");
         return TRUE;
     default:
         return FALSE;

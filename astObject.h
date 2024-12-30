@@ -7,6 +7,7 @@
 #ifndef AST_OBJECT_H
 #define AST_OBJECT_H
 #include <stdarg.h>
+#include "astBinaryChunk.h"
 #include "ast.h"
 #define cast(t, exp) ((t)(exp)) // 类型转换
 #define lmod(s, size) cast(int, (s) & ((size) - 1))
@@ -83,6 +84,7 @@ typedef union GCObject
     GCHeader gch;
     ast_String ts;
     ast_Table tb;
+    Prototype cl;
 } GCObject;
 // 栈作为虚拟寄存器
 typedef struct ast_Stack
@@ -90,6 +92,10 @@ typedef struct ast_Stack
     TValue *Value;
     int top;
     int size;
+    int pc;
+    TValue *closure;
+    TValue *varargs;
+    ast_Stack *prev;
 } ast_Stack;
 // 判断数据对象是否可回收
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)
@@ -109,4 +115,5 @@ typedef struct ast_Stack
     }
 ast_Bool ast_TValueCmp(TValue val1, TValue val2);
 ast_Integer ast_GetTValueHash(TValue val1);
+TValue *ast_NewClosure(int size);
 #endif

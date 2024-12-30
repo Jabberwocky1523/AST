@@ -6,22 +6,22 @@
 #include "astTable.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
-    return L->pc;
+    return L->stack->pc;
 }
 ast_Bool ast_AddPc(ast_State *L, ast_Integer n)
 {
-    L->pc += n;
+    L->stack->pc += n;
     return TRUE;
 }
 ast_Integer ast_Fetch(ast_State *L)
 {
-    ast_Integer i = L->proto->Code[L->pc];
-    L->pc++;
+    ast_Integer i = L->stack->closure->value.gc->cl.Code[L->stack->pc];
+    L->stack->pc++;
     return i;
 }
 ast_Bool ast_GetConst(ast_State *L, int idx)
 {
-    ConstantType c = L->proto->constants[idx];
+    ConstantType c = L->stack->closure->value.gc->cl.constants[idx];
     ast_StackPushConstant(L, c);
     return TRUE;
 }
@@ -77,7 +77,7 @@ ast_Bool _ast_LoadBool(ast_State *L, Instruction i)
     astack_ReplaceToIdx(PStack(L), n.a);
     if (n.c != 0)
     {
-        L->pc++;
+        L->stack->pc++;
     }
     return TRUE;
 }
@@ -344,6 +344,13 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
     int idx = (n.c * FPF);
     TValue tt;
     tt.tt = AST_TINTEGER;
+    int flag = 0;
+    if (n.b == 0)
+    {
+        flag = 1;
+        n.b = ast_ConvertToInteger(ast_StackGetTValue(PStack(L), -1)) - n.a - 1;
+        astack_Pop(PStack(L));
+    }
 
     for (int i = 1; i <= n.b; i++)
     {
@@ -353,8 +360,138 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
         ast_StackPush(PStack(L), tmp);
         ast_SetTableFromNum(L, n.a, tt);
     }
+    if (flag)
+    {
+        for (int j = ast_RegCount(L); j < astack_GetTop(PStack(L)); j++)
+        {
+            idx++;
+            tt.value.i = idx;
+            TValue tmp = ast_StackGetTValue(PStack(L), n.a + i);
+            ast_StackPush(PStack(L), tmp);
+            ast_SetTableFromNum(L, n.a, tt);
+        }
+        ast_StackSetTop(PStack(L), ast_RegCount(L));
+    }
     ast_Table *tb = &L->stack[n.a].Value->value.gc->tb;
     ast_PrintTable(*tb);
+    return TRUE;
+}
+// END
+
+// FUNCTION
+////R(A) = clousure(KPROTO[Bx])
+ast_Bool _ast_Clousure(ast_State *L, Instruction i)
+{
+    TABx n = InstructionTABx(i);
+    ast_LoadProto(L, n.bx);
+    astack_ReplaceToIdx(PStack(L), n.a);
+    return TRUE;
+}
+ast_Bool _FixStack(ast_State *L, int a)
+{
+    TValue num = ast_StackPop(PStack(L));
+    ast_Integer n = ast_ConvertToInteger(num);
+    astack_CheckStack(PStack(L), n - a);
+    for (int i = a; i < n; i++)
+    {
+        TValue tt = ast_StackGetTValue(PStack(L), i);
+        ast_StackPush(PStack(L), tt);
+    }
+    ast_StackRotate(PStack(L), ast_RegCount(L), n - a);
+    return TRUE;
+}
+ast_Integer _PushFuncAndArgs(ast_State *L, int a, int b)
+{
+    if (b >= 1)
+    {
+        ast_StackCheck(PStack(L), b);
+        for (int i = a; i < a + b; i++)
+        {
+            TValue tt = ast_StackGetTValue(PStack(L), i);
+            ast_StackPush(PStack(L), tt);
+        }
+        return b - 1;
+    }
+    else
+    {
+        _FixStack(L, a);
+        return astack_GetTop(PStack(L)) - ast_RegCount(L);
+    }
+}
+ast_Bool _PopResults(ast_State *L, int a, int c)
+{
+    if (c == 1)
+    {
+        return TRUE;
+    }
+    else if (c > 1)
+    {
+        for (int i = a + c - 2; i >= a; a--)
+        {
+            astack_ReplaceToIdx(PStack(L), i);
+        }
+    }
+    else
+    {
+        ast_StackCheck(PStack(L), 1);
+        ast_StackPush(PStack(L), a, AST_TINTEGER);
+    }
+    return TRUE;
+}
+////R(A),.....R(A+C-2) = R(A)(R(A+1).....R(A+B-1))
+ast_Bool _ast_Call(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_Integer nArgs = _PushFuncAndArgs(L, n.a, n.b);
+    ast_Call(L, nArgs, n.c - 1);
+    _PopResults(L, n.a, n.c);
+    return TRUE;
+}
+////return R(A) ..... R(A + B - 2)
+ast_Bool _ast_Return(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    if (n.b == 1)
+    {
+        return TRUE;
+    }
+    else if (n.b > 1)
+    {
+        ast_StackCheck(PStack(L), n.b - 1);
+        for (int i = n.a; i <= n.a + n.b - 2; i++)
+        {
+            TValue tt = ast_StackGetTValue(PStack(L), i);
+            ast_StackPush(PStack(L), tt);
+        }
+    }
+    else
+    {
+        _FixStack(L, n.a);
+    }
+    return TRUE;
+}
+ast_Bool _ast_VarArg(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    if (n.b != 1)
+    {
+        ast_LoadVararg(L, n.b - 1);
+        _PopResults(L, n.a, n.b);
+    }
+    return TRUE;
+}
+ast_Bool _ast_TailCall(ast_State *L, Instruction i)
+{
+    return _ast_Call(L, i);
+}
+//// R(A + 1) = R(B) R(A) = R(B)[RK(C)]
+ast_Bool _ast_Self(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    astack_Copy(PStack(L), n.b, n.a + 1);
+    ast_GetRk(L, n.c);
+    ast_GetTableFromIdx(L, n.b);
+    astack_ReplaceToIdx(PStack(L), n.a);
     return TRUE;
 }
 // END
@@ -373,7 +510,7 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL"},
     {0, 0, OpArgK, OpArgK, IABC, "SETTABLE", _ast_SetTable},
     {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE", _ast_NewTable},
-    {0, 1, OpArgR, OpArgK, IABC, "SELF    "},
+    {0, 1, OpArgR, OpArgK, IABC, "SELF    ", _ast_Self},
     {0, 1, OpArgK, OpArgK, IABC, "ADD     ", _ast_Add_},
     {0, 1, OpArgK, OpArgK, IABC, "SUB     ", _ast_Sub_},
     {0, 1, OpArgK, OpArgK, IABC, "MUL     ", _ast_Mul_},
@@ -397,16 +534,16 @@ ast_OpCode g_ast_opcodes[47] = {
     {1, 0, OpArgK, OpArgK, IABC, "LE      ", _ast_Le_},
     {1, 0, OpArgN, OpArgU, IABC, "TEST    ", _ast_Test},
     {1, 1, OpArgR, OpArgU, IABC, "TESTSET ", _ast_TestSet},
-    {0, 1, OpArgU, OpArgU, IABC, "CALL    "},
-    {0, 1, OpArgU, OpArgU, IABC, "TAILCALL"},
-    {0, 0, OpArgU, OpArgN, IABC, "RETURN  "},
+    {0, 1, OpArgU, OpArgU, IABC, "CALL    ", _ast_Call},
+    {0, 1, OpArgU, OpArgU, IABC, "TAILCALL", _ast_Call},
+    {0, 0, OpArgU, OpArgN, IABC, "RETURN  ", _ast_Return},
     {0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP ", _ast_ForLoop},
     {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP ", _ast_ForPrep},
     {0, 0, OpArgN, OpArgU, IABC, "TFORCALL"},
     {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP"},
     {0, 0, OpArgU, OpArgU, IABC, "SETLIST ", _ast_SetList},
-    {0, 1, OpArgU, OpArgN, IABx, "CLOSURE "},
-    {0, 1, OpArgU, OpArgN, IABC, "VARARG  "},
+    {0, 1, OpArgU, OpArgN, IABx, "CLOSURE ", _ast_Clousure},
+    {0, 1, OpArgU, OpArgN, IABC, "VARARG  ", _ast_VarArg},
     {0, 0, OpArgU, OpArgU, IAx, "EXTRAARG"},
 };
 

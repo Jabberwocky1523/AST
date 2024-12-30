@@ -14,7 +14,7 @@ int main3(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
-    ast_Init(L, g_s, NULL, 0);
+    ast_Init(L, g_s);
     ast_String *a = astString_NewLStr(L, "123", 3);
     TValue tt = Str2Ob(L, a);
     char *b = "234";

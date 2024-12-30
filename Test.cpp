@@ -9,6 +9,7 @@
 #include "astUtils.h"
 #include "astMap.h"
 #include "astVm.h"
+#include "log.h"
 #include "astTable.h"
 int main(int argc, const char *const *argv)
 {
@@ -21,22 +22,9 @@ int main(int argc, const char *const *argv)
     Prototype *proto = astBinaryChunkUnDump(file_contont);
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
-    ast_Init(L, g_s, proto, 0);
-    astack_SetTop(PStack(L), proto->MaxStackSize);
+    ast_Init(L, g_s);
     PrintAst(proto);
-    while (1)
-    {
-        int pc = ast_GetPc(L);
-        Instruction ins = ast_Fetch(L);
-        if (InstructionOpcode(ins) != OP_RETURN)
-        {
-            ast_ExecuteOp(L, ins);
-            printf("[%d] %s", pc + 1, InstructionOpName(ins));
-            ast_PrintStack(PStack(L));
-        }
-        else
-        {
-            break;
-        }
-    }
+    ast_LoadChunk(L, file_contont, nullptr, 0);
+    ast_Call(L, 0, 0);
+    return 0;
 }

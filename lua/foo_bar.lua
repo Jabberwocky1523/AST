@@ -1,4 +1,5 @@
-function foo()
-    function bar() end
+local function max(a)
+    a = 1
 end
-local a = "1234"
+local a = 2
+max(a)

@@ -48,3 +48,11 @@ ast_Integer ast_GetTValueHash(TValue val1)
     }
     return 0;
 }
+TValue *ast_NewClosure(int size)
+{
+    TValue *tt;
+    tt->tt = AST_TFUNCTION;
+    Prototype *proto = (Prototype *)malloc(sizeof(Prototype) * size);
+    tt->value.gc = (GCObject *)proto;
+    return tt;
+}

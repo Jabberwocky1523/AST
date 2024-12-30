@@ -14,7 +14,7 @@ int main2(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
-    ast_Init(L, g_s, NULL, 0);
+    ast_Init(L, g_s);
     ast_Table *tb = astTable_Init(8, 8);
     TValue key, val;
     key.tt = AST_TNUMBER;

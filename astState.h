@@ -36,12 +36,17 @@ typedef struct ast_State
     GCCommonHeader;
     global_State *G_S;
     ast_Stack *stack;
-    Prototype *proto;
-    ast_Integer pc;
 } ast_State;
 
 // 全局定义
 
-ast_Bool ast_Init(ast_State *L, global_State *G_S, Prototype *proto, int pc);
+ast_Bool ast_Init(ast_State *L, global_State *G_S);
 TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag);
+ast_Bool ast_PushStack(ast_State *L, ast_Stack *stack);
+ast_Stack *ast_PopStack(ast_State *L);
+ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, ast_String *chunkname, int mode);
+ast_Integer ast_RegCount(ast_State *L);
+ast_Bool ast_LoadVararg(ast_State *L, int n);
+ast_Bool ast_LoadProto(ast_State *L, int idx);
+ast_Bool ast_Call(ast_State *L, int nArgs, int nResults);
 #endif
