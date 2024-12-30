@@ -118,7 +118,7 @@ TValue *ast_PopN(ast_Stack *L, int size)
 }
 ast_Bool ast_PushN(ast_Stack *L, TValue *vals, int num)
 {
-    for (int i = 1; i <= num; i++)
+    for (int i = 0; i < num; i++)
     {
         ast_StackPush(L, vals[i]);
     }
@@ -132,6 +132,7 @@ ast_Bool ast_RunAstClosure(ast_State *L)
         Instruction ins = ast_Fetch(L);
         if (InstructionOpcode(ins) != OP_RETURN)
         {
+
             ast_ExecuteOp(L, ins);
             printf("[%d] %s", pc + 1, InstructionOpName(ins));
             ast_PrintStack(PStack(L));
@@ -150,13 +151,8 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     int IsVarArg = clousure->value.gc->cl.IsVararg == 1;
     ast_Stack *newStack = ast_NewStack(nRegs + 20);
     newStack->closure = clousure;
-    TValue *vals = ast_PopN(PStack(L), nArgs + 1);
-    for (int i = 0; i < nArgs + 1; i++)
-    {
-        ast_PrintTValue(vals[i]);
-    }
-    printf("\n");
-    ast_PrintStack(PStack(L));
+    TValue *vals = ast_PopN(PStack(L), nArgs);
+    ast_PopN(PStack(L), 1);
     ast_PushN(newStack, vals, nParam);
     newStack->top = nRegs;
     if (nArgs > nParam && IsVarArg)
@@ -172,7 +168,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     ast_PopStack(L);
     if (nResults != 0)
     {
-        TValue *results = ast_PopN(newStack, newStack->top - nRegs);
+        TValue *results = ast_PopN(newStack, newStack->top - nRegs + 1);
         ast_StackCheck(PStack(L), nResults);
         ast_PushN(PStack(L), results, nResults);
     }

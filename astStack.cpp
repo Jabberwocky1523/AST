@@ -3,6 +3,7 @@
 #include "astString.h"
 #include "astMath.h"
 #include "string.h"
+#include "log.h"
 ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
@@ -87,7 +88,7 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
     int absIdx = ast_StackAbsIndex(L, idx);
     if (absIdx >= 0 && absIdx < L->top)
     {
-        L->Value[idx] = value;
+        L->Value[absIdx] = value;
         return TRUE;
     }
     PANIC("无效的地址");

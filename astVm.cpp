@@ -426,7 +426,7 @@ ast_Bool _PopResults(ast_State *L, int a, int c)
     }
     else if (c > 1)
     {
-        for (int i = a + c - 2; i >= a; a--)
+        for (int i = a + c - 2; i >= a; i--)
         {
             astack_ReplaceToIdx(PStack(L), i);
         }
