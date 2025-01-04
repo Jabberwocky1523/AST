@@ -8,6 +8,10 @@ ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
     TValue *Value = (TValue *)malloc(size * sizeof(TValue));
+    for (int i = 0; i < size; i++)
+    {
+        Value[i].tt = AST_TNIL;
+    }
     L->top = 0;
     L->size = size;
     L->Value = Value;
@@ -178,6 +182,8 @@ ast_Number ast_ConvertToNumber(TValue val)
 {
     switch (val.tt)
     {
+    case AST_TNIL:
+        return 0;
     case AST_TBOOLEAN:
     {
         switch (val.value.bo)
@@ -210,6 +216,8 @@ ast_Integer ast_ConvertToInteger(TValue val)
 {
     switch (val.tt)
     {
+    case AST_TNIL:
+        return 0;
     case AST_TBOOLEAN:
     {
         switch (val.value.bo)

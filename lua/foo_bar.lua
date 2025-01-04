@@ -1,5 +1,7 @@
-local function test(a, b)
+local function sub(a, b)
+    return a - b
 end
-local a = 100
-local b = 200
-test(a, b)
+local function add(a, b, c)
+    return a + b + c
+end
+local b = add(100, 200, sub(300, 100))

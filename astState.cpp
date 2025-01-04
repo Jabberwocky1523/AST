@@ -152,6 +152,21 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     ast_Stack *newStack = ast_NewStack(nRegs + 20);
     newStack->closure = clousure;
     TValue *vals = ast_PopN(PStack(L), nArgs);
+    if (nParam > nArgs)
+    {
+        TValue *P = (TValue *)realloc(vals, sizeof(TValue) * nParam);
+        if (P != nullptr)
+        {
+            vals = P;
+        }
+        P = nullptr;
+        free(P);
+        for (int i = nArgs; i < nParam; i++)
+        {
+            TValue tt = Nil2Ob();
+            vals[i] = tt;
+        }
+    }
     ast_PopN(PStack(L), 1);
     ast_PushN(newStack, vals, nParam);
     newStack->top = nRegs;
@@ -168,7 +183,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     ast_PopStack(L);
     if (nResults == -1)
     {
-        nResults = newStack->top - nArgs;
+        nResults = newStack->top - nParam;
     }
     if (nResults != 0)
     {
