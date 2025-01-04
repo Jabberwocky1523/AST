@@ -404,18 +404,18 @@ ast_Integer _PushFuncAndArgs(ast_State *L, int a, int b)
 {
     if (b >= 1)
     {
-        ast_StackCheck(PStack(L), b);
-        for (int i = a; i < a + b; i++)
-        {
-            TValue tt = ast_StackGetTValue(PStack(L), i);
-            ast_StackPush(PStack(L), tt);
-        }
+        // ast_StackCheck(PStack(L), b);
+        // for (int i = a; i < a + b; i++)
+        // {
+        //     TValue tt = ast_StackGetTValue(PStack(L), i);
+        //     ast_StackPush(PStack(L), tt);
+        // }
         return b - 1;
     }
     else
     {
-        _FixStack(L, a);
-        return astack_GetTop(PStack(L)) - ast_RegCount(L);
+        // _FixStack(L, a);
+        return astack_GetTop(PStack(L)) - a - 1;
     }
 }
 ast_Bool _PopResults(ast_State *L, int a, int c)
@@ -431,11 +431,11 @@ ast_Bool _PopResults(ast_State *L, int a, int c)
             astack_ReplaceToIdx(PStack(L), i);
         }
     }
-    else
-    {
-        ast_StackCheck(PStack(L), 1);
-        ast_StackPush(PStack(L), a, AST_TINTEGER);
-    }
+    // else
+    // {
+    //     ast_StackCheck(PStack(L), 1);
+    //     ast_StackPush(PStack(L), a, AST_TINTEGER);
+    // }
     return TRUE;
 }
 ////R(A),.....R(A+C-2) = R(A)(R(A+1).....R(A+B-1))

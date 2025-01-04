@@ -1,6 +1,5 @@
-local function max(a)
-    a = 1
-    return a
+local function test(a, b)
 end
-local a = 2
-a = max(a)
+local a = 100
+local b = 200
+test(a, b)

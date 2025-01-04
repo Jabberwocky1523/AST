@@ -118,7 +118,7 @@ TValue *ast_PopN(ast_Stack *L, int size)
 }
 ast_Bool ast_PushN(ast_Stack *L, TValue *vals, int num)
 {
-    for (int i = 0; i < num; i++)
+    for (int i = 0; i < abs(num); i++)
     {
         ast_StackPush(L, vals[i]);
     }
@@ -166,12 +166,17 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     ast_PushStack(L, newStack);
     ast_RunAstClosure(L);
     ast_PopStack(L);
+    if (nResults == -1)
+    {
+        nResults = newStack->top - nArgs;
+    }
     if (nResults != 0)
     {
-        TValue *results = ast_PopN(newStack, newStack->top - nRegs + 1);
+        TValue *results = ast_PopN(newStack, nResults);
         ast_StackCheck(PStack(L), nResults);
         ast_PushN(PStack(L), results, nResults);
     }
+    free(newStack);
     return TRUE;
 }
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)

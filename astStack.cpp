@@ -91,6 +91,11 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
         L->Value[absIdx] = value;
         return TRUE;
     }
+    else if (absIdx == L->top)
+    {
+        ast_StackPush(L, value);
+        return TRUE;
+    }
     PANIC("无效的地址");
 }
 ast_Bool ast_StackReverse(ast_Stack *L, int idx1, int idx2)
