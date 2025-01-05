@@ -415,7 +415,12 @@ ast_Integer _PushFuncAndArgs(ast_State *L, int a, int b)
     else
     {
         // _FixStack(L, a);
-        return astack_GetTop(PStack(L)) - a - 1;
+        int i = astack_GetTop(PStack(L)) - 1;
+        while (L->stack->Value[i].tt != AST_TFUNCTION)
+        {
+            i--;
+        }
+        return astack_GetTop(PStack(L)) - i - 1;
     }
 }
 ast_Bool _PopResults(ast_State *L, int a, int c)
