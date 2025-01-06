@@ -7,18 +7,21 @@
 ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
-    TValue *Value = (TValue *)malloc(size * sizeof(TValue));
+    size = (size / 16) * 16;
+    L->Value = (TValue *)malloc(size * sizeof(TValue));
     for (int i = 0; i < size; i++)
     {
-        Value[i].tt = AST_TNIL;
+        L->Value[i].tt = AST_TNIL;
     }
     L->top = 0;
     L->size = size;
-    L->Value = Value;
     L->pc = 0;
     L->closure = nullptr;
     L->prev = nullptr;
     L->varargs = nullptr;
+    L->nPrevFuncResults = 0;
+    L->PrevIdx = 0;
+    L->varArgsLen = 0;
     return L;
 }
 ast_Bool ast_StackCheck(ast_Stack *L, int n)
@@ -493,4 +496,13 @@ ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val)
     }
         return FALSE;
     }
+}
+ast_Bool ast_FreeStack(ast_Stack *L)
+{
+    for (int i = 0; i < L->top; i++)
+    {
+        ast_FreeTvaluePoint(&L->Value[i]);
+    }
+    free(L);
+    return TRUE;
 }

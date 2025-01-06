@@ -145,7 +145,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     int nRegs = clousure->value.gc->cl.MaxStackSize;
     int nParam = clousure->value.gc->cl.NumParams;
     int IsVarArg = clousure->value.gc->cl.IsVararg == 1;
-    ast_Stack *newStack = ast_NewStack(nRegs + 20);
+    ast_Stack *newStack = ast_NewStack(nRegs + 16);
     newStack->closure = clousure;
     TValue *vals = ast_PopN(PStack(L), nArgs);
     if (nParam > nArgs)
@@ -178,14 +178,22 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     ast_PushStack(L, newStack);
     ast_RunAstClosure(L);
     ast_PopStack(L);
+    if (nResults > L->stack->nPrevFuncResults)
+    {
+        TValue tt = Nil2Ob();
+        for (int i = L->stack->nPrevFuncResults; i < nResults; i++)
+            ast_StackPush(PStack(L), tt);
+    }
     if (nResults >= 0)
     {
         L->stack->nPrevFuncResults = nResults;
     }
-    free(newStack->varargs);
     free(newStack->Value);
+    if (newStack->varargs != nullptr)
+    {
+        free(newStack->varargs);
+    }
     free(newStack);
-    newStack = nullptr;
     return TRUE;
 }
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
@@ -225,8 +233,4 @@ ast_Bool ast_LoadProto(ast_State *L, int idx)
     tt.value.gc = (GCObject *)proto;
     ast_StackPush(PStack(L), tt);
     return TRUE;
-}
-ast_Bool ast_FreeStack(ast_Stack *L)
-{
-    TValue *value = L->Value;
 }

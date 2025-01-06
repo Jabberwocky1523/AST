@@ -4,6 +4,7 @@
 #include "astString.h"
 #include "astState.h"
 #include "astStack.h"
+#include "astTable.h"
 ast_Bool ast_TValueCmp(TValue val1, TValue val2)
 {
     if (IsNum(val1) && IsNum(val2))
@@ -58,5 +59,11 @@ TValue *ast_NewClosure(int size)
 }
 ast_Bool ast_FreeTvaluePoint(TValue *t)
 {
-    free(t);
+    switch (t->tt)
+    {
+    case AST_TTABLE:
+        ast_FreeTable(&t->value.gc->tb);
+        break;
+    }
+    return TRUE;
 }

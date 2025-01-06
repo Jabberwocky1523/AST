@@ -122,7 +122,6 @@ ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
             if (val.tt != AST_TNIL)
             {
                 astTableArr_Push(tb, val);
-
                 _astTable_Expand(tb);
             }
             return TRUE;
@@ -233,5 +232,14 @@ ast_Bool ast_PrintTable(ast_Table tb)
 {
     ast_PrintTableArr(tb);
     ast_PrintMap(tb.HashMap);
+    return TRUE;
+}
+ast_Bool ast_FreeTable(ast_Table *tb)
+{
+    for (int i = 0; i < tb->arrSize; i++)
+    {
+        ast_FreeTvaluePoint(&tb->arr[i]);
+    }
+    free(tb);
     return TRUE;
 }

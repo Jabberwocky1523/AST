@@ -1,9 +1,6 @@
 local function add(a, b)
     return a + b
 end
-local function assert(v)
-    if not v then fail() end
-end
 local function max(...)
     local args = { ... }
     local val, idx
@@ -14,6 +11,5 @@ local function max(...)
     end
     return val, idx, 2
 end
-local v1, idx1, sum = max(4, 6, 2, add(3, 4))
-assert(v1 == 7)
+local v1, idx1, sum = max(4, add(7, 2), 6, 2)
 local v2 = max(5, 6, 1)

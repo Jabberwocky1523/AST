@@ -325,7 +325,6 @@ ast_Bool _ast_SetTable(ast_State *L, Instruction i)
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
     ast_SetTableFromIdx(L, n.a);
-    ast_PrintTable(L->stack->Value->value.gc->tb);
     return TRUE;
 }
 ////R(A)[(C - 1) * FPF + i] = R(A + i) 1 <= i <= B 给数组赋值
@@ -427,14 +426,15 @@ ast_Bool _PopResults(ast_State *L, int a, int c)
     }
     else if (c > 1)
     {
-        for (int i = a + c - 2; i >= a; i--)
+        for (int i = a; i <= a + c - 2; i++)
         {
+
             astack_ReplaceToIdx(PStack(L), i);
         }
     }
     else
     {
-        for (int i = a + L->stack->nPrevFuncResults - 1; i >= a; i--)
+        for (int i = a; i <= a + L->stack->nPrevFuncResults - 1; i++)
         {
             astack_ReplaceToIdx(PStack(L), i);
         }
@@ -469,7 +469,7 @@ ast_Bool _ast_Return(ast_State *L, Instruction i)
     else if (n.b > 1)
     {
         ast_StackCheck(L->stack->prev, n.b - 1);
-        for (int i = n.a; i <= n.a + n.b - 2; i++)
+        for (int i = n.a + n.b - 2; i >= n.a; i--)
         {
             TValue tt = ast_StackGetTValue(PStack(L), i);
             ast_StackPush(L->stack->prev, tt);
