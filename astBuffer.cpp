@@ -12,7 +12,6 @@ astBuffer astBufferAlloc(int size)
     buffer->data_size_ = 0;
     return buffer;
 }
-
 astBuffer astBufferFromastBuffer(astBuffer buffer)
 {
     astBuffer ret = (astBuffer)malloc(sizeof(StructastBuffer));

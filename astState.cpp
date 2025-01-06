@@ -98,9 +98,12 @@ ast_Stack *ast_PopStack(ast_State *L)
     S->prev = nullptr;
     return S;
 }
-ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, ast_String *chunkname, int mode)
+ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto, ast_String *chunkname, int mode)
 {
-    Prototype *proto = astBinaryChunkUnDump(chunk);
+    if (proto == nullptr)
+    {
+        proto = astBinaryChunkUnDump(chunk);
+    }
     TValue tt;
     tt.tt = AST_TFUNCTION;
     tt.value.gc = (GCObject *)proto;
@@ -145,7 +148,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     int nRegs = clousure->value.gc->cl.MaxStackSize;
     int nParam = clousure->value.gc->cl.NumParams;
     int IsVarArg = clousure->value.gc->cl.IsVararg == 1;
-    ast_Stack *newStack = ast_NewStack(nRegs + 16);
+    ast_Stack *newStack = ast_NewStack(nRegs + 20);
     newStack->closure = clousure;
     TValue *vals = ast_PopN(PStack(L), nArgs);
     if (nParam > nArgs)

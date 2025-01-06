@@ -5,6 +5,7 @@
 #include "astBuffer.h"
 #include <string.h>
 #include "astInstruction.h"
+#include "log.h"
 #define OPENANDREAD(file_name, buffer, len)             \
     do                                                  \
     {                                                   \

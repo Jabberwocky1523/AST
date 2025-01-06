@@ -9,6 +9,7 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     ts = (ast_String *)ast_Malloc(L, (len + 1) * sizeof(char) + sizeof(ast_String));
     ts->Tsv.len = len;
     ts->Tsv.hash = hash;
+
     ts->Tsv.marked = 0;
     ts->Tsv.tt = AST_TSTRING;
     ts->Tsv.reserved = 0;

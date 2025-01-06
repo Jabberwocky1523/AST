@@ -10,11 +10,9 @@ typedef struct
     int write_pos_;
     int read_pos_;
 } *astBufferStream, StructastBufferStream;
-
 astBufferStream astBufferStreamAlloc(int size);
 
 astBufferStream astBufferStreamAllocFromastBuffer(astBuffer buffer);
-
 void astBufferStreamFree(astBufferStream buffer_stream);
 
 char *astBufferStreamData(astBufferStream buffer_stream);

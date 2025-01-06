@@ -7,7 +7,6 @@
 ast_Stack *ast_NewStack(int size)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
-    size = (size / 16) * 16;
     L->Value = (TValue *)malloc(size * sizeof(TValue));
     for (int i = 0; i < size; i++)
     {

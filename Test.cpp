@@ -24,7 +24,7 @@ int main(int argc, const char *const *argv)
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s);
     PrintAst(proto);
-    ast_LoadChunk(L, file_contont, nullptr, 0);
+    ast_LoadChunk(L, file_contont, proto, nullptr, 0);
     ast_Call(L, 0, 0);
     return 0;
 }

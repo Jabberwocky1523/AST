@@ -44,7 +44,7 @@ ast_Bool ast_Init(ast_State *L, global_State *G_S);
 TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag);
 ast_Bool ast_PushStack(ast_State *L, ast_Stack *stack);
 ast_Stack *ast_PopStack(ast_State *L);
-ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, ast_String *chunkname, int mode);
+ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto, ast_String *chunkname, int mode);
 ast_Integer ast_RegCount(ast_State *L);
 ast_Bool ast_LoadVararg(ast_State *L, int n);
 ast_Bool ast_LoadProto(ast_State *L, int idx);
