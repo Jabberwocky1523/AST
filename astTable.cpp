@@ -23,6 +23,7 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
     tb->next = NULL;
     tb->tt = AST_TTABLE;
     tb->arrtop = 0;
+    tb->arrSize = arrSize;
     return tb;
 }
 ast_Bool astTableArr_Push(ast_Table *tb, TValue val)
@@ -97,7 +98,7 @@ ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
     else if (IsNum(key))
     {
         ast_Integer flag = 0;
-        num = ast_ConvertToInteger(key);
+        num = ast_ConvertToIntegerAndGetFlag(key, &flag);
         num--;
         if (!flag && key.tt == AST_TNUMBER)
         {
@@ -121,6 +122,7 @@ ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
             if (val.tt != AST_TNIL)
             {
                 astTableArr_Push(tb, val);
+
                 _astTable_Expand(tb);
             }
             return TRUE;

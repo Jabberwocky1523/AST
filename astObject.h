@@ -95,6 +95,9 @@ typedef struct ast_Stack
     int pc;
     TValue *closure;
     TValue *varargs;
+    int varArgsLen = 0;
+    int PrevIdx = 0;
+    int nPrevFuncResults = 0;
     ast_Stack *prev;
 } ast_Stack;
 // 判断数据对象是否可回收
@@ -115,5 +118,6 @@ typedef struct ast_Stack
     }
 ast_Bool ast_TValueCmp(TValue val1, TValue val2);
 ast_Integer ast_GetTValueHash(TValue val1);
+ast_Bool ast_FreeTvaluePoint(TValue *t);
 TValue *ast_NewClosure(int size);
 #endif

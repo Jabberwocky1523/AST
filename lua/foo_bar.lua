@@ -1,7 +1,8 @@
-local function sub(a, b)
-    return a - b
+local function max(a, b)
+    if (a > b) then
+        return a
+    else
+        return b
+    end
 end
-local function add(a, b, c)
-    return a + b + c
-end
-local b = add(100, 200, sub(300, 100))
+local v1 = max(3, 4)

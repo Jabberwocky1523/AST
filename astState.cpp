@@ -130,16 +130,12 @@ ast_Bool ast_RunAstClosure(ast_State *L)
     {
         int pc = ast_GetPc(L);
         Instruction ins = ast_Fetch(L);
-        if (InstructionOpcode(ins) != OP_RETURN)
+        ast_ExecuteOp(L, ins);
+        printf("[%d] %s", pc + 1, InstructionOpName(ins));
+        ast_PrintStack(PStack(L));
+        if (InstructionOpcode(ins) == OP_RETURN)
         {
-
-            ast_ExecuteOp(L, ins);
-            printf("[%d] %s", pc + 1, InstructionOpName(ins));
-            ast_PrintStack(PStack(L));
-        }
-        else
-        {
-            break;
+            return TRUE;
         }
     }
     return TRUE;
@@ -175,23 +171,21 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
         newStack->varargs = (TValue *)malloc(sizeof(TValue) * (nArgs - nParam));
         for (int i = 0; i < nArgs - nParam; i++)
         {
-            newStack->varargs[i] = vals[i + nParam + 1];
+            newStack->varargs[i] = vals[i + nParam];
         }
+        newStack->varArgsLen = nArgs - nParam;
     }
     ast_PushStack(L, newStack);
     ast_RunAstClosure(L);
     ast_PopStack(L);
-    if (nResults == -1)
+    if (nResults >= 0)
     {
-        nResults = newStack->top - nParam;
+        L->stack->nPrevFuncResults = nResults;
     }
-    if (nResults != 0)
-    {
-        TValue *results = ast_PopN(newStack, nResults);
-        ast_StackCheck(PStack(L), nResults);
-        ast_PushN(PStack(L), results, nResults);
-    }
+    free(newStack->varargs);
+    free(newStack->Value);
     free(newStack);
+    newStack = nullptr;
     return TRUE;
 }
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
@@ -214,6 +208,11 @@ ast_Integer ast_RegCount(ast_State *L)
 }
 ast_Bool ast_LoadVararg(ast_State *L, int n)
 {
+    if (n < 0)
+    {
+        n = L->stack->varArgsLen;
+        L->stack->nPrevFuncResults = L->stack->varArgsLen;
+    }
     ast_StackCheck(PStack(L), n);
     ast_PushN(PStack(L), L->stack->varargs, n);
     return TRUE;
@@ -226,4 +225,8 @@ ast_Bool ast_LoadProto(ast_State *L, int idx)
     tt.value.gc = (GCObject *)proto;
     ast_StackPush(PStack(L), tt);
     return TRUE;
+}
+ast_Bool ast_FreeStack(ast_Stack *L)
+{
+    TValue *value = L->Value;
 }

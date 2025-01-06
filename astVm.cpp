@@ -213,7 +213,7 @@ ast_Bool _ast_Compare(ast_State *L, Instruction i, int op)
     TABC n = InstructionTABC(i);
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
-    if (ast_Compare(L, -1, -2, op) != (n.a != 0))
+    if (ast_Compare(L, -2, -1, op) != (n.a != 0))
     {
         ast_AddPc(L, 1);
     }
@@ -345,13 +345,6 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
     TValue tt;
     tt.tt = AST_TINTEGER;
     int flag = 0;
-    if (n.b == 0)
-    {
-        flag = 1;
-        n.b = ast_ConvertToInteger(ast_StackGetTValue(PStack(L), -1)) - n.a - 1;
-        astack_Pop(PStack(L));
-    }
-
     for (int i = 1; i <= n.b; i++)
     {
         idx++;
@@ -360,10 +353,11 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
         ast_StackPush(PStack(L), tmp);
         ast_SetTableFromNum(L, n.a, tt);
     }
-    if (flag)
+    if (n.b == 0)
     {
-        for (int j = ast_RegCount(L); j < astack_GetTop(PStack(L)); j++)
+        for (int i = 1; i <= L->stack->nPrevFuncResults; i++)
         {
+
             idx++;
             tt.value.i = idx;
             TValue tmp = ast_StackGetTValue(PStack(L), n.a + i);
@@ -372,7 +366,7 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
         }
         ast_StackSetTop(PStack(L), ast_RegCount(L));
     }
-    ast_Table *tb = &L->stack[n.a].Value->value.gc->tb;
+    ast_Table *tb = &L->stack->Value[n.a].value.gc->tb;
     ast_PrintTable(*tb);
     return TRUE;
 }
@@ -404,23 +398,25 @@ ast_Integer _PushFuncAndArgs(ast_State *L, int a, int b)
 {
     if (b >= 1)
     {
-        // ast_StackCheck(PStack(L), b);
-        // for (int i = a; i < a + b; i++)
-        // {
-        //     TValue tt = ast_StackGetTValue(PStack(L), i);
-        //     ast_StackPush(PStack(L), tt);
-        // }
+        ast_StackCheck(PStack(L), b);
+        for (int i = a; i < a + b; i++)
+        {
+            TValue tt = ast_StackGetTValue(PStack(L), i);
+            ast_StackPush(PStack(L), tt);
+        }
         return b - 1;
     }
     else
     {
         // _FixStack(L, a);
-        int i = astack_GetTop(PStack(L)) - 1;
-        while (L->stack->Value[i].tt != AST_TFUNCTION)
+        int num = L->stack->PrevIdx - a + L->stack->nPrevFuncResults - 1;
+        ast_StackCheck(PStack(L), num);
+        for (int i = a; i <= a + num; i++)
         {
-            i--;
+            TValue tt = ast_StackGetTValue(PStack(L), i);
+            ast_StackPush(PStack(L), tt);
         }
-        return astack_GetTop(PStack(L)) - i - 1;
+        return num;
     }
 }
 ast_Bool _PopResults(ast_State *L, int a, int c)
@@ -436,11 +432,13 @@ ast_Bool _PopResults(ast_State *L, int a, int c)
             astack_ReplaceToIdx(PStack(L), i);
         }
     }
-    // else
-    // {
-    //     ast_StackCheck(PStack(L), 1);
-    //     ast_StackPush(PStack(L), a, AST_TINTEGER);
-    // }
+    else
+    {
+        for (int i = a + L->stack->nPrevFuncResults - 1; i >= a; i--)
+        {
+            astack_ReplaceToIdx(PStack(L), i);
+        }
+    }
     return TRUE;
 }
 ////R(A),.....R(A+C-2) = R(A)(R(A+1).....R(A+B-1))
@@ -448,6 +446,10 @@ ast_Bool _ast_Call(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     ast_Integer nArgs = _PushFuncAndArgs(L, n.a, n.b);
+    if (n.c == 0)
+    {
+        L->stack->PrevIdx = n.a;
+    }
     ast_Call(L, nArgs, n.c - 1);
     _PopResults(L, n.a, n.c);
     return TRUE;
@@ -456,22 +458,23 @@ ast_Bool _ast_Call(ast_State *L, Instruction i)
 ast_Bool _ast_Return(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
+    if (n.b == 0)
+    {
+        n.b = L->stack->nPrevFuncResults + 1;
+    }
     if (n.b == 1)
     {
         return TRUE;
     }
     else if (n.b > 1)
     {
-        ast_StackCheck(PStack(L), n.b - 1);
+        ast_StackCheck(L->stack->prev, n.b - 1);
         for (int i = n.a; i <= n.a + n.b - 2; i++)
         {
             TValue tt = ast_StackGetTValue(PStack(L), i);
-            ast_StackPush(PStack(L), tt);
+            ast_StackPush(L->stack->prev, tt);
         }
-    }
-    else
-    {
-        _FixStack(L, n.a);
+        L->stack->prev->nPrevFuncResults = n.b - 1;
     }
     return TRUE;
 }

@@ -56,3 +56,7 @@ TValue *ast_NewClosure(int size)
     tt->value.gc = (GCObject *)proto;
     return tt;
 }
+ast_Bool ast_FreeTvaluePoint(TValue *t)
+{
+    free(t);
+}
