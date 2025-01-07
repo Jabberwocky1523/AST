@@ -5,6 +5,7 @@
 #include "astState.h"
 #include "astStack.h"
 #include "astTable.h"
+#include <functional>
 ast_Bool ast_TValueCmp(TValue val1, TValue val2)
 {
     if (IsNum(val1) && IsNum(val2))
@@ -38,14 +39,14 @@ ast_Integer ast_GetTValueHash(TValue val1)
     switch (val1.tt)
     {
     case AST_TBOOLEAN:
-        return hash<ast_Bool>()(val1.value.bo);
+        return std::hash<ast_Bool>()(val1.value.bo);
     case AST_TINTEGER:
-        return hash<long long>()(val1.value.i);
+        return std::hash<long long>()(val1.value.i);
     case AST_TNUMBER:
-        return hash<long long>()((ast_Integer)val1.value.n);
+        return std::hash<long long>()((ast_Integer)val1.value.n);
     case AST_TSTRING:
     case AST_TTABLE:
-        return hash<GCObject *>()(val1.value.gc);
+        return std::hash<GCObject *>()(val1.value.gc);
     }
     return 0;
 }

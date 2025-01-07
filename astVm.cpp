@@ -21,7 +21,8 @@ ast_Integer ast_Fetch(ast_State *L)
 }
 ast_Bool ast_GetConst(ast_State *L, int idx)
 {
-    ConstantType c = L->stack->closure->value.gc->cl.constants[idx];
+
+    ConstantType c = L->stack->closure->value.gc->cl.constants->at(idx);
     ast_StackPushConstant(L, c);
     return TRUE;
 }

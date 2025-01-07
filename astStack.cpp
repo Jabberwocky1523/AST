@@ -113,7 +113,7 @@ ast_Bool ast_StackReverse(ast_Stack *L, int idx1, int idx2)
     }
     for (; idx1 < idx2;)
     {
-        swap(value[idx1], value[idx2]);
+        std::swap(value[idx1], value[idx2]);
         idx1++;
         idx2--;
     }

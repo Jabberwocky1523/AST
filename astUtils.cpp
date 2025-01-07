@@ -5,6 +5,7 @@
 #include "astBuffer.h"
 #include <string.h>
 #include "astInstruction.h"
+#include "unistd.h"
 #include "log.h"
 #define OPENANDREAD(file_name, buffer, len)             \
     do                                                  \
@@ -55,7 +56,7 @@ void PrintHeader(Prototype *proto)
     memcpy(buffer, astBufferData(proto->Source), astBufferSize(proto->Source));
     printf("%s <%s:%d, %d> (%d instruction)\n", func_type, buffer, proto->LineDefined, proto->LastLineDefined, proto->Code.size());
     printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.size());
-    printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants.size(), proto->Protos.size());
+    printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants->size(), proto->Protos.size());
 }
 
 void PrintOperands(Instruction instruction)
@@ -121,7 +122,7 @@ void PrintOperands(Instruction instruction)
 
 void PrintCode(Prototype *proto)
 {
-    vector<int> codes = proto->Code;
+    std::vector<int> codes = proto->Code;
     int len = codes.size();
     bool flag = proto->LineInfo.size() > 0;
     for (int i = 0; i < len; ++i)
@@ -141,26 +142,26 @@ void PrintCode(Prototype *proto)
     }
 }
 
-void PrintConstant(ConstantType *constant, int i)
+void PrintConstant(ConstantType constant, int i)
 {
-    switch (constant->tag)
+    switch (constant.tag)
     {
     case CONSTANT_TAG_NIL:
         printf("\t%d\t%s\n", i + 1, "nil");
         break;
     case CONSTANT_TAG_BOOLEAN:
-        printf("\t%d\t%s\n", i + 1, constant->data.tag_boolean == 0 ? "false" : "true");
+        printf("\t%d\t%s\n", i + 1, constant.data.tag_boolean == 0 ? "false" : "true");
         break;
     case CONSTANT_TAG_NUMBER:
-        printf("\t%d\t%lf\n", i + 1, constant->data.tag_number);
+        printf("\t%d\t%lf\n", i + 1, constant.data.tag_number);
         break;
     case CONSTANT_TAG_INTEGER:
-        printf("\t%d\t%lld\n", i + 1, constant->data.tag_integer);
+        printf("\t%d\t%lld\n", i + 1, constant.data.tag_integer);
         break;
     case CONSTANT_TAG_STR:
     {
         char buffer[1024] = {0};
-        memcpy(buffer, astBufferData(constant->data.tag_str), astBufferDataSize(constant->data.tag_str));
+        memcpy(buffer, astBufferData(constant.data.tag_str), astBufferDataSize(constant.data.tag_str));
         printf("\t%d\t%s\n", i + 1, buffer);
         break;
     }
@@ -169,15 +170,16 @@ void PrintConstant(ConstantType *constant, int i)
 
 void PrintDetail(Prototype *proto)
 {
-    vector<ConstantType> constants = proto->constants;
-    printf("constants (%d):\n", constants.size());
-    int len = constants.size();
+    std::vector<ConstantType> *constants = proto->constants;
+    printf("constants (%d):\n", constants->size());
+    int len = constants->size();
     for (int i = 0; i < len; ++i)
     {
-        PrintConstant(&(constants[i]), i);
+        ConstantType constant = constants->at(i);
+        PrintConstant(constant, i);
     }
 
-    vector<LocVar> locvars = proto->LocVars;
+    std::vector<LocVar> locvars = proto->LocVars;
     len = locvars.size();
     printf("locals (%d):\n", len);
     for (int i = 0; i < len; ++i)
@@ -188,8 +190,8 @@ void PrintDetail(Prototype *proto)
         printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->StartPC + 1, cur->EndPC + 1);
     }
 
-    vector<Upvalue> upval = proto->Upvalues;
-    vector<astBuffer> upvalName = proto->UpvalueNames;
+    std::vector<Upvalue> upval = proto->Upvalues;
+    std::vector<astBuffer> upvalName = proto->UpvalueNames;
     len = upval.size();
     printf("upvalues (%d):\n", len);
 

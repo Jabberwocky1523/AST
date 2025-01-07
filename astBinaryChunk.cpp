@@ -8,14 +8,14 @@
 #include <stdio.h>
 
 astBuffer astBinaryChunkReadString(astBufferStream buffer_stream);
-vector<int> astBinaryChunkReadCode(astBufferStream buffer_stream);
+std::vector<int> astBinaryChunkReadCode(astBufferStream buffer_stream);
 ConstantType astBinaryChunkReadConstant(astBufferStream buffer_stream);
-vector<ConstantType> astBinaryChunkReadConstants(astBufferStream buffer_stream);
-vector<Upvalue> astBinaryChunkReadUpvalues(astBufferStream buffer_stream);
-vector<Prototype *> astBinaryChunkReadProtos(astBuffer parent, astBufferStream buffer_stream);
-vector<int> astBinaryChunkReadLineInfos(astBufferStream buffer_stream);
-vector<LocVar> astBinaryChunkReadLocVars(astBufferStream buffer_stream);
-vector<astBuffer> astBinaryChunkReadUpvalueNames(astBufferStream buffer_stream);
+std::vector<ConstantType> *astBinaryChunkReadConstants(astBufferStream buffer_stream);
+std::vector<Upvalue> astBinaryChunkReadUpvalues(astBufferStream buffer_stream);
+std::vector<Prototype *> astBinaryChunkReadProtos(astBuffer parent, astBufferStream buffer_stream);
+std::vector<int> astBinaryChunkReadLineInfos(astBufferStream buffer_stream);
+std::vector<LocVar> astBinaryChunkReadLocVars(astBufferStream buffer_stream);
+std::vector<astBuffer> astBinaryChunkReadUpvalueNames(astBufferStream buffer_stream);
 Prototype *astBinaryChunkReadProto(astBuffer parent, astBufferStream buffer_stream);
 
 Prototype *astBinaryChunkUnDump(astBuffer buffer)
@@ -134,10 +134,10 @@ bool astBinaryChunkCheckHead(astBufferStream buffer_stream)
     return false;
 }
 
-vector<int> astBinaryChunkReadCode(astBufferStream buffer_stream)
+std::vector<int> astBinaryChunkReadCode(astBufferStream buffer_stream)
 {
     uint32_t code_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<int> codes;
+    std::vector<int> codes;
     for (int i = 0; i < code_element_len; i++)
     {
         codes.push_back(astBufferStreamReadUInt32(buffer_stream));
@@ -179,21 +179,21 @@ ConstantType astBinaryChunkReadConstant(astBufferStream buffer_stream)
     return *type;
 }
 
-vector<ConstantType> astBinaryChunkReadConstants(astBufferStream buffer_stream)
+std::vector<ConstantType> *astBinaryChunkReadConstants(astBufferStream buffer_stream)
 {
     uint32_t constant_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<ConstantType> Constants;
+    std::vector<ConstantType> *Constants = new std::vector<ConstantType>;
     for (int i = 0; i < constant_element_len; i++)
     {
-        Constants.push_back(astBinaryChunkReadConstant(buffer_stream));
+        Constants->push_back(astBinaryChunkReadConstant(buffer_stream));
     }
     return Constants;
 }
 
-vector<Upvalue> astBinaryChunkReadUpvalues(astBufferStream buffer_stream)
+std::vector<Upvalue> astBinaryChunkReadUpvalues(astBufferStream buffer_stream)
 {
     uint32_t upvalue_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<Upvalue> upvalues;
+    std::vector<Upvalue> upvalues;
     for (int i = 0; i < upvalue_element_len; i++)
     {
         Upvalue *temp = (Upvalue *)malloc(sizeof(Upvalue));
@@ -204,10 +204,10 @@ vector<Upvalue> astBinaryChunkReadUpvalues(astBufferStream buffer_stream)
     return upvalues;
 }
 
-vector<Prototype *> astBinaryChunkReadProtos(astBuffer parent, astBufferStream buffer_stream)
+std::vector<Prototype *> astBinaryChunkReadProtos(astBuffer parent, astBufferStream buffer_stream)
 {
     uint32_t protos_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<Prototype *> protos;
+    std::vector<Prototype *> protos;
     if (protos_element_len == 0)
     {
         return protos;
@@ -222,10 +222,10 @@ vector<Prototype *> astBinaryChunkReadProtos(astBuffer parent, astBufferStream b
     return protos;
 }
 
-vector<int> astBinaryChunkReadLineInfos(astBufferStream buffer_stream)
+std::vector<int> astBinaryChunkReadLineInfos(astBufferStream buffer_stream)
 {
     uint32_t lineinfo_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<int> LineInfos;
+    std::vector<int> LineInfos;
     uint32_t *temp;
     for (size_t i = 0; i < lineinfo_element_len; ++i)
     {
@@ -236,10 +236,10 @@ vector<int> astBinaryChunkReadLineInfos(astBufferStream buffer_stream)
     return LineInfos;
 }
 
-vector<LocVar> astBinaryChunkReadLocVars(astBufferStream buffer_stream)
+std::vector<LocVar> astBinaryChunkReadLocVars(astBufferStream buffer_stream)
 {
     uint32_t locvar_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<LocVar> locvars;
+    std::vector<LocVar> locvars;
     LocVar *locvar;
     for (size_t i = 0; i < locvar_element_len; ++i)
     {
@@ -252,10 +252,10 @@ vector<LocVar> astBinaryChunkReadLocVars(astBufferStream buffer_stream)
     return locvars;
 }
 
-vector<astBuffer> astBinaryChunkReadUpvalueNames(astBufferStream buffer_stream)
+std::vector<astBuffer> astBinaryChunkReadUpvalueNames(astBufferStream buffer_stream)
 {
     uint32_t upvaluenames_element_len = astBufferStreamReadUInt32(buffer_stream);
-    vector<astBuffer> upvaluenames;
+    std::vector<astBuffer> upvaluenames;
     astBuffer *temp;
     for (size_t i = 0; i < upvaluenames_element_len; ++i)
     {

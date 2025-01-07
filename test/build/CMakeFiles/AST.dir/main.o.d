@@ -1,17 +1,16 @@
-CMakeFiles/AST.dir/main.o: /home/jabberwocky/桌面/AST/test/main.cpp \
- /usr/include/stdc-predef.h \
- /home/jabberwocky/桌面/AST/test/BinaryChunk.h /usr/include/inttypes.h \
- /usr/include/features.h /usr/include/features-time64.h \
- /usr/include/bits/wordsize.h /usr/include/bits/timesize.h \
- /usr/include/sys/cdefs.h /usr/include/bits/long-double.h \
- /usr/include/gnu/stubs.h /usr/include/gnu/stubs-64.h \
+CMakeFiles/AST.dir/main.o: /home/kurisu/桌面/AST/test/main.cpp \
+ /usr/include/stdc-predef.h /home/kurisu/桌面/AST/test/BinaryChunk.h \
+ /usr/include/inttypes.h /usr/include/features.h \
+ /usr/include/features-time64.h /usr/include/bits/wordsize.h \
+ /usr/include/bits/timesize.h /usr/include/sys/cdefs.h \
+ /usr/include/bits/long-double.h /usr/include/gnu/stubs.h \
+ /usr/include/gnu/stubs-64.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/libc-header-start.h \
  /usr/include/bits/types.h /usr/include/bits/typesizes.h \
  /usr/include/bits/time64.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-intn.h /usr/include/bits/stdint-uintn.h \
- /usr/include/bits/stdint-least.h \
- /home/jabberwocky/桌面/AST/test/Buffer.h \
+ /usr/include/bits/stdint-least.h /home/kurisu/桌面/AST/test/Buffer.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdbool.h \
  /usr/include/c++/14.2.1/vector \
  /usr/include/c++/14.2.1/bits/requires_hosted.h \
@@ -64,9 +63,9 @@ CMakeFiles/AST.dir/main.o: /home/jabberwocky/桌面/AST/test/main.cpp \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stddef.h \
  /usr/include/c++/14.2.1/bits/uses_allocator.h \
  /usr/include/c++/14.2.1/bits/uses_allocator_args.h \
- /usr/include/c++/14.2.1/tuple /home/jabberwocky/桌面/AST/test/utils.h \
- /home/jabberwocky/桌面/AST/test/opcodes.h \
- /home/jabberwocky/桌面/AST/test/Type.h /usr/include/string.h \
+ /usr/include/c++/14.2.1/tuple /home/kurisu/桌面/AST/test/utils.h \
+ /home/kurisu/桌面/AST/test/opcodes.h \
+ /home/kurisu/桌面/AST/test/Type.h /usr/include/string.h \
  /usr/include/bits/types/locale_t.h /usr/include/bits/types/__locale_t.h \
  /usr/include/strings.h /usr/include/stdio.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/14.2.1/include/stdarg.h \
@@ -112,4 +111,13 @@ CMakeFiles/AST.dir/main.o: /home/jabberwocky/桌面/AST/test/main.cpp \
  /usr/include/c++/14.2.1/tr1/poly_hermite.tcc \
  /usr/include/c++/14.2.1/tr1/poly_laguerre.tcc \
  /usr/include/c++/14.2.1/tr1/riemann_zeta.tcc \
- /home/jabberwocky/桌面/AST/test/instruction.h
+ /home/kurisu/桌面/AST/test/instruction.h \
+ /home/kurisu/桌面/AST/test/log.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/bits/sched.h \
+ /usr/include/bits/types/struct_sched_param.h /usr/include/bits/cpu-set.h \
+ /usr/include/time.h /usr/include/bits/time.h /usr/include/bits/timex.h \
+ /usr/include/bits/types/struct_tm.h \
+ /usr/include/bits/types/struct_itimerspec.h /usr/include/bits/setjmp.h \
+ /usr/include/bits/types/struct___jmp_buf_tag.h \
+ /usr/include/bits/pthread_stack_min-dynamic.h \
+ /home/kurisu/桌面/AST/test/macro_define.h

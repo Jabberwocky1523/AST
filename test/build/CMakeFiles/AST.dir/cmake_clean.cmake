@@ -8,6 +8,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/AST.dir/Buffer.o.d"
   "CMakeFiles/AST.dir/BufferStream.o"
   "CMakeFiles/AST.dir/BufferStream.o.d"
+  "CMakeFiles/AST.dir/log.o"
+  "CMakeFiles/AST.dir/log.o.d"
   "CMakeFiles/AST.dir/main.o"
   "CMakeFiles/AST.dir/main.o.d"
   "CMakeFiles/AST.dir/utils.o"

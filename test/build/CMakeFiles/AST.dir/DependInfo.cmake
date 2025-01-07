@@ -8,11 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/jabberwocky/桌面/AST/test/BinaryChunk.cpp" "CMakeFiles/AST.dir/BinaryChunk.o" "gcc" "CMakeFiles/AST.dir/BinaryChunk.o.d"
-  "/home/jabberwocky/桌面/AST/test/Buffer.cpp" "CMakeFiles/AST.dir/Buffer.o" "gcc" "CMakeFiles/AST.dir/Buffer.o.d"
-  "/home/jabberwocky/桌面/AST/test/BufferStream.cpp" "CMakeFiles/AST.dir/BufferStream.o" "gcc" "CMakeFiles/AST.dir/BufferStream.o.d"
-  "/home/jabberwocky/桌面/AST/test/main.cpp" "CMakeFiles/AST.dir/main.o" "gcc" "CMakeFiles/AST.dir/main.o.d"
-  "/home/jabberwocky/桌面/AST/test/utils.cpp" "CMakeFiles/AST.dir/utils.o" "gcc" "CMakeFiles/AST.dir/utils.o.d"
+  "/home/kurisu/桌面/AST/test/BinaryChunk.cpp" "CMakeFiles/AST.dir/BinaryChunk.o" "gcc" "CMakeFiles/AST.dir/BinaryChunk.o.d"
+  "/home/kurisu/桌面/AST/test/Buffer.cpp" "CMakeFiles/AST.dir/Buffer.o" "gcc" "CMakeFiles/AST.dir/Buffer.o.d"
+  "/home/kurisu/桌面/AST/test/BufferStream.cpp" "CMakeFiles/AST.dir/BufferStream.o" "gcc" "CMakeFiles/AST.dir/BufferStream.o.d"
+  "/home/kurisu/桌面/AST/test/log.cpp" "CMakeFiles/AST.dir/log.o" "gcc" "CMakeFiles/AST.dir/log.o.d"
+  "/home/kurisu/桌面/AST/test/main.cpp" "CMakeFiles/AST.dir/main.o" "gcc" "CMakeFiles/AST.dir/main.o.d"
+  "/home/kurisu/桌面/AST/test/utils.cpp" "CMakeFiles/AST.dir/utils.o" "gcc" "CMakeFiles/AST.dir/utils.o.d"
   "" "AST" "gcc" "CMakeFiles/AST.dir/link.d"
   )
 

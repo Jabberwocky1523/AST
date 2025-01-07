@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "log.h"
 void PrintHeader(Prototype *proto)
 {
     const char *func_type = "main";
@@ -22,8 +23,8 @@ void PrintHeader(Prototype *proto)
     char buffer[1024] = {0};
     memcpy(buffer, CBufferData(proto->Source), CBufferSize(proto->Source));
     printf("\n%s <%s:%d, %d> (%d instruction)\n", func_type, buffer, proto->LineDefined, proto->LastLineDefined, proto->Code.size());
-    printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.size());
-    printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants.size(), proto->Protos.size());
+    printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->UpvaluesLen);
+    printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->ConstantLen, proto->Protos.size());
 }
 
 void PrintOperands(Instruction instruction)
@@ -137,9 +138,9 @@ void PrintConstant(ConstantType *constant, int i)
 
 void PrintDetail(Prototype *proto)
 {
-    vector<ConstantType> constants = proto->constants;
-    printf("constants (%d):\n", constants.size());
-    int len = constants.size();
+    ConstantType *constants = proto->constants;
+    printf("constants (%d):\n", proto->ConstantLen);
+    int len = proto->ConstantLen;
     for (int i = 0; i < len; ++i)
     {
         PrintConstant(&(constants[i]), i);
@@ -156,9 +157,9 @@ void PrintDetail(Prototype *proto)
         printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->StartPC + 1, cur->EndPC + 1);
     }
 
-    vector<Upvalue> upval = proto->Upvalues;
+    Upvalue *upval = proto->Upvalues;
     vector<CBuffer> upvalName = proto->UpvalueNames;
-    len = upval.size();
+    len = proto->UpvaluesLen;
     printf("upvalues (%d):\n", len);
 
     bool flag = upvalName.size() > 0;
@@ -181,12 +182,13 @@ void PrintDetail(Prototype *proto)
 
 int main(int argc, const char *const *argv)
 {
-    const char *file_name = "luac.out";
+    const char *file_name = "../luac.out";
     if (argc >= 2)
     {
         file_name = argv[1];
     }
     CBuffer file_contont = LoadFileToCBuffer(file_name);
+    LOG_NOTICE("123");
     Prototype *proto = BinaryChunkUnDump(file_contont);
     PrintHeader(proto);
     PrintCode(proto);

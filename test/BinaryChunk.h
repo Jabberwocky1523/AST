@@ -66,9 +66,11 @@ typedef struct Prototype
     unsigned char NumParams;
     unsigned char IsVararg;
     unsigned char MaxStackSize;
-    vector<int> Code;                  // uint32_t
-    vector<ConstantType> constants;    // ConstantType
-    vector<Upvalue> Upvalues;          // Upvalue
+    vector<int> Code;        // uint32_t
+    ConstantType *constants; // ConstantType
+    int ConstantLen = 0;
+    Upvalue *Upvalues; // Upvalue
+    int UpvaluesLen = 0;
     vector<struct Prototype *> Protos; // struct Prototype
     vector<int> LineInfo;              // uint32_t
     vector<LocVar> LocVars;            // LocVar

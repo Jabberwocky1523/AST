@@ -13,8 +13,8 @@ static void BinaryChunkInit(CBuffer buffer);
 static CBuffer BinaryChunkReadString();
 static vector<int> BinaryChunkReadCode();
 static ConstantType BinaryChunkReadConstant();
-static vector<ConstantType> BinaryChunkReadConstants();
-static vector<Upvalue> BinaryChunkReadUpvalues();
+ConstantType *BinaryChunkReadConstants(int &len);
+Upvalue *BinaryChunkReadUpvalues(int &len);
 static vector<Prototype *> BinaryChunkReadProtos(CBuffer parent);
 static vector<int> BinaryChunkReadLineInfos();
 static vector<LocVar> BinaryChunkReadLocVars();
@@ -24,7 +24,7 @@ static Prototype *BinaryChunkReadProto(CBuffer parent);
 Prototype *BinaryChunkUnDump(CBuffer buffer)
 {
     BinaryChunkInit(buffer);
-    printf("%d\n", buffer_stream == NULL);
+    // printf("%d\n", buffer_stream == NULL);
     if (!BinaryChunkCheckHead())
     {
         PANIC("CheckHeadError");
@@ -184,29 +184,29 @@ static ConstantType BinaryChunkReadConstant()
     return *type;
 }
 
-static vector<ConstantType> BinaryChunkReadConstants()
+ConstantType *BinaryChunkReadConstants(int &len)
 {
     uint32_t constant_element_len = CBufferStreamReadUInt32(buffer_stream);
-    vector<ConstantType> Constants;
+    len = constant_element_len;
+    ConstantType *constants = (ConstantType *)malloc(sizeof(ConstantType) * constant_element_len);
     for (int i = 0; i < constant_element_len; i++)
     {
-        Constants.push_back(BinaryChunkReadConstant());
+        constants[i] = BinaryChunkReadConstant();
     }
-    return Constants;
+    return constants;
 }
 
-static vector<Upvalue> BinaryChunkReadUpvalues()
+Upvalue *BinaryChunkReadUpvalues(int &len)
 {
     uint32_t upvalue_element_len = CBufferStreamReadUInt32(buffer_stream);
-    vector<Upvalue> upvalues;
+    Upvalue *temp = (Upvalue *)malloc(sizeof(Upvalue) * upvalue_element_len);
     for (int i = 0; i < upvalue_element_len; i++)
     {
-        Upvalue *temp = (Upvalue *)malloc(sizeof(Upvalue));
-        temp->Idx = CBufferStreamReadUInt8(buffer_stream);
-        temp->Instack = CBufferStreamReadUInt8(buffer_stream);
-        upvalues.push_back(*temp);
+
+        temp[i].Idx = CBufferStreamReadUInt8(buffer_stream);
+        temp[i].Instack = CBufferStreamReadUInt8(buffer_stream);
     }
-    return upvalues;
+    return temp;
 }
 
 static vector<Prototype *> BinaryChunkReadProtos(CBuffer parent)
@@ -286,8 +286,11 @@ static Prototype *BinaryChunkReadProto(CBuffer parent)
     proto->IsVararg = CBufferStreamReadUInt8(buffer_stream);
     proto->MaxStackSize = CBufferStreamReadUInt8(buffer_stream);
     proto->Code = BinaryChunkReadCode();
-    proto->constants = BinaryChunkReadConstants();
-    proto->Upvalues = BinaryChunkReadUpvalues();
+    int len = 0;
+    proto->constants = BinaryChunkReadConstants(len);
+    proto->ConstantLen = len;
+    proto->Upvalues = BinaryChunkReadUpvalues(len);
+    proto->UpvaluesLen = len;
     proto->Protos = BinaryChunkReadProtos(parent);
     proto->LineInfo = BinaryChunkReadLineInfos();
     proto->LocVars = BinaryChunkReadLocVars();

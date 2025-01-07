@@ -1,0 +1,38 @@
+[
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/BinaryChunk.o -c /home/kurisu/桌面/AST/test/BinaryChunk.cpp",
+  "file": "/home/kurisu/桌面/AST/test/BinaryChunk.cpp",
+  "output": "CMakeFiles/AST.dir/BinaryChunk.o"
+},
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/Buffer.o -c /home/kurisu/桌面/AST/test/Buffer.cpp",
+  "file": "/home/kurisu/桌面/AST/test/Buffer.cpp",
+  "output": "CMakeFiles/AST.dir/Buffer.o"
+},
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/BufferStream.o -c /home/kurisu/桌面/AST/test/BufferStream.cpp",
+  "file": "/home/kurisu/桌面/AST/test/BufferStream.cpp",
+  "output": "CMakeFiles/AST.dir/BufferStream.o"
+},
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/log.o -c /home/kurisu/桌面/AST/test/log.cpp",
+  "file": "/home/kurisu/桌面/AST/test/log.cpp",
+  "output": "CMakeFiles/AST.dir/log.o"
+},
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/main.o -c /home/kurisu/桌面/AST/test/main.cpp",
+  "file": "/home/kurisu/桌面/AST/test/main.cpp",
+  "output": "CMakeFiles/AST.dir/main.o"
+},
+{
+  "directory": "/home/kurisu/桌面/AST/test/build",
+  "command": "/usr/bin/g++  -I/home/kurisu/桌面/AST/test -g -o CMakeFiles/AST.dir/utils.o -c /home/kurisu/桌面/AST/test/utils.cpp",
+  "file": "/home/kurisu/桌面/AST/test/utils.cpp",
+  "output": "CMakeFiles/AST.dir/utils.o"
+}
+]

@@ -5,7 +5,6 @@
 #include "astBufferStream.h"
 #include <stdbool.h>
 #include "vector"
-using namespace std;
 
 typedef struct
 {
@@ -67,13 +66,13 @@ typedef struct Prototype
     unsigned char NumParams;
     unsigned char IsVararg;
     unsigned char MaxStackSize;
-    vector<int> Code;                  // uint32_t
-    vector<ConstantType> constants;    // ConstantType
-    vector<Upvalue> Upvalues;          // Upvalue
-    vector<struct Prototype *> Protos; // struct Prototype
-    vector<int> LineInfo;              // uint32_t
-    vector<LocVar> LocVars;            // LocVar
-    vector<astBuffer> UpvalueNames;    // astBuffer
+    std::vector<int> Code;                  // uint32_t
+    std::vector<ConstantType> *constants;   // ConstantType
+    std::vector<Upvalue> Upvalues;          // Upvalue
+    std::vector<struct Prototype *> Protos; // struct Prototype
+    std::vector<int> LineInfo;              // uint32_t
+    std::vector<LocVar> LocVars;            // LocVar
+    std::vector<astBuffer> UpvalueNames;    // astBuffer
 } Prototype;
 
 typedef struct

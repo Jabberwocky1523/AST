@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jabberwocky/桌面/AST/test
+CMAKE_SOURCE_DIR = /home/kurisu/桌面/AST/test
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jabberwocky/桌面/AST/test/build
+CMAKE_BINARY_DIR = /home/kurisu/桌面/AST/test/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabberwocky/桌面/AST/test/build/CMakeFiles /home/jabberwocky/桌面/AST/test/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kurisu/桌面/AST/test/build/CMakeFiles /home/kurisu/桌面/AST/test/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jabberwocky/桌面/AST/test/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kurisu/桌面/AST/test/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -175,6 +175,21 @@ BufferStream.s:
 .PHONY : BufferStream.s
 
 # target to build an object file
+log.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/log.o
+.PHONY : log.o
+
+# target to preprocess a source file
+log.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/log.i
+.PHONY : log.i
+
+# target to generate assembly for a file
+log.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/log.s
+.PHONY : log.s
+
+# target to build an object file
 main.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/AST.dir/build.make CMakeFiles/AST.dir/main.o
 .PHONY : main.o
@@ -222,6 +237,9 @@ help:
 	@echo "... BufferStream.o"
 	@echo "... BufferStream.i"
 	@echo "... BufferStream.s"
+	@echo "... log.o"
+	@echo "... log.i"
+	@echo "... log.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
