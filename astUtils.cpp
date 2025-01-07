@@ -54,9 +54,9 @@ void PrintHeader(Prototype *proto)
 
     char buffer[1024] = {0};
     memcpy(buffer, astBufferData(proto->Source), astBufferSize(proto->Source));
-    printf("%s <%s:%d, %d> (%d instruction)\n", func_type, buffer, proto->LineDefined, proto->LastLineDefined, proto->Code.size());
-    printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.size());
-    printf("%d locals, %d constants, %d functions\n", proto->LocVars.size(), proto->constants->size(), proto->Protos.size());
+    printf("%s <%s:%d, %d> (%d instruction)\n", func_type, buffer, proto->LineDefined, proto->LastLineDefined, proto->Code.len);
+    printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.len);
+    printf("%d locals, %d constants, %d functions\n", proto->LocVars.Len, proto->constants.len, proto->ProtosLen);
 }
 
 void PrintOperands(Instruction instruction)
@@ -122,13 +122,14 @@ void PrintOperands(Instruction instruction)
 
 void PrintCode(Prototype *proto)
 {
-    std::vector<int> codes = proto->Code;
-    int len = codes.size();
-    bool flag = proto->LineInfo.size() > 0;
+    uint32_t *codes = proto->Code.data;
+    int len = proto->Code.len;
+    bool flag = proto->LineInfo.LineInfoLen > 0;
     for (int i = 0; i < len; ++i)
     {
+
         uint32_t val = codes[i];
-        uint32_t line = proto->LineInfo[i];
+        uint32_t line = proto->LineInfo.LineInfo[i];
         if (flag)
         {
             printf("\t%d\t[%d]\t%s \t", i + 1, line, InstructionOpName((Instruction)val));
@@ -142,7 +143,7 @@ void PrintCode(Prototype *proto)
     }
 }
 
-void PrintConstant(ConstantType constant, int i)
+void PrintConstant(Constant constant, int i)
 {
     switch (constant.tag)
     {
@@ -150,18 +151,18 @@ void PrintConstant(ConstantType constant, int i)
         printf("\t%d\t%s\n", i + 1, "nil");
         break;
     case CONSTANT_TAG_BOOLEAN:
-        printf("\t%d\t%s\n", i + 1, constant.data.tag_boolean == 0 ? "false" : "true");
+        printf("\t%d\t%s\n", i + 1, constant.tag_boolean == 0 ? "false" : "true");
         break;
     case CONSTANT_TAG_NUMBER:
-        printf("\t%d\t%lf\n", i + 1, constant.data.tag_number);
+        printf("\t%d\t%lf\n", i + 1, constant.tag_number);
         break;
     case CONSTANT_TAG_INTEGER:
-        printf("\t%d\t%lld\n", i + 1, constant.data.tag_integer);
+        printf("\t%d\t%lld\n", i + 1, constant.tag_integer);
         break;
     case CONSTANT_TAG_STR:
     {
         char buffer[1024] = {0};
-        memcpy(buffer, astBufferData(constant.data.tag_str), astBufferDataSize(constant.data.tag_str));
+        memcpy(buffer, astBufferData(constant.tag_str), astBufferDataSize(constant.tag_str));
         printf("\t%d\t%s\n", i + 1, buffer);
         break;
     }
@@ -170,58 +171,58 @@ void PrintConstant(ConstantType constant, int i)
 
 void PrintDetail(Prototype *proto)
 {
-    std::vector<ConstantType> *constants = proto->constants;
-    printf("constants (%d):\n", constants->size());
-    int len = constants->size();
+    ConstantType constants = proto->constants;
+    int len = constants.len;
+    printf("constants (%d):\n", len);
     for (int i = 0; i < len; ++i)
     {
-        ConstantType constant = constants->at(i);
+        Constant constant = constants.data[i];
         PrintConstant(constant, i);
     }
 
-    std::vector<LocVar> locvars = proto->LocVars;
-    len = locvars.size();
+    LocVar locvars = proto->LocVars;
+    len = locvars.Len;
     printf("locals (%d):\n", len);
     for (int i = 0; i < len; ++i)
     {
-        LocVar *cur = &(locvars[i]);
+        LocVarData cur = locvars.data[i];
         char buffer[1024] = {0};
-        memcpy(buffer, astBufferData(cur->VarName), astBufferDataSize(cur->VarName));
-        printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->StartPC + 1, cur->EndPC + 1);
+        memcpy(buffer, astBufferData(cur.VarName), astBufferDataSize(cur.VarName));
+        printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur.StartPC + 1, cur.EndPC + 1);
     }
 
-    std::vector<Upvalue> upval = proto->Upvalues;
-    std::vector<astBuffer> upvalName = proto->UpvalueNames;
-    len = upval.size();
+    Upvalue upval = proto->Upvalues;
+    UpvalueNames upvalName = proto->UpvalueNames;
+    len = upval.len;
     printf("upvalues (%d):\n", len);
-
-    bool flag = upvalName.size() > 0;
+    bool flag = proto->UpvalueNames.upvalusNameslen > 0;
     for (int i = 0; i < len; ++i)
     {
-        Upvalue *cur = &(upval[i]);
+        UpvalueData cur = upval.data[i];
         if (flag)
         {
-            astBuffer *upname = &(upvalName[i]);
+            astBuffer upname = upvalName.UpvalueNames[i];
             char buffer[1024] = {0};
-            memcpy(buffer, astBufferData(*upname), astBufferDataSize(*upname));
-            printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur->Instack, cur->Idx);
+            memcpy(buffer, astBufferData(upname), astBufferDataSize(upname));
+            printf("\t%d\t%s\t%d\t%d\n", i, buffer, cur.Instack, cur.Idx);
         }
         else
         {
-            printf("\t%d\t-\t%d\t%d\n", i, cur->Instack, cur->Idx);
+            printf("\t%d\t-\t%d\t%d\n", i, cur.Instack, cur.Idx);
         }
     }
 }
 void PrintAst(Prototype *proto)
 {
-    if (proto == nullptr)
+    if (proto->Protos == nullptr)
     {
         return;
     }
     PrintHeader(proto);
     PrintCode(proto);
     PrintDetail(proto);
-    for (int i = 0; i < proto->Protos.size(); i++)
+    int size = proto->ProtosLen;
+    for (int i = 0; i < size; i++)
     {
         PrintAst(proto->Protos[i]);
     }

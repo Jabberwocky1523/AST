@@ -5,18 +5,26 @@
 #include "astBufferStream.h"
 #include <stdbool.h>
 #include "vector"
-
 typedef struct
 {
     unsigned char Instack;
     unsigned char Idx;
+} UpvalueData;
+typedef struct Upvalue
+{
+    int len;
+    UpvalueData *data;
 } Upvalue;
-
 typedef struct
 {
     astBuffer VarName;
     uint32_t StartPC;
     uint32_t EndPC;
+} LocVarData;
+typedef struct LocVar
+{
+    int Len;
+    LocVarData *data;
 } LocVar;
 
 typedef struct
@@ -43,10 +51,8 @@ enum ConstantTypeTag
     CONSTANT_TAG_NUMBER = 3,
     CONSTANT_TAG_STR = 4,
 };
-
 typedef struct
 {
-
     enum ConstantTypeTag tag;
     union
     {
@@ -55,9 +61,28 @@ typedef struct
         uint64_t tag_integer;
         double tag_number;
         astBuffer tag_str;
-    } data;
+    };
+} Constant;
+typedef struct ConstantType
+{
+    int len;
+    Constant *data;
 } ConstantType;
-
+typedef struct Code
+{
+    int len;
+    uint32_t *data;
+} Code;
+typedef struct LineInfo
+{
+    int *LineInfo; // uint32_t
+    int LineInfoLen;
+} LineInfo;
+typedef struct UpvalueNames
+{
+    astBuffer *UpvalueNames; // astBuffer
+    int upvalusNameslen;
+} UpvalueNames;
 typedef struct Prototype
 {
     astBuffer Source;
@@ -66,13 +91,14 @@ typedef struct Prototype
     unsigned char NumParams;
     unsigned char IsVararg;
     unsigned char MaxStackSize;
-    std::vector<int> Code;                  // uint32_t
-    std::vector<ConstantType> *constants;   // ConstantType
-    std::vector<Upvalue> Upvalues;          // Upvalue
-    std::vector<struct Prototype *> Protos; // struct Prototype
-    std::vector<int> LineInfo;              // uint32_t
-    std::vector<LocVar> LocVars;            // LocVar
-    std::vector<astBuffer> UpvalueNames;    // astBuffer
+    struct Code Code;              // uint32_t
+    struct ConstantType constants; // ConstantType
+    struct Upvalue Upvalues;       // Upvalue
+    struct Prototype **Protos;     // struct Prototype
+    int ProtosLen;
+    struct LineInfo LineInfo;
+    struct LocVar LocVars; // LocVar
+    struct UpvalueNames UpvalueNames;
 } Prototype;
 
 typedef struct

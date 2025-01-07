@@ -15,14 +15,14 @@ ast_Bool ast_AddPc(ast_State *L, ast_Integer n)
 }
 ast_Integer ast_Fetch(ast_State *L)
 {
-    ast_Integer i = L->stack->closure->value.gc->cl.Code[L->stack->pc];
+    ast_Integer i = L->stack->closure->value.gc->cl.Code.data[L->stack->pc];
     L->stack->pc++;
     return i;
 }
 ast_Bool ast_GetConst(ast_State *L, int idx)
 {
 
-    ConstantType c = L->stack->closure->value.gc->cl.constants->at(idx);
+    Constant c = L->stack->closure->value.gc->cl.constants.data[idx];
     ast_StackPushConstant(L, c);
     return TRUE;
 }

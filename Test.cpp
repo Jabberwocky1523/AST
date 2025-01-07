@@ -19,7 +19,6 @@ int main(int argc, const char *const *argv)
         file_name = argv[1];
     }
     astBuffer file_contont = LoadFileToastBuffer(file_name);
-    LOG_NOTICE("123");
     Prototype *proto = astBinaryChunkUnDump(file_contont);
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));

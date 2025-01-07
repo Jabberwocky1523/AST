@@ -468,7 +468,7 @@ ast_Bool ast_PrintStack(ast_Stack *L)
     printf("\n");
     return TRUE;
 }
-ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val)
+ast_Bool ast_StackPushConstant(ast_State *L, Constant val)
 {
     switch (val.tag)
     {
@@ -476,18 +476,18 @@ ast_Bool ast_StackPushConstant(ast_State *L, ConstantType val)
         ast_StackPush(PStack(L), nullptr, AST_TNIL);
         return TRUE;
     case CONSTANT_TAG_BOOLEAN:
-        ast_StackPush(PStack(L), (ast_Bool)val.data.tag_boolean, AST_TBOOLEAN);
+        ast_StackPush(PStack(L), (ast_Bool)val.tag_boolean, AST_TBOOLEAN);
         return TRUE;
     case CONSTANT_TAG_NUMBER:
-        ast_StackPush(PStack(L), val.data.tag_number, AST_TNUMBER);
+        ast_StackPush(PStack(L), val.tag_number, AST_TNUMBER);
         return TRUE;
     case CONSTANT_TAG_INTEGER:
-        ast_StackPush(PStack(L), val.data.tag_integer, AST_TINTEGER);
+        ast_StackPush(PStack(L), val.tag_integer, AST_TINTEGER);
         return TRUE;
     case CONSTANT_TAG_STR:
     {
         char buffer[1024] = {0};
-        memcpy(buffer, astBufferData(val.data.tag_str), astBufferDataSize(val.data.tag_str));
+        memcpy(buffer, astBufferData(val.tag_str), astBufferDataSize(val.tag_str));
         char *a = (char *)malloc(sizeof(char));
         sprintf(a, "%s", buffer);
         ast_StackPush(L, a, AST_TSTRING);

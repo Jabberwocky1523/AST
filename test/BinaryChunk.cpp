@@ -145,7 +145,8 @@ static vector<int> BinaryChunkReadCode()
     vector<int> codes;
     for (int i = 0; i < code_element_len; i++)
     {
-        codes.push_back(CBufferStreamReadUInt32(buffer_stream));
+        int j = CBufferStreamReadUInt32(buffer_stream);
+        codes.push_back(j);
     }
     return codes;
 }
