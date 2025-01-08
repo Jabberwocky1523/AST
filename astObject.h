@@ -15,6 +15,8 @@ typedef double ast_Number;
 typedef unsigned char ast_Byte;
 typedef unsigned int ast_Hash;
 typedef long long ast_Integer;
+typedef struct ast_State ast_State;
+typedef ast_Integer (*ast_CFunction)(ast_State *L);
 // GC数据类型联合
 typedef union GCObject GCObject;
 #define GCCommonHeader \
@@ -84,6 +86,7 @@ typedef union GCObject
     GCHeader gch;
     ast_String ts;
     ast_Table tb;
+    ast_CFunction func;
     Prototype cl;
 } GCObject;
 // 栈作为虚拟寄存器
@@ -94,11 +97,13 @@ typedef struct ast_Stack
     int size;
     int pc;
     TValue *closure;
+    TValue Func;
     TValue *varargs;
     int varArgsLen = 0;
     int PrevIdx = 0;
     int nPrevFuncResults = 0;
     ast_Stack *prev;
+    ast_State *L;
 } ast_Stack;
 // 判断数据对象是否可回收
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)

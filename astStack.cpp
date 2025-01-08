@@ -4,7 +4,7 @@
 #include "astMath.h"
 #include "string.h"
 #include "log.h"
-ast_Stack *ast_NewStack(int size)
+ast_Stack *ast_NewStack(int size, ast_State *S)
 {
     ast_Stack *L = (ast_Stack *)malloc(sizeof(ast_Stack));
     L->Value = (TValue *)malloc(size * sizeof(TValue));
@@ -21,6 +21,7 @@ ast_Stack *ast_NewStack(int size)
     L->nPrevFuncResults = 0;
     L->PrevIdx = 0;
     L->varArgsLen = 0;
+    L->L = S;
     return L;
 }
 ast_Bool ast_StackCheck(ast_Stack *L, int n)
@@ -62,7 +63,11 @@ TValue ast_StackPop(ast_Stack *L)
 }
 int ast_StackAbsIndex(ast_Stack *L, int idx)
 {
-    if (idx >= 0)
+    if (idx <= AST_REGISTRYINDEX)
+    {
+        return idx;
+    }
+    else if (idx >= 0)
     {
         return idx;
     }
@@ -71,7 +76,11 @@ int ast_StackAbsIndex(ast_Stack *L, int idx)
 ast_Bool ast_StackIdxIsValid(ast_Stack *L, int idx)
 {
     idx = ast_StackAbsIndex(L, idx);
-    if (idx >= 0 && idx < L->top)
+    if (idx == AST_REGISTRYINDEX)
+    {
+        return TRUE;
+    }
+    else if (idx >= 0 && idx < L->top)
     {
         return TRUE;
     }
@@ -80,7 +89,11 @@ ast_Bool ast_StackIdxIsValid(ast_Stack *L, int idx)
 TValue ast_StackGetTValue(ast_Stack *L, int idx)
 {
     int absIdx = ast_StackAbsIndex(L, idx);
-    if (absIdx >= 0 && absIdx < L->top)
+    if (absIdx == AST_REGISTRYINDEX)
+    {
+        return L->L->Registry;
+    }
+    else if (absIdx >= 0 && absIdx < L->top)
     {
         return L->Value[absIdx];
     }
@@ -92,6 +105,10 @@ TValue ast_StackGetTValue(ast_Stack *L, int idx)
 ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
 {
     int absIdx = ast_StackAbsIndex(L, idx);
+    if (absIdx == AST_REGISTRYINDEX && value.tt == AST_TTABLE)
+    {
+        L->L->Registry = value;
+    }
     if (absIdx >= 0 && absIdx < L->top)
     {
         L->Value[absIdx] = value;

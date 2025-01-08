@@ -4,15 +4,15 @@
 #include "astStack.h"
 #include "astObject.h"
 #include "string.h"
+#include "astTable.h"
 #include "log.h"
 #include "astBinaryChunk.h"
 #include "astInstruction.h"
+#include "astFunc.h"
 #include "astVm.h"
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
 {
     int nRegs = 0;
-    ast_Stack *Stack = ast_NewStack(20);
-    g_s->StringBuff = realloc(NULL, 1024);
     StringTable ts;
     GCObject **hashtable;
     hashtable = (GCObject **)(malloc(sizeof(GCObject *) * 16));
@@ -25,6 +25,15 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     ts.size = 16;
     g_s->stringtable = ts;
     L->G_S = g_s;
+    TValue reg;
+    reg.tt = AST_TTABLE;
+    reg.value.gc = (GCObject *)astTable_Init(0, 0);
+    ast_Integer g = AST_RIDX_GLOBALS;
+    TValue key = Int2Ob(g);
+    TValue val = Tb2Ob(astTable_Init(0, 0));
+    astTable_PushVal(cast(ast_Table *, reg.value.gc), key, val);
+    L->Registry = reg;
+    ast_Stack *Stack = ast_NewStack(AST_MINSTACK, L);
     ast_PushStack(L, Stack);
     return TRUE;
 }
@@ -148,7 +157,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     int nRegs = clousure->value.gc->cl.MaxStackSize;
     int nParam = clousure->value.gc->cl.NumParams;
     int IsVarArg = clousure->value.gc->cl.IsVararg == 1;
-    ast_Stack *newStack = ast_NewStack(nRegs + 20);
+    ast_Stack *newStack = ast_NewStack(nRegs + 20, L);
     newStack->closure = clousure;
     TValue *vals = ast_PopN(PStack(L), nArgs);
     if (nParam > nArgs)
@@ -196,16 +205,52 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     {
         free(newStack->varargs);
     }
+    newStack = nullptr;
+    free(newStack);
+    return TRUE;
+}
+ast_Bool ast_CallCFunction(ast_State *L, TValue func, int nArgs, int nResults)
+{
+    ast_Stack *newStack = ast_NewStack(nArgs + 20, L);
+    newStack->Func = func;
+    TValue *vals = ast_PopN(PStack(L), nArgs);
+    ast_PopN(PStack(L), 1);
+    ast_PushN(newStack, vals, nArgs);
+    newStack->top = nArgs;
+    ast_PushStack(L, newStack);
+    ast_Integer num = func.value.gc->func(L);
+    ast_PopStack(L);
+    if (nResults >= 0)
+    {
+        L->stack->nPrevFuncResults = nResults;
+    }
+    if (num >= 0)
+    {
+        L->stack->nPrevFuncResults = num;
+        TValue *r = ast_PopN(newStack, num);
+        ast_PushN(PStack(L), r, num);
+        free(r);
+    }
+    free(newStack->Value);
+    if (newStack->varargs != nullptr)
+    {
+        free(newStack->varargs);
+    }
     free(newStack);
     return TRUE;
 }
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
 {
     TValue val = ast_StackGetTValue(PStack(L), -(nArgs + 1));
-    if (val.tt = AST_TFUNCTION)
+    if (val.tt == AST_TFUNCTION)
     {
         printf("call %s<%d,%d>\n", val.value.gc->cl.Source->data_, val.value.gc->cl.LineDefined, val.value.gc->cl.LastLineDefined);
         ast_CallAstClousure(L, &val, nArgs, nResults);
+    }
+    else if (val.tt == AST_TUSERFUNCTION)
+    {
+        printf("call CFunction %s<%d,%d>\n", val.value.gc->cl.Source->data_, val.value.gc->cl.LineDefined, val.value.gc->cl.LastLineDefined);
+        ast_CallCFunction(L, val, nArgs, nResults);
     }
     else
     {
@@ -235,5 +280,34 @@ ast_Bool ast_LoadProto(ast_State *L, int idx)
     tt.tt = AST_TFUNCTION;
     tt.value.gc = (GCObject *)proto;
     ast_StackPush(PStack(L), tt);
+    return TRUE;
+}
+ast_Bool ast_PushGlobalTable(ast_State *L)
+{
+    ast_Integer key = AST_RIDX_GLOBALS;
+    TValue global = astTable_GetVal(cast(ast_Table *, L->Registry.value.gc), Int2Ob(key));
+    ast_StackPush(PStack(L), global);
+    return TRUE;
+}
+ast_Bool ast_GetGlobal(ast_State *L, TValue name)
+{
+    ast_Integer key = AST_RIDX_GLOBALS;
+    TValue global = astTable_GetVal(cast(ast_Table *, L->Registry.value.gc), Int2Ob(key));
+    TValue tt = astTable_GetVal(cast(ast_Table *, global.value.gc), name);
+    ast_StackPush(PStack(L), tt);
+    return TRUE;
+}
+ast_Bool ast_SetGlobal(ast_State *L, TValue name)
+{
+    ast_Integer key = AST_RIDX_GLOBALS;
+    TValue global = astTable_GetVal(cast(ast_Table *, L->Registry.value.gc), Int2Ob(key));
+    TValue val = ast_StackPop(PStack(L));
+    astTable_PushVal(cast(ast_Table *, global.value.gc), name, val);
+    return TRUE;
+}
+ast_Bool ast_RegisterPushValue(ast_State *L, ast_CFunction func, TValue name)
+{
+    ast_PushCFunction(L, func);
+    ast_SetGlobal(L, name);
     return TRUE;
 }

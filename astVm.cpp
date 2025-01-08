@@ -504,6 +504,18 @@ ast_Bool _ast_Self(ast_State *L, Instruction i)
     return TRUE;
 }
 // END
+// gettabup
+ast_Bool _ast_GetTabUp(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_PushGlobalTable(L);
+    ast_GetRk(L, n.c);
+    ast_GetTableFromIdx(L, -2);
+    astack_ReplaceToIdx(PStack(L), n.a);
+    astack_Pop(PStack(L));
+    return TRUE;
+}
+// END
 
 ast_OpCode g_ast_opcodes[47] = {
     /*T  A     B       C    mode    name     action  */
@@ -513,7 +525,7 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 1, OpArgU, OpArgU, IABC, "LOADBOOL", _ast_LoadBool},
     {0, 1, OpArgU, OpArgN, IABC, "LOADNIL ", _ast_LoadNil},
     {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL"},
-    {0, 1, OpArgU, OpArgK, IABC, "GETTABUP"},
+    {0, 1, OpArgU, OpArgK, IABC, "GETTABUP", _ast_GetTabUp},
     {0, 1, OpArgR, OpArgK, IABC, "GETTABLE", _ast_GetTable},
     {0, 0, OpArgK, OpArgK, IABC, "SETTABUP"},
     {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL"},

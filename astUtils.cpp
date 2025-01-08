@@ -214,13 +214,13 @@ void PrintDetail(Prototype *proto)
 }
 void PrintAst(Prototype *proto)
 {
+    PrintHeader(proto);
+    PrintCode(proto);
+    PrintDetail(proto);
     if (proto->Protos == nullptr)
     {
         return;
     }
-    PrintHeader(proto);
-    PrintCode(proto);
-    PrintDetail(proto);
     int size = proto->ProtosLen;
     for (int i = 0; i < size; i++)
     {

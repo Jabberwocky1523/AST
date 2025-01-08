@@ -10,6 +10,7 @@
 #include "astMap.h"
 #include "astVm.h"
 #include "log.h"
+#include "astUser.h"
 #include "astTable.h"
 int main(int argc, const char *const *argv)
 {
@@ -25,6 +26,8 @@ int main(int argc, const char *const *argv)
     ast_Init(L, g_s);
     PrintAst(proto);
     ast_LoadChunk(L, file_contont, proto, nullptr, 0);
+    TValue name = Char2Ob(L, "print");
+    ast_RegisterPushValue(L, print, name);
     ast_Call(L, 0, 0);
     return 0;
 }

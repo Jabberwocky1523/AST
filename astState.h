@@ -28,7 +28,6 @@ typedef struct global_State
     StringTable stringtable;
     ast_Mem GCthreshold;
     ast_Mem totalbytes;
-    void *StringBuff;
 } global_State;
 
 typedef struct ast_State
@@ -36,8 +35,8 @@ typedef struct ast_State
     GCCommonHeader;
     global_State *G_S;
     ast_Stack *stack;
+    TValue Registry;
 } ast_State;
-
 // 全局定义
 
 ast_Bool ast_Init(ast_State *L, global_State *G_S);
@@ -49,4 +48,8 @@ ast_Integer ast_RegCount(ast_State *L);
 ast_Bool ast_LoadVararg(ast_State *L, int n);
 ast_Bool ast_LoadProto(ast_State *L, int idx);
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults);
+ast_Bool ast_PushGlobalTable(ast_State *L);
+ast_Bool ast_RegisterPushValue(ast_State *L, ast_CFunction func, TValue name);
+ast_Bool ast_SetGlobal(ast_State *L, TValue name);
+ast_Bool ast_GetGlobal(ast_State *L, TValue name);
 #endif

@@ -43,7 +43,13 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_TSTRING 5
 #define AST_TTABLE 6
 #define AST_TFUNCTION 7
+#define AST_TUSERFUNCTION 10
 #define AST_TUSERDATA 8
 #define AST_TTHREAD 9
+
+#define AST_MINSTACK 20
+#define AST_MAXSTACK 1000000
+#define AST_REGISTRYINDEX -AST_MAXSTACK - 1000
+#define AST_RIDX_GLOBALS 2
 
 #endif

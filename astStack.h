@@ -50,7 +50,7 @@
 #define astack_DataType(L, idx) ast_StackDataType(L, idx);
 #define astack_ToNumber(L, idx, flag) ast_ConvertToNumber(L->Value[idx], flag)
 #define astack_ToString(L, idx) ast_ConvertToString(L, L->stack->Value[idx])
-ast_Stack *ast_NewStack(int size);
+ast_Stack *ast_NewStack(int size, ast_State *S);
 ast_Bool ast_StackCheck(ast_Stack *L, int n);
 ast_Bool ast_StackPush(ast_Stack *L, TValue &value);
 TValue ast_StackPop(ast_Stack *L);
