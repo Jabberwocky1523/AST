@@ -26,8 +26,10 @@ int main(int argc, const char *const *argv)
     ast_Init(L, g_s);
     PrintAst(proto);
     ast_LoadChunk(L, file_contont, proto, nullptr, 0);
-    TValue name = Char2Ob(L, "print");
-    ast_RegisterPushValue(L, print, name);
+    TValue name = Char2Ob(L, "astprint");
+    ast_RegisterPushValue(L, astPrintTest, name);
+    name = Char2Ob(L, "astTest");
+    ast_RegisterPushValue(L, astTest, name);
     ast_Call(L, 0, 0);
     return 0;
 }

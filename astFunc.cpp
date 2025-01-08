@@ -4,7 +4,11 @@ ast_Bool ast_PushCFunction(ast_State *L, ast_CFunction func)
 {
     TValue tt;
     tt.tt = AST_TUSERFUNCTION;
-    tt.value.gc->func = func;
+    GCObject *ob = (GCObject *)malloc(sizeof(GCObject));
+    ob->func = func;
+    tt.value.gc = ob;
+    ob = nullptr;
+    free(ob);
     ast_StackPush(PStack(L), tt);
     return TRUE;
 }

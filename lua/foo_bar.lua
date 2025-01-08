@@ -11,11 +11,5 @@ local function max(t)
     end
     return val, idx
 end
-local t = { 4, 5, 7 }
+local t = { 4, 5, add(5, 5), add(4, 5), 7 }
 local v1, idx1 = max(t)
-t[1] = 8
-local v2 = max(t)
-t[2] = 9
-local v3 =max(t)
-local v4 = max(t)
-local v5 = max(t)

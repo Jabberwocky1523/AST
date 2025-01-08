@@ -94,6 +94,34 @@ TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag)
     }
     return tt;
 }
+TValue ast_IntegerToTValue(ast_Integer i)
+{
+    TValue tt;
+    tt.tt = AST_TINTEGER;
+    tt.value.i = i;
+    return tt;
+}
+TValue ast_NumberToTValue(ast_Number n)
+{
+    TValue tt;
+    tt.tt = AST_TNUMBER;
+    tt.value.n = n;
+    return tt;
+}
+TValue ast_BooleanToTValue(ast_Bool bo)
+{
+    TValue tt;
+    tt.tt = AST_TBOOLEAN;
+    tt.value.bo = bo;
+    return tt;
+}
+TValue ast_NilToTValue()
+{
+    TValue tt;
+    tt.tt = AST_TNIL;
+    tt.value.gc = nullptr;
+    return tt;
+}
 ast_Bool ast_PushStack(ast_State *L, ast_Stack *stack)
 {
     stack->prev = L->stack;
@@ -249,7 +277,7 @@ ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
     }
     else if (val.tt == AST_TUSERFUNCTION)
     {
-        printf("call CFunction %s<%d,%d>\n", val.value.gc->cl.Source->data_, val.value.gc->cl.LineDefined, val.value.gc->cl.LastLineDefined);
+        printf("call CFunction\n");
         ast_CallCFunction(L, val, nArgs, nResults);
     }
     else

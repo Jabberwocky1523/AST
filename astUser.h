@@ -1,4 +1,6 @@
 #ifndef AST_USER_H
+#define AST_USER_H
 #include "astState.h"
-ast_Integer print(ast_State *L);
+ast_Integer astPrintTest(ast_State *L);
+ast_Integer astTest(ast_State *L);
 #endif

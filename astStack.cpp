@@ -39,7 +39,6 @@ ast_Bool ast_StackCheck(ast_Stack *L, int n)
     }
     return TRUE;
 }
-
 ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
 {
     if (L->top == L->size)
@@ -471,6 +470,9 @@ ast_Bool ast_PrintTValue(TValue &val)
         return TRUE;
     case AST_TFUNCTION:
         printf("[FUNCTION] ");
+        return TRUE;
+    case AST_TUSERFUNCTION:
+        printf("[USERFUNCTION] ");
         return TRUE;
     default:
         return FALSE;
