@@ -9,6 +9,7 @@
 #include "astBinaryChunk.h"
 #include "astInstruction.h"
 #include "astFunc.h"
+#include "astUtils.h"
 #include "astMap.h"
 #include "astVm.h"
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
@@ -183,6 +184,9 @@ ast_Bool ast_RunAstClosure(ast_State *L)
         Instruction ins = ast_Fetch(L);
         ast_ExecuteOp(L, ins);
         printf("[%d] %s", pc + 1, InstructionOpName(ins));
+        printf("\t");
+        PrintOperand(ins);
+        printf("\t");
         ast_PrintStack(PStack(L));
         if (InstructionOpcode(ins) == OP_RETURN)
         {
@@ -369,7 +373,8 @@ ast_Bool ast_LoadProto(ast_State *L, int idx)
             }
             else
             {
-                cs->Upvalues[i] = L->stack->closure->Upvalues[proto->Upvalues.data->Idx];
+                if (L->stack->closure->Upvalues != nullptr)
+                    cs->Upvalues[i] = L->stack->closure->Upvalues[proto->Upvalues.data->Idx];
             }
         }
     }

@@ -5,6 +5,6 @@
 char *LoadFileContent(const char *file_name);
 
 astBuffer LoadFileToastBuffer(const char *file_name);
-
+void PrintOperand(uint32_t instruction);
 void PrintAst(Prototype *proto);
 #endif

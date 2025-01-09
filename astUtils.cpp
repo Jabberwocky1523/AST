@@ -58,7 +58,6 @@ void PrintHeader(Prototype *proto)
     printf("%d%s params, %d slots, %d upvalues, ", proto->NumParams, vararg_flag, proto->MaxStackSize, proto->Upvalues.len);
     printf("%d locals, %d constants, %d functions\n", proto->LocVars.Len, proto->constants.len, proto->ProtosLen);
 }
-
 void PrintOperands(Instruction instruction)
 {
     switch (InstructionOpMode(instruction))
@@ -119,7 +118,10 @@ void PrintOperands(Instruction instruction)
     }
     }
 }
-
+void PrintOperand(uint32_t instruction)
+{
+    PrintOperands((Instruction)instruction);
+}
 void PrintCode(Prototype *proto)
 {
     uint32_t *codes = proto->Code.data;

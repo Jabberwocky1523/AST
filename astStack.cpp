@@ -498,7 +498,7 @@ ast_Bool ast_PrintTValue(TValue &val)
         printf("[table] ");
         return TRUE;
     case AST_TFUNCTION:
-        printf("[FUNCTION] ");
+        printf("[FUNCTION%d-%d] ", val.value.gc->cl.pr->LineDefined, val.value.gc->cl.pr->LastLineDefined);
         return TRUE;
     case AST_TUSERFUNCTION:
         printf("[USERFUNCTION] ");

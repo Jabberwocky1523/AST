@@ -200,8 +200,8 @@ void astBinaryChunkReadUpvalues(astBufferStream buffer_stream, Prototype *proto)
     upvalues.len = upvalue_element_len;
     for (int i = 0; i < upvalue_element_len; i++)
     {
-        data[i].Idx = astBufferStreamReadUInt8(buffer_stream);
         data[i].Instack = astBufferStreamReadUInt8(buffer_stream);
+        data[i].Idx = astBufferStreamReadUInt8(buffer_stream);
     }
     upvalues.data = data;
     proto->Upvalues = upvalues;
