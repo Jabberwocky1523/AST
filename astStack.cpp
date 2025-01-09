@@ -3,6 +3,7 @@
 #include "astString.h"
 #include "astMath.h"
 #include "string.h"
+#include "astMap.h"
 #include "log.h"
 ast_Stack *ast_NewStack(int size, ast_State *S)
 {
@@ -12,10 +13,10 @@ ast_Stack *ast_NewStack(int size, ast_State *S)
     {
         L->Value[i].tt = AST_TNIL;
     }
+    L->openuvs = nullptr;
     L->top = 0;
     L->size = size;
     L->pc = 0;
-    L->closure = nullptr;
     L->prev = nullptr;
     L->varargs = nullptr;
     L->nPrevFuncResults = 0;
@@ -79,6 +80,15 @@ ast_Bool ast_StackIdxIsValid(ast_Stack *L, int idx)
     {
         return TRUE;
     }
+    else if (idx < AST_REGISTRYINDEX)
+    {
+        idx = AST_REGISTRYINDEX - idx - 1;
+        if (L->closure != nullptr && idx < L->closure->Uvslen)
+        {
+            return TRUE;
+        }
+        return FALSE;
+    }
     else if (idx >= 0 && idx < L->top)
     {
         return TRUE;
@@ -91,6 +101,15 @@ TValue ast_StackGetTValue(ast_Stack *L, int idx)
     if (absIdx == AST_REGISTRYINDEX)
     {
         return L->L->Registry;
+    }
+    else if (absIdx < AST_REGISTRYINDEX)
+    {
+        absIdx = AST_REGISTRYINDEX - absIdx - 1;
+        if (L->closure == nullptr || absIdx >= L->closure->Uvslen)
+        {
+            return Nil2Ob();
+        }
+        return L->closure->Upvalues[absIdx];
     }
     else if (absIdx >= 0 && absIdx < L->top)
     {
@@ -107,6 +126,16 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
     if (absIdx == AST_REGISTRYINDEX && value.tt == AST_TTABLE)
     {
         L->L->Registry = value;
+        return TRUE;
+    }
+    if (absIdx < AST_REGISTRYINDEX)
+    {
+        absIdx = AST_REGISTRYINDEX - absIdx - 1;
+        if (L->closure != nullptr && absIdx < L->closure->Uvslen)
+        {
+            L->closure->Upvalues[absIdx] = value;
+        }
+        return TRUE;
     }
     if (absIdx >= 0 && absIdx < L->top)
     {

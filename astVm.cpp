@@ -2,6 +2,7 @@
 #include "astMath.h"
 #include "astStack.h"
 #include "astOpcode.h"
+#include "astMap.h"
 #include "log.h"
 #include "astTable.h"
 ast_Integer ast_GetPc(ast_State *L)
@@ -15,14 +16,14 @@ ast_Bool ast_AddPc(ast_State *L, ast_Integer n)
 }
 ast_Integer ast_Fetch(ast_State *L)
 {
-    ast_Integer i = L->stack->closure->value.gc->cl.Code.data[L->stack->pc];
+    ast_Integer i = L->stack->closure->pr->Code.data[L->stack->pc];
     L->stack->pc++;
     return i;
 }
 ast_Bool ast_GetConst(ast_State *L, int idx)
 {
 
-    Constant c = L->stack->closure->value.gc->cl.constants.data[idx];
+    Constant c = L->stack->closure->pr->constants.data[idx];
     ast_StackPushConstant(L, c);
     return TRUE;
 }
@@ -48,13 +49,24 @@ ast_Bool _ast_Move(ast_State *L, Instruction i)
     astack_Copy(PStack(L), n.b, n.a);
     return TRUE;
 }
+ast_Bool _ast_CloseUpvalues(ast_State *L, ast_Integer n)
+{
+    for (int i = 0; i < L->stack->openuvs->Mnum; i++)
+    {
+        if (i >= n - 1)
+        {
+            astMap_RemoveFromKey(L->stack->openuvs, Int2Ob(i));
+        }
+    }
+    return TRUE;
+}
 ast_Bool _ast_Jmp(ast_State *L, Instruction i)
 {
     TAsBx n = InstructionTAsBx(i);
     ast_AddPc(L, n.sbx);
     if (n.a != 0)
     {
-        PANIC("Jmp错误");
+        _ast_CloseUpvalues(L, n.a);
     }
     return TRUE;
 }
@@ -504,18 +516,40 @@ ast_Bool _ast_Self(ast_State *L, Instruction i)
     return TRUE;
 }
 // END
-// gettabup
+// GetTabUp R[A] = Upvals[B][RK[C]]
 ast_Bool _ast_GetTabUp(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
-    ast_PushGlobalTable(L);
     ast_GetRk(L, n.c);
-    ast_GetTableFromIdx(L, -2);
+    ast_GetTableFromIdx(L, AstUpvalueIndex(n.b));
     astack_ReplaceToIdx(PStack(L), n.a);
-    astack_Pop(PStack(L));
     return TRUE;
 }
-// END
+// GetUpval R[A] = Upvals[B]
+ast_Bool _ast_GetUpval(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    astack_Copy(PStack(L), AstUpvalueIndex(n.b), n.a);
+    return TRUE;
+}
+// SetUpval Upvals[B] = R[A]
+ast_Bool _ast_SetUpval(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    TValue tt = ast_StackGetTValue(PStack(L), n.a);
+    L->stack->closure->Upvalues[n.b] = tt;
+    return TRUE;
+}
+// SetTabUp Upvals[A]RK[B] = RK[C]
+ast_Bool _ast_SetTabUp(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    ast_GetRk(L, n.b);
+    ast_GetRk(L, n.c);
+    ast_SetTableFromIdx(L, AstUpvalueIndex(n.a));
+    return TRUE;
+}
+//  END
 
 ast_OpCode g_ast_opcodes[47] = {
     /*T  A     B       C    mode    name     action  */
@@ -524,11 +558,11 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 1, OpArgN, OpArgN, IABx, "LOADKX  ", _ast_LoadKx},
     {0, 1, OpArgU, OpArgU, IABC, "LOADBOOL", _ast_LoadBool},
     {0, 1, OpArgU, OpArgN, IABC, "LOADNIL ", _ast_LoadNil},
-    {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL"},
+    {0, 1, OpArgU, OpArgN, IABC, "GETUPVAL", _ast_GetUpval},
     {0, 1, OpArgU, OpArgK, IABC, "GETTABUP", _ast_GetTabUp},
     {0, 1, OpArgR, OpArgK, IABC, "GETTABLE", _ast_GetTable},
-    {0, 0, OpArgK, OpArgK, IABC, "SETTABUP"},
-    {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL"},
+    {0, 0, OpArgK, OpArgK, IABC, "SETTABUP", _ast_SetTabUp},
+    {0, 0, OpArgU, OpArgN, IABC, "SETUPVAL", _ast_SetUpval},
     {0, 0, OpArgK, OpArgK, IABC, "SETTABLE", _ast_SetTable},
     {0, 1, OpArgU, OpArgU, IABC, "NEWTABLE", _ast_NewTable},
     {0, 1, OpArgR, OpArgK, IABC, "SELF    ", _ast_Self},

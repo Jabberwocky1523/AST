@@ -81,13 +81,23 @@ typedef struct ast_Table
     ast_Integer arrtop;
 } ast_Table;
 #define TableArrLen(o) ((o)->arrtop)
+typedef struct ast_Closure
+{
+    union
+    {
+        ast_UMaxAlign align;
+        Prototype *pr;
+        ast_CFunction func;
+    };
+    ast_Integer Uvslen;
+    TValue *Upvalues;
+} ast_Closure;
 typedef union GCObject
 {
     GCHeader gch;
     ast_String ts;
     ast_Table tb;
-    ast_CFunction func;
-    Prototype cl;
+    ast_Closure cl;
 } GCObject;
 // 栈作为虚拟寄存器
 typedef struct ast_Stack
@@ -96,8 +106,8 @@ typedef struct ast_Stack
     int top;
     int size;
     int pc;
-    TValue *closure;
-    TValue Func;
+    ast_Closure *closure;
+    ast_Map *openuvs;
     TValue *varargs;
     int varArgsLen = 0;
     int PrevIdx = 0;

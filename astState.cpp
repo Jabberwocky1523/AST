@@ -9,6 +9,7 @@
 #include "astBinaryChunk.h"
 #include "astInstruction.h"
 #include "astFunc.h"
+#include "astMap.h"
 #include "astVm.h"
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
 {
@@ -143,7 +144,17 @@ ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto, ast_Stri
     }
     TValue tt;
     tt.tt = AST_TFUNCTION;
-    tt.value.gc = (GCObject *)proto;
+    ast_Closure *cs = (ast_Closure *)calloc(1, sizeof(ast_Closure));
+    cs->Upvalues = nullptr;
+    cs->pr = proto;
+    tt.value.gc = cast(GCObject *, cs);
+    if (proto->Upvalues.len > 0)
+    {
+        cs->Upvalues = (TValue *)calloc(proto->Upvalues.len, sizeof(TValue));
+        cs->Uvslen = proto->Upvalues.len;
+        TValue env = astTable_GetVal(cast(ast_Table *, L->Registry.value.gc), Int2Ob(AST_RIDX_GLOBALS));
+        cs->Upvalues[0] = env;
+    }
     ast_StackPush(PStack(L), tt);
     return TRUE;
 }
@@ -180,13 +191,18 @@ ast_Bool ast_RunAstClosure(ast_State *L)
     }
     return TRUE;
 }
-ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nResults)
+ast_Bool ast_CallAstClousure(ast_State *L, ast_Closure *closure, int nArgs, int nResults)
 {
-    int nRegs = clousure->value.gc->cl.MaxStackSize;
-    int nParam = clousure->value.gc->cl.NumParams;
-    int IsVarArg = clousure->value.gc->cl.IsVararg == 1;
+    int nRegs = closure->pr->MaxStackSize;
+    int nParam = closure->pr->NumParams;
+    int IsVarArg = closure->pr->IsVararg == 1;
     ast_Stack *newStack = ast_NewStack(nRegs + 20, L);
-    newStack->closure = clousure;
+    newStack->closure = closure;
+    if (closure->pr->Upvalues.len > 0 && newStack->closure->Upvalues == nullptr)
+    {
+        newStack->closure->Upvalues = (TValue *)calloc(closure->pr->Upvalues.len, sizeof(TValue));
+        newStack->closure->Uvslen = closure->pr->Upvalues.len;
+    }
     TValue *vals = ast_PopN(PStack(L), nArgs);
     if (nParam > nArgs)
     {
@@ -233,20 +249,30 @@ ast_Bool ast_CallAstClousure(ast_State *L, TValue *clousure, int nArgs, int nRes
     {
         free(newStack->varargs);
     }
+    else if (newStack->closure->Upvalues != nullptr)
+    {
+        free(newStack->closure->Upvalues);
+    }
+    else if (newStack->openuvs != nullptr)
+    {
+        free(newStack->openuvs);
+    }
+    newStack->closure = nullptr;
+    free(newStack->closure);
     newStack = nullptr;
     free(newStack);
     return TRUE;
 }
-ast_Bool ast_CallCFunction(ast_State *L, TValue func, int nArgs, int nResults)
+ast_Bool ast_CallCFunction(ast_State *L, ast_Closure *func, int nArgs, int nResults)
 {
     ast_Stack *newStack = ast_NewStack(nArgs + 20, L);
-    newStack->Func = func;
+    newStack->closure = func;
     TValue *vals = ast_PopN(PStack(L), nArgs);
     ast_PopN(PStack(L), 1);
     ast_PushN(newStack, vals, nArgs);
     newStack->top = nArgs;
     ast_PushStack(L, newStack);
-    ast_Integer num = func.value.gc->func(L);
+    ast_Integer num = newStack->closure->func(L);
     ast_PopStack(L);
     if (nResults >= 0)
     {
@@ -257,6 +283,7 @@ ast_Bool ast_CallCFunction(ast_State *L, TValue func, int nArgs, int nResults)
         L->stack->nPrevFuncResults = num;
         TValue *r = ast_PopN(newStack, num);
         ast_PushN(PStack(L), r, num);
+        r = nullptr;
         free(r);
     }
     free(newStack->Value);
@@ -264,6 +291,13 @@ ast_Bool ast_CallCFunction(ast_State *L, TValue func, int nArgs, int nResults)
     {
         free(newStack->varargs);
     }
+    else if (newStack->closure->Upvalues != nullptr)
+    {
+        free(newStack->closure->Upvalues);
+    }
+    newStack->closure = nullptr;
+    free(newStack->closure);
+    newStack = nullptr;
     free(newStack);
     return TRUE;
 }
@@ -272,13 +306,13 @@ ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
     TValue val = ast_StackGetTValue(PStack(L), -(nArgs + 1));
     if (val.tt == AST_TFUNCTION)
     {
-        printf("call %s<%d,%d>\n", val.value.gc->cl.Source->data_, val.value.gc->cl.LineDefined, val.value.gc->cl.LastLineDefined);
-        ast_CallAstClousure(L, &val, nArgs, nResults);
+        printf("call %s<%d,%d>\n", val.value.gc->cl.pr->Source->data_, val.value.gc->cl.pr->LineDefined, val.value.gc->cl.pr->LastLineDefined);
+        ast_CallAstClousure(L, &val.value.gc->cl, nArgs, nResults);
     }
     else if (val.tt == AST_TUSERFUNCTION)
     {
         printf("call CFunction\n");
-        ast_CallCFunction(L, val, nArgs, nResults);
+        ast_CallCFunction(L, &val.value.gc->cl, nArgs, nResults);
     }
     else
     {
@@ -288,7 +322,7 @@ ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
 }
 ast_Integer ast_RegCount(ast_State *L)
 {
-    return L->stack->closure->value.gc->cl.MaxStackSize;
+    return L->stack->closure->pr->MaxStackSize;
 }
 ast_Bool ast_LoadVararg(ast_State *L, int n)
 {
@@ -303,10 +337,42 @@ ast_Bool ast_LoadVararg(ast_State *L, int n)
 }
 ast_Bool ast_LoadProto(ast_State *L, int idx)
 {
-    Prototype *proto = L->stack->closure->value.gc->cl.Protos[idx];
+    Prototype *proto = L->stack->closure->pr->Protos[idx];
     TValue tt;
     tt.tt = AST_TFUNCTION;
-    tt.value.gc = (GCObject *)proto;
+    ast_Closure *cs = (ast_Closure *)calloc(1, sizeof(ast_Closure));
+    cs->pr = proto;
+    cs->Upvalues = nullptr;
+    tt.value.gc = (GCObject *)cs;
+    if (proto->Upvalues.len > 0)
+    {
+        cs->Upvalues = (TValue *)calloc(proto->Upvalues.len, sizeof(TValue));
+        cs->Uvslen = proto->Upvalues.len;
+        for (int i = 0; i < proto->Upvalues.len; i++)
+        {
+            if (proto->Upvalues.data->Instack == 1)
+            {
+                if (L->stack->openuvs == nullptr)
+                {
+                    L->stack->openuvs = astMap_Init(8);
+                }
+                TValue res = astMap_GetValFromKey(L->stack->openuvs, Int2Ob(proto->Upvalues.data->Idx));
+                if (res.tt != AST_TNIL)
+                {
+                    cs->Upvalues[i] = res;
+                }
+                else
+                {
+                    cs->Upvalues[i] = L->stack->Value[proto->Upvalues.data->Idx];
+                    astMap_PushKeyVal(L->stack->openuvs, Int2Ob(proto->Upvalues.data->Idx), cs->Upvalues[i]);
+                }
+            }
+            else
+            {
+                cs->Upvalues[i] = L->stack->closure->Upvalues[proto->Upvalues.data->Idx];
+            }
+        }
+    }
     ast_StackPush(PStack(L), tt);
     return TRUE;
 }

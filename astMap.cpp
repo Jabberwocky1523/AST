@@ -129,6 +129,7 @@ ast_Bool astMap_RemoveFromKey(ast_Map *map, TValue key)
     pre->next = cur->next;
   }
   cur->next = nullptr;
+  cur = nullptr;
   map->Mnum--;
   free(cur);
   return TRUE;
