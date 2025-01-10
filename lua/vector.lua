@@ -14,3 +14,4 @@ end
 v1 = vector(1, 2)
 v2 = vector(2, 3)
 v3 = v1 + v2
+v3()

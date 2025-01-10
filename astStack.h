@@ -64,6 +64,7 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx);
 int ast_StackDataType(ast_Stack *L, int idx);
 ast_Bool ast_ConvertToBoolean(TValue val);
 ast_Number ast_ConvertToNumber(TValue val);
+ast_Number ast_ConvertToNumberAndGetFlag(TValue val, ast_Integer *flag);
 ast_Integer ast_ConvertToInteger(TValue val);
 ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag);
 ast_String ast_ConvertToString(ast_State *L, TValue &val);

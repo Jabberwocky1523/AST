@@ -218,17 +218,27 @@ const char *ast_CTS(ast_State *L, TValue val)
 TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
 {
     TValue tt;
+    ast_Integer af = 0;
+    ast_Integer bf = 0;
     if (op.DoubleFunc == NULL)
     {
 
         tt.tt = AST_TINTEGER;
-        tt.value.i = op.IntegerFunc(ast_ConvertToInteger(a), ast_ConvertToInteger(b));
+        tt.value.i = op.IntegerFunc(ast_ConvertToIntegerAndGetFlag(a, &af), ast_ConvertToIntegerAndGetFlag(b, &bf));
+        if (af != 1 || bf != 1)
+        {
+            return Nil2Ob();
+        }
         return tt;
     }
     else if (op.IntegerFunc == NULL)
     {
         tt.tt = AST_TNUMBER;
-        tt.value.n = op.DoubleFunc(ast_ConvertToNumber(a), ast_ConvertToNumber(b));
+        tt.value.n = op.DoubleFunc(ast_ConvertToNumberAndGetFlag(a, &af), ast_ConvertToNumberAndGetFlag(b, &bf));
+        if (af != 1 || bf != 1)
+        {
+            return Nil2Ob();
+        }
         return tt;
     }
     else
@@ -236,13 +246,21 @@ TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
         if (a.tt == AST_TINTEGER && b.tt == AST_TINTEGER)
         {
             tt.tt = AST_TINTEGER;
-            tt.value.i = op.IntegerFunc(ast_ConvertToInteger(a), ast_ConvertToInteger(b));
+            tt.value.i = op.IntegerFunc(ast_ConvertToIntegerAndGetFlag(a, &af), ast_ConvertToIntegerAndGetFlag(b, &bf));
+            if (af != 1 || bf != 1)
+            {
+                return Nil2Ob();
+            }
             return tt;
         }
         else
         {
             tt.tt = AST_TNUMBER;
-            tt.value.n = op.DoubleFunc(ast_ConvertToNumber(a), ast_ConvertToNumber(b));
+            tt.value.n = op.DoubleFunc(ast_ConvertToNumberAndGetFlag(a, &af), ast_ConvertToNumberAndGetFlag(b, &bf));
+            if (af != 1 || bf != 1)
+            {
+                return Nil2Ob();
+            }
             return tt;
         }
     }
@@ -252,6 +270,8 @@ TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
 }
 ast_Bool ast_CallMetaMethod(ast_State *L, TValue a, TValue b, TValue str)
 {
+    TValue mt = ast_GetMetaTable(L, a);
+    ast_PrintTable(mt.value.gc->tb);
     TValue m1 = ast_GetMetaField(L, a, str);
     if (m1.tt == AST_TNIL)
     {

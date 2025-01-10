@@ -338,6 +338,7 @@ ast_Bool _ast_SetTable(ast_State *L, Instruction i)
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
     ast_SetTableFromIdx(L, n.a);
+    TValue tb = L->stack->Value[n.a];
     return TRUE;
 }
 ////R(A)[(C - 1) * FPF + i] = R(A + i) 1 <= i <= B 给数组赋值
@@ -530,6 +531,7 @@ ast_Bool _ast_GetUpval(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     astack_Copy(PStack(L), AstUpvalueIndex(n.b), n.a);
+    TValue tb = L->stack->Value[n.a];
     return TRUE;
 }
 // SetUpval Upvals[B] = R[A]
@@ -547,6 +549,7 @@ ast_Bool _ast_SetTabUp(ast_State *L, Instruction i)
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
     ast_SetTableFromIdx(L, AstUpvalueIndex(n.a));
+
     return TRUE;
 }
 //  END

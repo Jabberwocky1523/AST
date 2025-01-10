@@ -259,6 +259,50 @@ ast_Number ast_ConvertToNumber(TValue val)
         PANIC("该类型无法转换到Number");
     }
 }
+ast_Number ast_ConvertToNumberAndGetFlag(TValue val, ast_Integer *flag)
+{
+    *flag = 0;
+    switch (val.tt)
+    {
+    case AST_TNIL:
+        *flag = 1;
+        return 0;
+    case AST_TBOOLEAN:
+    {
+        switch (val.value.bo)
+        {
+        case FALSE:
+            *flag = 1;
+            return 0;
+        case TRUE:
+            *flag = 1;
+            return 1;
+        }
+    }
+    case AST_TNUMBER:
+        *flag = 1;
+        return val.value.n;
+    case AST_TSTRING:
+    {
+        ast_Number tmp = 0;
+        if (!ast_IsNumeric(getstr(&val.value.gc->ts)))
+        {
+            PANIC("字符串包含非数字");
+        }
+        *flag = 1;
+        assert(tmp = atof(getstr(&val.value.gc->ts)));
+        return tmp;
+    }
+    case AST_TINTEGER:
+        *flag = 1;
+        return (ast_Number)val.value.i;
+    default:
+    {
+        *flag = 0;
+        return 0;
+    }
+    }
+}
 ast_Integer ast_ConvertToInteger(TValue val)
 {
     switch (val.tt)
@@ -304,6 +348,7 @@ ast_Integer ast_ConvertToInteger(TValue val)
 }
 ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
 {
+    *flag = 0;
     switch (val.tt)
     {
     case AST_TBOOLEAN:
@@ -337,7 +382,8 @@ ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
         *flag = 1;
         return val.value.i;
     default:
-        PANIC("该类型无法转换为Integer");
+        *flag = 0;
+        return 0;
     }
 }
 ast_String ast_ConvertToString(ast_State *L, TValue &val)
