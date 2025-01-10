@@ -22,4 +22,11 @@ ast_Bool ast_SetTableFromString(ast_State *L, ast_Integer idx, TValue StrKey);
 ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey);
 ast_Bool ast_PrintTable(ast_Table tb);
 ast_Bool ast_FreeTable(ast_Table *tb);
+// MetaTable
+ast_Bool ast_SetMetaTable(ast_State *L, TValue mt, TValue val);
+TValue ast_GetMetaTable(ast_State *L, TValue val);
+TValue ast_GetMetaField(ast_State *L, TValue val, TValue str);
+ast_Bool ast_GetMetaTableFromIdx(ast_State *L, ast_Integer idx);
+ast_Bool ast_SetMetaTableFromIdx(ast_State *L, ast_Integer idx);
+
 #endif

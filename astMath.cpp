@@ -6,23 +6,24 @@
 #include "astStack.h"
 #include "astString.h"
 #include "string.h"
+#include "astTable.h"
 #include "astOpcode.h"
 #include "log.h"
 ast_Operator g_Arith_operators[14] = {
-    {ast_IntegerAdd, ast_NumberAdd},
-    {ast_IntegerSub, ast_NumberSub},
-    {ast_IntegerMul, ast_NumberMul},
-    {ast_IntegerMod, ast_NumberMod},
-    {NULL, ast_NumberPow},
-    {NULL, ast_NumberDiv},
-    {ast_IFloorDiv, ast_FFloorDiv},
-    {ast_Band, NULL},
-    {ast_Bor, NULL},
-    {ast_Bxor, NULL},
-    {ast_Shl, NULL},
-    {ast_Shr, NULL},
-    {ast_IntegerUnm, ast_NumberUnm},
-    {ast_Bnot, NULL}};
+    {"__add", ast_IntegerAdd, ast_NumberAdd},
+    {"__sub", ast_IntegerSub, ast_NumberSub},
+    {"__mul", ast_IntegerMul, ast_NumberMul},
+    {"__mod", ast_IntegerMod, ast_NumberMod},
+    {"__pow", NULL, ast_NumberPow},
+    {"__div", NULL, ast_NumberDiv},
+    {"__idiv", ast_IFloorDiv, ast_FFloorDiv},
+    {"__band", ast_Band, NULL},
+    {"__bor", ast_Bor, NULL},
+    {"__bxor", ast_Bxor, NULL},
+    {"__shl", ast_Shl, NULL},
+    {"shr", ast_Shr, NULL},
+    {"__unm", ast_IntegerUnm, ast_NumberUnm},
+    {"__bnot", ast_Bnot, NULL}};
 ast_Bool ast_IsNumeric(const char *str)
 {
     regex_t regex;
@@ -249,6 +250,24 @@ TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
     tt.value.gc = NULL;
     return tt;
 }
+ast_Bool ast_CallMetaMethod(ast_State *L, TValue a, TValue b, TValue str)
+{
+    TValue m1 = ast_GetMetaField(L, a, str);
+    if (m1.tt == AST_TNIL)
+    {
+        m1 = ast_GetMetaField(L, b, str);
+        if (m1.tt == AST_TNIL)
+        {
+            return FALSE;
+        }
+    }
+    ast_StackCheck(PStack(L), 4);
+    ast_StackPush(PStack(L), m1);
+    ast_StackPush(PStack(L), a);
+    ast_StackPush(PStack(L), b);
+    ast_Call(L, 2, 1);
+    return TRUE;
+}
 ast_Bool ast_Arith(ast_State *S, int op)
 {
     ast_Stack *L = S->stack;
@@ -267,10 +286,13 @@ ast_Bool ast_Arith(ast_State *S, int op)
     if (result.tt != AST_TNIL)
     {
         ast_StackPush(L, result);
+        return TRUE;
     }
-    else
+    char *mn = ope.MetaMethod;
+    ast_Bool ok = ast_CallMetaMethod(S, a, b, Char2Ob(S, mn));
+    if (ok == FALSE)
     {
-        PANIC("Arith Error");
+        PANIC("arith error");
     }
     return TRUE;
 }
@@ -312,6 +334,19 @@ int _ast_Eq(ast_State *L, TValue a, TValue b)
     case AST_TNUMBER:
     {
         return a.value.n == ast_ConvertToNumber(b);
+    }
+    case AST_TTABLE:
+    {
+        if (b.tt == AST_TTABLE && L != nullptr)
+        {
+            ast_Bool ok = ast_CallMetaMethod(L, a, b, Char2Ob(L, "__eq"));
+            if (ok == TRUE)
+            {
+                TValue res = ast_StackPop(PStack(L));
+                return ast_ConvertToBoolean(res);
+            }
+        }
+        return 0;
     }
     default:
         return 0;
@@ -369,6 +404,12 @@ int _ast_Lt(ast_State *L, TValue a, TValue b)
     }
     break;
     }
+    ast_Bool ok = ast_CallMetaMethod(L, a, b, Char2Ob(L, "__lt"));
+    if (ok == TRUE)
+    {
+        TValue result = astack_Pop(PStack(L));
+        return ast_ConvertToBoolean(result);
+    }
     PANIC("无效的比较指令");
 }
 
@@ -424,6 +465,18 @@ int _ast_Le(ast_State *L, TValue a, TValue b)
     }
     break;
     }
+    ast_Bool ok = ast_CallMetaMethod(L, a, b, Char2Ob(L, "__le"));
+    if (ok == TRUE)
+    {
+        TValue result = astack_Pop(PStack(L));
+        return ast_ConvertToBoolean(result);
+    }
+    ok = ast_CallMetaMethod(L, b, a, Char2Ob(L, "__lt"));
+    if (ok == TRUE)
+    {
+        TValue result = astack_Pop(PStack(L));
+        return !ast_ConvertToBoolean(result);
+    }
     PANIC("比较错误");
 }
 ast_Bool ast_Compare(ast_State *L, int idx1, int idx2, int op)
@@ -461,7 +514,14 @@ ast_Bool ast_Len(ast_State *L, int idx)
         return TRUE;
     }
     default:
-        PANIC("长度计算错误，不是字符串或表");
+    {
+        ast_Bool bo = ast_CallMetaMethod(L, tmp, tmp, Char2Ob(L, "__len"));
+        if (bo == FALSE)
+        {
+            PANIC("长度计算有误！");
+        }
+        return TRUE;
+    }
     }
     return TRUE;
 }
@@ -490,10 +550,17 @@ ast_Bool ast_Concat(ast_State *L, int n)
                 tt.value.gc = (GCObject *)s;
                 tt.tt = AST_TSTRING;
                 ast_StackPush(PStack(L), tt);
+                free(a);
             }
             else
             {
-                break;
+                TValue a = astack_Pop(PStack(L));
+                TValue b = astack_Pop(PStack(L));
+                ast_Bool ok = ast_CallMetaMethod(L, a, b, Char2Ob(L, "__concat"));
+                if (ok == FALSE)
+                {
+                    PANIC("concat error");
+                }
             }
         }
     }

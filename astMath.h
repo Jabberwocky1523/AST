@@ -30,6 +30,7 @@ ast_Integer ast_Bnot(ast_Integer a, ast_Integer nil);
 
 typedef struct ast_Operator
 {
+    char *MetaMethod;
     ast_Integer (*IntegerFunc)(ast_Integer a, ast_Integer b);
     ast_Number (*DoubleFunc)(ast_Number a, ast_Number b);
 } ast_Operator;

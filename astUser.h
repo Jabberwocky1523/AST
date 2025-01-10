@@ -3,4 +3,6 @@
 #include "astState.h"
 ast_Integer astPrintTest(ast_State *L);
 ast_Integer astTest(ast_State *L);
+ast_Integer getMetatable(ast_State *L);
+ast_Integer setMetatable(ast_State *L);
 #endif

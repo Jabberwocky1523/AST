@@ -3,6 +3,7 @@
 #include "astMath.h"
 #include "astStack.h"
 #include "astString.h"
+#include "string.h"
 #include "log.h"
 ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
 {
@@ -21,6 +22,7 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
         tb->HashMap = map;
     }
     tb->next = NULL;
+    tb->MetaTable = nullptr;
     tb->tt = AST_TTABLE;
     tb->arrtop = 0;
     tb->arrSize = arrSize;
@@ -141,6 +143,41 @@ ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val)
     }
     return TRUE;
 }
+ast_Bool ast_SetMetaTable(ast_State *L, TValue mt, TValue val)
+{
+    if (val.tt == AST_TTABLE && mt.tt == AST_TTABLE)
+    {
+        val.value.gc->tb.MetaTable = cast(ast_Table *, mt.value.gc);
+        return TRUE;
+    }
+    char *str = (char *)calloc(5, sizeof(char));
+    sprintf(str, "_MT%d", val.tt);
+    ast_String *key = astString_NewLStr(L, str, strlen(str));
+    free(str);
+    astTable_PushVal(cast(ast_Table *, L->Registry.value.gc), Str2Ob(L, key), mt);
+    return TRUE;
+}
+TValue ast_GetMetaTable(ast_State *L, TValue val)
+{
+    if (val.tt == AST_TTABLE)
+    {
+        return Tb2Ob(val.value.gc->tb.MetaTable);
+    }
+    char *str = (char *)calloc(5, sizeof(char));
+    sprintf(str, "_MT%d", val.tt);
+    ast_String *key = astString_NewLStr(L, str, strlen(str));
+    free(str);
+    return astTable_GetVal(cast(ast_Table *, L->Registry.value.gc), Str2Ob(L, key));
+}
+TValue ast_GetMetaField(ast_State *L, TValue val, TValue str)
+{
+    TValue mt = ast_GetMetaTable(L, val);
+    if (mt.tt != AST_TNIL)
+    {
+        return astTable_GetVal(cast(ast_Table *, mt.value.gc), str);
+    }
+    return Nil2Ob();
+}
 ast_Bool ast_CreateTableAndPush(ast_State *L, ast_Integer arrSize, ast_Integer mapsize)
 {
     ast_Table *tb = astTable_Init(arrSize, mapsize);
@@ -155,42 +192,98 @@ ast_Bool ast_NewTable(ast_State *L)
     return ast_CreateTableAndPush(L, 0, 0);
 }
 // 将表中key对应val压入stack
-ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key)
+ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key, ast_Bool ign)
 {
-    if (tb.tt != AST_TTABLE)
+    if (tb.tt == AST_TTABLE)
     {
-        PANIC("取到的不是表");
+        TValue val = astTable_GetVal(&tb.value.gc->tb, key);
+        TValue hmf = ast_GetMetaField(L, tb, Char2Ob(L, "__index"));
+        if (ign || val.tt != AST_TNIL || hmf.tt == AST_TNIL)
+            ast_StackPush(PStack(L), val);
+        return val.tt;
     }
-    TValue val = astTable_GetVal(&tb.value.gc->tb, key);
-    ast_StackPush(PStack(L), val);
-    return val.tt;
+    if (!ign)
+    {
+        TValue mf = ast_GetMetaField(L, tb, Char2Ob(L, "__index"));
+        if (mf.tt != AST_TNIL)
+        {
+            switch (mf.tt)
+            {
+            case AST_TTABLE:
+            {
+                return _ast_GetTable(L, mf, key, FALSE);
+            }
+            case AST_TFUNCTION:
+            case AST_TUSERFUNCTION:
+            {
+                ast_StackPush(PStack(L), mf);
+                ast_StackPush(PStack(L), tb);
+                ast_StackPush(PStack(L), key);
+                ast_Call(L, 2, 1);
+                TValue val = ast_StackGetTValue(PStack(L), -1);
+                return val.tt;
+            }
+            }
+        }
+    }
+    PANIC("index error");
 }
 // 从idx获取表，根据栈顶值从表中取值，然后将值push到栈顶
 ast_Type ast_GetTableFromIdx(ast_State *L, ast_Integer idx)
 {
     TValue tb = ast_StackGetTValue(PStack(L), idx);
     TValue key = astack_Pop(PStack(L));
-    return _ast_GetTable(L, tb, key);
+    return _ast_GetTable(L, tb, key, FALSE);
 }
-// 与ast_GetTableFromIdx类似，值变为自定义char *(HashMap)
+// 与ast_GetTableFromIdx类似，key变为自定义char *(HashMap)
 ast_Type ast_GetTableFromString(ast_State *L, ast_Integer idx, TValue str)
 {
     TValue tb = ast_StackGetTValue(PStack(L), idx);
-    return _ast_GetTable(L, tb, str);
+    return _ast_GetTable(L, tb, str, FALSE);
 }
-// 与ast_GetTableFromIdx类似，值变为自定义数值（数组）
+// 与ast_GetTableFromIdx类似，key变为自定义数值（数组）
 ast_Type ast_GetTableFromNum(ast_State *L, ast_Integer idx, TValue num)
 {
     TValue tb = ast_StackGetTValue(PStack(L), idx);
-    return _ast_GetTable(L, tb, num);
+    return _ast_GetTable(L, tb, num, FALSE);
 }
-ast_Bool _ast_SetTable(TValue tb, TValue key, TValue val)
+ast_Bool _ast_SetTable(ast_State *L, TValue tb, TValue key, TValue val, ast_Bool ign)
 {
-    if (tb.tt != AST_TTABLE)
+    if (tb.tt == AST_TTABLE)
     {
-        PANIC("取到的不是表");
+        TValue kv = astTable_GetVal(cast(ast_Table *, tb.value.gc), key);
+        TValue hmf = ast_GetMetaField(L, tb, Char2Ob(L, "__newindex"));
+        if (ign || kv.tt != AST_TNIL || hmf.tt == AST_TNIL)
+        {
+            astTable_PushVal(&(tb.value.gc->tb), key, val);
+            return TRUE;
+        }
     }
-    return astTable_PushVal(&(tb.value.gc->tb), key, val);
+    if (!ign)
+    {
+        TValue mf = ast_GetMetaField(L, tb, Char2Ob(L, "__newindex"));
+        if (mf.tt != AST_TNIL)
+        {
+            switch (mf.tt)
+            {
+            case AST_TTABLE:
+            {
+                return _ast_SetTable(L, mf, key, val, FALSE);
+            }
+            case AST_TFUNCTION:
+            case AST_TUSERFUNCTION:
+            {
+                ast_StackPush(PStack(L), mf);
+                ast_StackPush(PStack(L), tb);
+                ast_StackPush(PStack(L), key);
+                ast_StackPush(PStack(L), val);
+                ast_Call(L, 3, 0);
+                return TRUE;
+            }
+            }
+        }
+    }
+    PANIC("newindex error");
 }
 // 栈顶弹出两个值分别为val,key(先v后k) 然后传给idx位置的表
 ast_Bool ast_SetTableFromIdx(ast_State *L, ast_Integer idx)
@@ -198,21 +291,21 @@ ast_Bool ast_SetTableFromIdx(ast_State *L, ast_Integer idx)
     TValue tb = ast_StackGetTValue(PStack(L), idx);
     TValue val = ast_StackPop(PStack(L));
     TValue key = ast_StackPop(PStack(L));
-    return _ast_SetTable(tb, key, val);
+    return _ast_SetTable(L, tb, key, val, FALSE);
 }
 // idx确定表位置，val由stackpop,指定str类型的key
 ast_Bool ast_SetTableFromString(ast_State *L, ast_Integer idx, TValue StrKey)
 {
     TValue tb = ast_StackGetTValue(PStack(L), idx);
     TValue val = ast_StackPop(PStack(L));
-    return _ast_SetTable(tb, StrKey, val);
+    return _ast_SetTable(L, tb, StrKey, val, FALSE);
 }
 // idx确定表位置，val由stackpop,指定num类型的key
 ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey)
 {
     TValue tb = ast_StackGetTValue(PStack(L), idx);
     TValue val = ast_StackPop(PStack(L));
-    return _ast_SetTable(tb, NumKey, val);
+    return _ast_SetTable(L, tb, NumKey, val, FALSE);
 }
 ast_Bool ast_PrintTableArr(ast_Table tb)
 {
@@ -241,5 +334,31 @@ ast_Bool ast_FreeTable(ast_Table *tb)
         ast_FreeTvaluePoint(&tb->arr[i]);
     }
     free(tb);
+    return TRUE;
+}
+ast_Bool ast_GetMetaTableFromIdx(ast_State *L, ast_Integer idx)
+{
+    TValue val = ast_StackGetTValue(PStack(L), idx);
+    TValue mt = ast_GetMetaTable(L, val);
+    if (mt.tt != AST_TNIL)
+    {
+        ast_StackPush(PStack(L), mt);
+        return TRUE;
+    }
+    return FALSE;
+}
+// mt从栈中弹出
+ast_Bool ast_SetMetaTableFromIdx(ast_State *L, ast_Integer idx)
+{
+    TValue val = ast_StackGetTValue(PStack(L), idx);
+    TValue mt = astack_Pop(PStack(L));
+    if (mt.tt == AST_TTABLE)
+    {
+        ast_SetMetaTable(L, mt, val);
+    }
+    else
+    {
+        PANIC("mt不是表");
+    }
     return TRUE;
 }

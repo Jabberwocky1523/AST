@@ -77,6 +77,7 @@ typedef struct ast_Table
     GCCommonHeader;
     ast_Map *HashMap;
     TValue *arr;
+    ast_Table *MetaTable;
     ast_Integer arrSize;
     ast_Integer arrtop;
 } ast_Table;

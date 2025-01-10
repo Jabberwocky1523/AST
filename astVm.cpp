@@ -550,6 +550,8 @@ ast_Bool _ast_SetTabUp(ast_State *L, Instruction i)
     return TRUE;
 }
 //  END
+// MetaTable
+// END
 
 ast_OpCode g_ast_opcodes[47] = {
     /*T  A     B       C    mode    name     action  */

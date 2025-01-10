@@ -42,6 +42,10 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
 TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag)
 {
     TValue tt;
+    if (ob == nullptr)
+    {
+        type = AST_TNIL;
+    }
     switch (type)
     {
     case AST_TNIL:
@@ -308,6 +312,22 @@ ast_Bool ast_CallCFunction(ast_State *L, ast_Closure *func, int nArgs, int nResu
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
 {
     TValue val = ast_StackGetTValue(PStack(L), -(nArgs + 1));
+    ast_Bool ok = (ast_Bool)((val.tt == AST_TFUNCTION) || (val.tt == AST_TUSERFUNCTION));
+    if (!ok)
+    {
+        TValue mf = ast_GetMetaField(L, val, Char2Ob(L, "__call"));
+        if (mf.tt != AST_TNIL)
+        {
+            if (mf.tt == AST_TFUNCTION || mf.tt == AST_TUSERFUNCTION)
+            {
+                ast_StackPush(PStack(L), mf);
+                astack_Insert(PStack(L), -(nArgs + 2));
+                nArgs += 1;
+                ast_CallAstClousure(L, cast(ast_Closure *, val.value.gc), nArgs, nResults);
+                return TRUE;
+            }
+        }
+    }
     if (val.tt == AST_TFUNCTION)
     {
         printf("call %s<%d,%d>\n", val.value.gc->cl.pr->Source->data_, val.value.gc->cl.pr->LineDefined, val.value.gc->cl.pr->LastLineDefined);
