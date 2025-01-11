@@ -197,10 +197,13 @@ ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key, ast_Bool ign)
     if (tb.tt == AST_TTABLE)
     {
         TValue val = astTable_GetVal(&tb.value.gc->tb, key);
+        ast_PrintTable(tb.value.gc->tb);
         TValue hmf = ast_GetMetaField(L, tb, Char2Ob(L, "__index"));
         if (ign || val.tt != AST_TNIL || hmf.tt == AST_TNIL)
+        {
             ast_StackPush(PStack(L), val);
-        return val.tt;
+            return val.tt;
+        }
     }
     if (!ign)
     {
