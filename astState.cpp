@@ -290,7 +290,10 @@ ast_Bool ast_CallCFunction(ast_State *L, ast_Closure *func, int nArgs, int nResu
     {
         L->stack->nPrevFuncResults = num;
         TValue *r = ast_PopN(newStack, num);
-        ast_PushN(PStack(L), r, num);
+        for (int i = num - 1; i >= 0; i--)
+        {
+            ast_StackPush(PStack(L), r[i]);
+        }
         r = nullptr;
         free(r);
     }

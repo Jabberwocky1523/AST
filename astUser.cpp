@@ -83,6 +83,5 @@ ast_Integer pairs(ast_State *L)
     ast_StackPush(PStack(L), tt);
     tt = Nil2Ob();
     ast_StackPush(PStack(L), tt);
-    ast_PrintStack(PStack(L));
     return 3;
 }
