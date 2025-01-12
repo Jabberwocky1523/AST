@@ -34,6 +34,12 @@ int main(int argc, const char *const *argv)
     ast_RegisterPushValue(L, getMetatable, name);
     name = Char2Ob(L, "setmetatable");
     ast_RegisterPushValue(L, setMetatable, name);
+    name = Char2Ob(L, "name");
+    ast_RegisterPushValue(L, next, name);
+    name = Char2Ob(L, "pairs");
+    ast_RegisterPushValue(L, pairs, name);
+    name = Char2Ob(L, "ipairs");
+    ast_RegisterPushValue(L, ipairs, name);
     ast_Call(L, 0, 0);
     return 0;
 }

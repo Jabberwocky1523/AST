@@ -10,7 +10,7 @@
 #include "astBinaryChunk.h"
 #include "ast.h"
 #define cast(t, exp) ((t)(exp)) // 类型转换
-#define lmod(s, size) cast(int, (s) & ((size) - 1))
+#define lmod(s, size) cast(ast_Hash, (s) & ((size) - 1))
 typedef double ast_Number;
 typedef unsigned char ast_Byte;
 typedef unsigned int ast_Hash;
@@ -76,6 +76,7 @@ typedef struct ast_Table
 {
     GCCommonHeader;
     ast_Map *HashMap;
+    ast_Map *IteratorMap;
     TValue *arr;
     ast_Table *MetaTable;
     ast_Integer arrSize;

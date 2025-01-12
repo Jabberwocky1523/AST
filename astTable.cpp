@@ -24,6 +24,7 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
     tb->next = NULL;
     tb->MetaTable = nullptr;
     tb->tt = AST_TTABLE;
+    tb->IteratorMap = nullptr;
     tb->arrtop = 0;
     tb->arrSize = arrSize;
     return tb;
@@ -197,7 +198,6 @@ ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key, ast_Bool ign)
     if (tb.tt == AST_TTABLE)
     {
         TValue val = astTable_GetVal(&tb.value.gc->tb, key);
-        ast_PrintTable(tb.value.gc->tb);
         TValue hmf = ast_GetMetaField(L, tb, Char2Ob(L, "__index"));
         if (ign || val.tt != AST_TNIL || hmf.tt == AST_TNIL)
         {
@@ -259,6 +259,7 @@ ast_Bool _ast_SetTable(ast_State *L, TValue tb, TValue key, TValue val, ast_Bool
         if (ign || kv.tt != AST_TNIL || hmf.tt == AST_TNIL)
         {
             astTable_PushVal(&(tb.value.gc->tb), key, val);
+            ast_InitIteratorMap(cast(ast_Table *, tb.value.gc));
             return TRUE;
         }
     }
@@ -364,4 +365,56 @@ ast_Bool ast_SetMetaTableFromIdx(ast_State *L, ast_Integer idx)
         PANIC("mt不是表");
     }
     return TRUE;
+}
+ast_Bool ast_InitIteratorMap(ast_Table *tb)
+{
+    if (tb->IteratorMap == nullptr)
+    {
+        tb->IteratorMap = astMap_Init(8);
+    }
+    TValue beginK = Nil2Ob();
+    for (int i = 0; i < tb->arrSize; i++)
+    {
+        astMap_PushKeyVal(tb->IteratorMap, beginK, Int2Ob(i));
+        beginK = Int2Ob(i);
+    }
+    for (int i = 0; i < tb->HashMap->size; i++)
+    {
+        ast_MapNode *cur = tb->HashMap->map[i];
+        while (cur)
+        {
+            TValue key = cur->key;
+            astMap_PushKeyVal(tb->IteratorMap, beginK, key);
+            cur = cur->next;
+            beginK = key;
+        }
+    }
+    astMap_PushKeyVal(tb->IteratorMap, beginK, Nil2Ob());
+    return TRUE;
+}
+TValue ast_NextKey(TValue tb, TValue key)
+{
+    if (tb.value.gc->tb.IteratorMap == nullptr)
+    {
+        ast_InitIteratorMap(cast(ast_Table *, tb.value.gc));
+    }
+    return astMap_GetValFromKey(tb.value.gc->tb.IteratorMap, key);
+}
+ast_Bool ast_Next(ast_State *L, ast_Integer idx)
+{
+    TValue tb = ast_StackGetTValue(PStack(L), idx);
+    if (tb.tt != AST_TTABLE)
+    {
+        PANIC("不为表");
+    }
+    TValue key = ast_StackPop(PStack(L));
+    TValue nextkey = ast_NextKey(tb, key);
+    if (nextkey.tt != AST_TNIL)
+    {
+        ast_StackPush(PStack(L), nextkey);
+        TValue val = astTable_GetVal(cast(ast_Table *, tb.value.gc), nextkey);
+        ast_StackPush(PStack(L), val);
+        return TRUE;
+    }
+    return FALSE;
 }

@@ -18,6 +18,8 @@ ast_Bool ast_TValueCmp(TValue val1, TValue val2)
     }
     switch (val1.tt)
     {
+    case AST_TNIL:
+        return (ast_Bool)(val1.tt == val2.tt);
     case AST_TBOOLEAN:
         return (ast_Bool)(val1.value.bo == val2.value.bo);
     case AST_TSTRING:
@@ -34,7 +36,7 @@ ast_Integer ast_GetTValueHash(TValue val1)
 {
     if (val1.tt == AST_TNIL)
     {
-        PANIC("无法计算NIL的hash值");
+        return 0;
     }
     switch (val1.tt)
     {
@@ -45,6 +47,8 @@ ast_Integer ast_GetTValueHash(TValue val1)
     case AST_TNUMBER:
         return std::hash<long long>()((ast_Integer)val1.value.n);
     case AST_TSTRING:
+    case AST_TFUNCTION:
+    case AST_TUSERFUNCTION:
     case AST_TTABLE:
         return std::hash<GCObject *>()(val1.value.gc);
     }

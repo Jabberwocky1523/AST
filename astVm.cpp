@@ -555,7 +555,29 @@ ast_Bool _ast_SetTabUp(ast_State *L, Instruction i)
 //  END
 // MetaTable
 // END
-
+// next
+// TForCall
+ast_Bool _ast_TForCall(ast_State *L, Instruction i)
+{
+    TABC n = InstructionTABC(i);
+    _PushFuncAndArgs(L, n.a, 3);
+    ast_PrintStack(PStack(L));
+    ast_Call(L, 2, n.c);
+    _PopResults(L, n.a + 3, n.c + 1);
+    return TRUE;
+}
+ast_Bool _ast_TForLoop(ast_State *L, Instruction i)
+{
+    TAsBx n = InstructionTAsBx(i);
+    TValue it = ast_StackGetTValue(PStack(L), n.a + 1);
+    if (it.tt != AST_TNIL)
+    {
+        astack_Copy(PStack(L), n.a + 1, n.a);
+        ast_AddPc(L, n.sbx);
+    }
+    return TRUE;
+}
+// END
 ast_OpCode g_ast_opcodes[47] = {
     /*T  A     B       C    mode    name     action  */
     {0, 1, OpArgR, OpArgN, IABC, "MOVE    ", _ast_Move},
@@ -599,8 +621,8 @@ ast_OpCode g_ast_opcodes[47] = {
     {0, 0, OpArgU, OpArgN, IABC, "RETURN  ", _ast_Return},
     {0, 1, OpArgR, OpArgN, IAsBx, "FORLOOP ", _ast_ForLoop},
     {0, 1, OpArgR, OpArgN, IAsBx, "FORPREP ", _ast_ForPrep},
-    {0, 0, OpArgN, OpArgU, IABC, "TFORCALL"},
-    {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP"},
+    {0, 0, OpArgN, OpArgU, IABC, "TFORCALL", _ast_TForCall},
+    {0, 1, OpArgR, OpArgN, IAsBx, "TFORLOOP", _ast_TForLoop},
     {0, 0, OpArgU, OpArgU, IABC, "SETLIST ", _ast_SetList},
     {0, 1, OpArgU, OpArgN, IABx, "CLOSURE ", _ast_Clousure},
     {0, 1, OpArgU, OpArgN, IABC, "VARARG  ", _ast_VarArg},

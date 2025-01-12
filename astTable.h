@@ -28,5 +28,6 @@ TValue ast_GetMetaTable(ast_State *L, TValue val);
 TValue ast_GetMetaField(ast_State *L, TValue val, TValue str);
 ast_Bool ast_GetMetaTableFromIdx(ast_State *L, ast_Integer idx);
 ast_Bool ast_SetMetaTableFromIdx(ast_State *L, ast_Integer idx);
-
+ast_Bool ast_InitIteratorMap(ast_Table *tb);
+ast_Bool ast_Next(ast_State *L, ast_Integer idx);
 #endif

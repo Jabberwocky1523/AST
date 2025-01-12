@@ -48,7 +48,7 @@ ast_Bool astMap_Resize(ast_Map *map, ast_Integer newsize)
     {
       ast_MapNode *next = cur->next;
       ast_Hash h = ast_GetTValueHash(cur->key);
-      int h1 = lmod(h, newsize);
+      ast_Hash h1 = lmod(h, newsize);
       cur->next = newnodelist[h1];
       newnodelist[h1] = cur;
       cur = next;
@@ -65,9 +65,11 @@ ast_Bool astMap_Resize(ast_Map *map, ast_Integer newsize)
 }
 ast_Bool astMap_PushKeyVal(ast_Map *map, TValue key, TValue val)
 {
-  if (astMap_FindNodeFromKey(map, key) != nullptr)
+  ast_MapNode *cur = astMap_FindNodeFromKey(map, key);
+  if (cur != nullptr)
   {
-    return FALSE;
+    cur->val = val;
+    return TRUE;
   }
   else if (map == NULL)
   {
