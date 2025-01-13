@@ -56,21 +56,27 @@ ast_Integer next(ast_State *L)
 }
 ast_Integer _iPairsAux(ast_State *L)
 {
-    TValue i = ast_StackGetTValue(PStack(L), 2);
-    ast_StackPush(PStack(L), i);
-    TValue tb = ast_StackGetTValue(PStack(L), 1);
+    TValue i = ast_StackGetTValue(PStack(L), 1);
+    if (i.tt == AST_TINTEGER)
+    {
+        i.value.i++;
+    }
+    TValue tb = ast_StackGetTValue(PStack(L), 0);
     TValue val = astTable_GetVal(cast(ast_Table *, tb.value.gc), i);
     if (val.tt == AST_TNIL)
     {
+        i = Nil2Ob();
+        ast_StackPush(PStack(L), i);
         return 1;
     }
+    ast_StackPush(PStack(L), i);
     ast_StackPush(PStack(L), val);
     return 2;
 }
 ast_Integer ipairs(ast_State *L)
 {
     ast_PushCFunction(L, _iPairsAux);
-    TValue tt = ast_StackGetTValue(PStack(L), 1);
+    TValue tt = ast_StackGetTValue(PStack(L), 0);
     ast_StackPush(PStack(L), tt);
     tt = Int2Ob(0);
     ast_StackPush(PStack(L), tt);

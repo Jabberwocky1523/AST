@@ -259,7 +259,6 @@ ast_Bool _ast_SetTable(ast_State *L, TValue tb, TValue key, TValue val, ast_Bool
         if (ign || kv.tt != AST_TNIL || hmf.tt == AST_TNIL)
         {
             astTable_PushVal(&(tb.value.gc->tb), key, val);
-            ast_InitIteratorMap(cast(ast_Table *, tb.value.gc));
             return TRUE;
         }
     }
@@ -375,18 +374,21 @@ ast_Bool ast_InitIteratorMap(ast_Table *tb)
     TValue beginK = Nil2Ob();
     for (int i = 0; i < tb->arrSize; i++)
     {
-        astMap_PushKeyVal(tb->IteratorMap, beginK, Int2Ob(i));
-        beginK = Int2Ob(i);
+        astMap_PushKeyVal(tb->IteratorMap, beginK, Int2Ob(i + 1));
+        beginK = Int2Ob(i + 1);
     }
-    for (int i = 0; i < tb->HashMap->size; i++)
+    if (tb->HashMap != nullptr)
     {
-        ast_MapNode *cur = tb->HashMap->map[i];
-        while (cur)
+        for (int i = 0; i < tb->HashMap->size; i++)
         {
-            TValue key = cur->key;
-            astMap_PushKeyVal(tb->IteratorMap, beginK, key);
-            cur = cur->next;
-            beginK = key;
+            ast_MapNode *cur = tb->HashMap->map[i];
+            while (cur)
+            {
+                TValue key = cur->key;
+                astMap_PushKeyVal(tb->IteratorMap, beginK, key);
+                cur = cur->next;
+                beginK = key;
+            }
         }
     }
     astMap_PushKeyVal(tb->IteratorMap, beginK, Nil2Ob());

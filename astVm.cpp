@@ -561,7 +561,6 @@ ast_Bool _ast_TForCall(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     _PushFuncAndArgs(L, n.a, 3);
-    ast_PrintStack(PStack(L));
     ast_Call(L, 2, n.c);
     _PopResults(L, n.a + 3, n.c + 1);
     return TRUE;
