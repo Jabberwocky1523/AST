@@ -91,3 +91,12 @@ ast_Integer pairs(ast_State *L)
     ast_StackPush(PStack(L), tt);
     return 3;
 }
+ast_Integer pCall(ast_State *L)
+{
+    ast_Integer nArgs = astack_GetTop(PStack(L)) - 1;
+    ast_Integer status = ast_PCall(L, nArgs, -1);
+    TValue bo = Bool2Ob((ast_Bool)(status == AST_OK));
+    ast_StackPush(PStack(L), bo);
+    astack_Insert(PStack(L), 0);
+    return astack_GetTop(PStack(L));
+}

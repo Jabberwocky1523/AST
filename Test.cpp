@@ -12,6 +12,7 @@
 #include "log.h"
 #include "astUser.h"
 #include "astTable.h"
+#include "astError.h"
 int main(int argc, const char *const *argv)
 {
     const char *file_name = "../luac.out";
@@ -40,6 +41,8 @@ int main(int argc, const char *const *argv)
     ast_RegisterPushValue(L, pairs, name);
     name = Char2Ob(L, "ipairs");
     ast_RegisterPushValue(L, ipairs, name);
+    name = Char2Ob(L, "pcall");
+    ast_RegisterPushValue(L, pCall, name);
     ast_Call(L, 0, 0);
     return 0;
 }
