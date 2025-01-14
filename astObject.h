@@ -58,6 +58,14 @@ typedef union ast_TString
         size_t len;
     } Tsv;
 } ast_String;
+typedef struct AST_LEXER
+{
+    char *chunk;
+    char *chunkName;
+    ast_Integer Line;
+    char *curchunk;
+    ast_Integer chunkSize;
+} ast_Lexer;
 // 哈希表
 typedef struct ast_MapNode
 {

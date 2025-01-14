@@ -12,6 +12,8 @@
 #include "astUtils.h"
 #include "astMap.h"
 #include "astVm.h"
+#include "astLexer.h"
+ast_Map *kw;
 ast_Bool ast_Init(ast_State *L, global_State *g_s)
 {
     int nRegs = 0;
@@ -37,6 +39,7 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     L->Registry = reg;
     ast_Stack *Stack = ast_NewStack(AST_MINSTACK, L);
     ast_PushStack(L, Stack);
+    kw = ast_KeyWordsInit(L);
     return TRUE;
 }
 TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag)
