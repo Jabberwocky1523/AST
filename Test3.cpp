@@ -10,7 +10,7 @@
 #include "astMap.h"
 #include "astVm.h"
 #include "astTable.h"
-int main(int argc, const char *const *argv)
+int main3(int argc, const char *const *argv)
 {
     char *a = "123";
     printf("%s %d\n", a, strlen(a));
