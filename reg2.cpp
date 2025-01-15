@@ -2,7 +2,7 @@
 #include <regex>
 #include <string>
 
-int main()
+int mainr2()
 {
     // 手动转义字符串中的特殊字符
     std::string input = "'adad adass'1' 1\""; // 示例输入
@@ -14,7 +14,8 @@ int main()
     // 使用正则表达式匹配
     if (std::regex_search(input, matches, re))
     {
-        std::cout << "Matched: " << matches[0] << std::endl;
+        std::string text = matches[0];
+        std::cout << "Matched: " << text.c_str() << std::endl;
     }
     else
     {

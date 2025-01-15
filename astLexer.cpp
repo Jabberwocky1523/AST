@@ -2,6 +2,8 @@
 #include "string.h"
 #include "astMap.h"
 #include "string"
+#include <regex>
+#include <iostream>
 ast_Lexer *ast_NewLexer(char *chunk, char *chunkName)
 {
     ast_Lexer *lexer = (ast_Lexer *)malloc(sizeof(ast_Lexer));
@@ -118,6 +120,53 @@ ast_Bool ast_SkipWhiteSpaces(ast_Lexer *lex)
         }
     }
     return TRUE;
+}
+TValue ast_ScanStr(ast_State *L, char *chunk)
+{
+    std::string input = chunk;
+    std::regex re("(^'(\\\\|\\\\'|\\\\n|[^'\\n])*')|(^\"(\\\\|\\\\\"|\\\\n|[^\"\\n])*\")");
+    std::smatch matches;
+    try
+    {
+        if (std::regex_search(input, matches, re))
+        {
+            std::string text = matches[0];
+            return Char2Ob(L, text.c_str());
+        }
+        else
+        {
+            return Char2Ob(L, "");
+        }
+    }
+    catch (const std::regex_error &e)
+    {
+        std::cerr << "Regex compilation failed: " << e.what() << std::endl;
+        return Nil2Ob();
+    }
+}
+TValue ast_ScanNumber(ast_State *L, char *chunk)
+{
+    std::string pattern = "^0[xX][0-9a-fA-F]*(\\.[0-9a-fA-F]*)?([pP][+\\-]?[0-9]+)?|^[0-9]*(\\.[0-9]*)?([eE][+\\-]?[0-9]+)?";
+    std::string input = chunk;
+    try
+    {
+        std::regex regex(pattern);
+        std::smatch matches;
+        if (std::regex_search(input, matches, regex))
+        {
+            std::string text = matches[0];
+            return Char2Ob(L, text.c_str());
+        }
+        else
+        {
+            return Char2Ob(L, "");
+        }
+    }
+    catch (const std::regex_error &e)
+    {
+        std::cerr << "Regex compilation failed: " << e.what() << std::endl;
+        return Nil2Ob();
+    }
 }
 ast_Bool ast_NextToken(ast_Lexer *lex)
 {

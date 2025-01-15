@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.sqlbook": "sql",
         "*.ndjson": "jsonl",
         "*.dbclient-js": "javascript",
         "*.ast": "lua",
@@ -75,6 +76,8 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "regex": "cpp",
+        "bitset": "cpp"
     }
 }

@@ -10,10 +10,13 @@
 #include "astMap.h"
 #include "astVm.h"
 #include "astTable.h"
-int main3(int argc, const char *const *argv)
+#include "astLexer.h"
+int main(int argc, const char *const *argv)
 {
-    char *a = "123";
-    printf("%s %d\n", a, strlen(a));
-    a = a + 1;
-    printf("%s %d", a, strlen(a));
+    ast_State *L = (ast_State *)malloc(sizeof(ast_State));
+    global_State *g_s = (global_State *)malloc(sizeof(global_State));
+    ast_Init(L, g_s);
+    char *a = "1234z";
+    TValue str = ast_ScanNumber(L, a);
+    ast_PrintTValue(str);
 }
