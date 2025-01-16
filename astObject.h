@@ -110,6 +110,12 @@ typedef union GCObject
     ast_Closure cl;
 } GCObject;
 // 栈作为虚拟寄存器
+typedef struct ast_Token
+{
+    ast_Integer line;
+    ast_Integer kind;
+    char *token;
+} ast_Token;
 typedef struct ast_Stack
 {
     TValue *Value;

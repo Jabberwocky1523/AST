@@ -168,6 +168,55 @@ TValue ast_ScanNumber(ast_State *L, char *chunk)
         return Nil2Ob();
     }
 }
-ast_Bool ast_NextToken(ast_Lexer *lex)
+ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token)
 {
+    if (token.token == nullptr)
+    {
+        token.token = (char *)malloc(sizeof(char) * 8);
+    }
+    ast_SkipWhiteSpaces(lex);
+    if (lex->chunkSize == 0)
+    {
+        CopyToken(token, lex, "EOF", TOKEN_EOF);
+        return FALSE;
+    }
+    switch (lex->curchunk[0])
+    {
+    case ';':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, ";", TOKEN_SEP_SEMI);
+    }
+    case ',':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, ",", TOKEN_SEP_COMMA);
+    }
+    case '(':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "(", TOKEN_SEP_LPAREN);
+    }
+    case ')':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, ")", TOKEN_SEP_RPAREN);
+    }
+    case ']':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "]", TOKEN_SEP_RBRACK);
+    }
+    case '{':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, ")", TOKEN_SEP_LCURLY);
+    }
+    case '}':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "}", TOKEN_SEP_RCURLY);
+    }
+    }
+    return TRUE;
 }

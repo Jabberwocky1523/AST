@@ -18,5 +18,8 @@ int main(int argc, const char *const *argv)
     ast_Init(L, g_s);
     char *a = "1234z";
     TValue str = ast_ScanNumber(L, a);
+    a = "123213'";
+    ast_PrintTValue(str);
+    str = ast_ScanStr(L, a);
     ast_PrintTValue(str);
 }
