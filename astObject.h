@@ -58,7 +58,7 @@ typedef union ast_TString
         size_t len;
     } Tsv;
 } ast_String;
-typedef struct AST_LEXER
+typedef struct ast_Lexer
 {
     ast_State *L;
     char *chunk;

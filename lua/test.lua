@@ -13,3 +13,4 @@ local function max(...)
 end
 local v1, idx1, sum = max(4, add(7, 2), 6, 2)
 local v2 = max(5, 6, 1)
+print(v4)

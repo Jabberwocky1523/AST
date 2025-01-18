@@ -22,8 +22,10 @@
 ast_Map *ast_KeyWordsInit(ast_State *L);
 ast_Lexer *ast_NewLexer(ast_State *L, char *chunk, char *chunkName);
 ast_Bool ast_SkipWhiteSpaces(ast_Lexer *lex);
-TValue ast_ScanStr(ast_State *L, char *chunk);
+TValue ast_ScanStr(ast_Lexer *lex);
 ast_Token ast_NewToken();
-TValue ast_ScanNumber(ast_State *L, char *chunk);
+TValue ast_ScanNumber(ast_Lexer *lex, char *chunk);
 ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token);
+ast_Integer ast_ScanNewLine(char *chunk);
+ast_Bool ast_TextLexer(ast_Lexer *lex);
 #endif

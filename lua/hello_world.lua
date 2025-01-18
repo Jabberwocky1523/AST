@@ -1,3 +1,3 @@
-astprint("123");
-local a = astTest(1, 2);
-return
+local a = 1;
+local b = "123";
+print(a, b);

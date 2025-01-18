@@ -3,9 +3,12 @@
 #include "astMap.h"
 #include "astString.h"
 #include "string"
+#include "astMath.h"
 #include "log.h"
+#include "astMap.h"
 #include <regex>
 #include <iostream>
+extern ast_Map *kw;
 ast_Lexer *ast_NewLexer(ast_State *L, char *chunk, char *chunkName)
 {
     ast_Lexer *lexer = (ast_Lexer *)calloc(1, sizeof(ast_Lexer));
@@ -124,21 +127,141 @@ ast_Bool ast_SkipWhiteSpaces(ast_Lexer *lex)
     }
     return TRUE;
 }
-TValue ast_ScanStr(ast_State *L, char *chunk)
+ast_Integer ast_ScanNewLine(char *chunk)
 {
     std::string input = chunk;
-    std::regex re("(^'(\\\\|\\\\'|\\\\n|[^'\\n])*')|(^\"(\\\\|\\\\\"|\\\\n|[^\"\\n])*\")");
+    std::regex reNewLine(R"(\r\n|\n\r|\n|\r)");
+
+    auto matches_begin = std::sregex_iterator(input.begin(), input.end(), reNewLine);
+    auto matches_end = std::sregex_iterator();
+
+    int count = std::distance(matches_begin, matches_end);
+    return count;
+}
+std::string ast_Escape(std::string str)
+{
+    std::string buf;
+    while (str.length() > 0)
+    {
+        if (str[0] != '\\')
+        {
+            buf.push_back(str[0]);
+            str = str.substr(1, str.length() - 1);
+            continue;
+        }
+        if (str.length() == 1)
+        {
+            PANIC("unfished str");
+        }
+        switch (str[1])
+        {
+        case 'a':
+        {
+            buf.push_back('\a');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 'b':
+        {
+            buf.push_back('\b');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 'f':
+        {
+            buf.push_back('\f');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 'n':
+        {
+            buf.push_back('\n');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case '\n':
+        {
+            buf.push_back('\n');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 'r':
+        {
+            buf.push_back('\r');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 't':
+        {
+            buf.push_back('\t');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case 'v':
+        {
+            buf.push_back('\v');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case '"':
+        {
+            buf.push_back('"');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case '\'':
+        {
+            buf.push_back('\'');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        case '\\':
+        {
+            buf.push_back('\\');
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+        default:
+        {
+            str = str.substr(2, str.length() - 2);
+            continue;
+        }
+            // case '0':
+            // case '1':
+            // case '2':
+            // case '3':
+            // case '4':
+            // case '5':
+            // case '6':
+            // case '7':
+            // case '8':
+            // case '9':
+            // {
+            // }
+        }
+    }
+    return buf;
+}
+TValue ast_ScanIdentifier(ast_Lexer *lex, char *chunk)
+{
+    std::string input = lex->curchunk;
+    std::regex reIdentifier(R"(^[_\d\w]+)");
+    if (chunk != nullptr)
+    {
+        input = chunk;
+    }
     std::smatch matches;
     try
     {
-        if (std::regex_search(input, matches, re))
+        if (std::regex_search(input, matches, reIdentifier))
         {
             std::string text = matches[0];
-            return Char2Ob(L, text.c_str());
+            ast_LexerNext(lex, text.length());
+            return Char2Ob(lex->L, text.c_str());
         }
         else
         {
-            return Char2Ob(L, "");
+            return Char2Ob(lex->L, "");
         }
     }
     catch (const std::regex_error &e)
@@ -147,10 +270,44 @@ TValue ast_ScanStr(ast_State *L, char *chunk)
         return Nil2Ob();
     }
 }
-TValue ast_ScanNumber(ast_State *L, char *chunk)
+TValue ast_ScanStr(ast_Lexer *lex)
+{
+    std::string input = lex->curchunk;
+    std::regex re("(^'(\\\\|\\\\'|\\\\n|[^'\\n])*')|(^\"(\\\\|\\\\\"|\\\\n|[^\"\\n])*\")");
+    std::smatch matches;
+    try
+    {
+        if (std::regex_search(input, matches, re))
+        {
+            std::string text = matches[0];
+            ast_LexerNext(lex, text.length());
+            text = text.substr(1, text.length() - 2);
+            if (text.find("\\") != std::string::npos)
+            {
+                lex->Line += ast_ScanNewLine((char *)text.c_str());
+                text = ast_Escape(text);
+            }
+            return Char2Ob(lex->L, text.c_str());
+        }
+        else
+        {
+            return Char2Ob(lex->L, "");
+        }
+    }
+    catch (const std::regex_error &e)
+    {
+        std::cerr << "Regex compilation failed: " << e.what() << std::endl;
+        return Nil2Ob();
+    }
+}
+TValue ast_ScanNumber(ast_Lexer *lex, char *chunk)
 {
     std::string pattern = "^0[xX][0-9a-fA-F]*(\\.[0-9a-fA-F]*)?([pP][+\\-]?[0-9]+)?|^[0-9]*(\\.[0-9]*)?([eE][+\\-]?[0-9]+)?";
-    std::string input = chunk;
+    std::string input = lex->curchunk;
+    if (chunk != nullptr)
+    {
+        input = chunk;
+    }
     try
     {
         std::regex regex(pattern);
@@ -158,11 +315,12 @@ TValue ast_ScanNumber(ast_State *L, char *chunk)
         if (std::regex_search(input, matches, regex))
         {
             std::string text = matches[0];
-            return Char2Ob(L, text.c_str());
+            ast_LexerNext(lex, text.length());
+            return Char2Ob(lex->L, text.c_str());
         }
         else
         {
-            return Char2Ob(L, "");
+            return Char2Ob(lex->L, "");
         }
     }
     catch (const std::regex_error &e)
@@ -179,6 +337,10 @@ ast_Token ast_NewToken()
     t.token = nullptr;
     t.size = 0;
     return t;
+}
+ast_Bool ast_IsLetter(char c)
+{
+    return (ast_Bool)((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 }
 ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token)
 {
@@ -199,54 +361,307 @@ ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token)
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ";", TOKEN_SEP_SEMI);
-        break;
+        return TRUE;
     }
     case ',':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ",", TOKEN_SEP_COMMA);
-        break;
+        return TRUE;
     }
     case '(':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "(", TOKEN_SEP_LPAREN);
-        break;
+        return TRUE;
     }
     case ')':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ")", TOKEN_SEP_RPAREN);
-        break;
+        return TRUE;
     }
     case ']':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "]", TOKEN_SEP_RBRACK);
-        break;
+        return TRUE;
     }
     case '{':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ")", TOKEN_SEP_LCURLY);
-        break;
+        return TRUE;
     }
     case '}':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "}", TOKEN_SEP_RCURLY);
-        break;
+        return TRUE;
     }
+    case '+':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "+", TOKEN_OP_ADD);
+        return TRUE;
+    }
+    case '-':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "-", TOKEN_OP_SUB);
+        return TRUE;
+    }
+    case '*':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "*", TOKEN_OP_MUL);
+        return TRUE;
+    }
+    case '^':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "^", TOKEN_OP_POW);
+        return TRUE;
+    }
+    case '%':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "%", TOKEN_OP_MOD);
+        return TRUE;
+    }
+    case '&':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "&", TOKEN_OP_BAND);
+        return TRUE;
+    }
+    case '|':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "|", TOKEN_OP_BOR);
+        return TRUE;
+    }
+    case '#':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "#", TOKEN_OP_LEN);
+        return TRUE;
+    }
+    case ':':
+    {
+        if (ast_StrHasPrefix(lex, "::"))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "::", TOKEN_SEP_LABEL);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, ":", TOKEN_SEP_COLON);
+            return TRUE;
+        }
+    }
+    case '/':
+    {
+        if (ast_StrHasPrefix(lex, "//"))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "//", TOKEN_OP_IDIV);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, "/", TOKEN_OP_DIV);
+            return TRUE;
+        }
+    }
+    case '~':
+    {
+        if (ast_StrHasPrefix(lex, "~="))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "~=", TOKEN_OP_NE);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, "~", TOKEN_OP_WAVE);
+            return TRUE;
+        }
+    }
+    case '=':
+    {
+        if (ast_StrHasPrefix(lex, "=="))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "==", TOKEN_OP_EQ);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, "=", TOKEN_OP_ASSIGN);
+            return TRUE;
+        }
+    }
+    case '<':
+    {
+        if (ast_StrHasPrefix(lex, "<<"))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "<<", TOKEN_OP_SHL);
+            return TRUE;
+        }
+        else if (ast_StrHasPrefix(lex, "<="))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "<=", TOKEN_OP_LE);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, "<", TOKEN_OP_LT);
+            return TRUE;
+        }
+    }
+    case '>':
+    {
+        if (ast_StrHasPrefix(lex, ">>"))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, ">>", TOKEN_OP_SHR);
+            return TRUE;
+        }
+        else if (ast_StrHasPrefix(lex, ">="))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, ">=", TOKEN_OP_GE);
+            return TRUE;
+        }
+        else
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, ">", TOKEN_OP_GT);
+            return TRUE;
+        }
+    }
+    case '.':
+    {
+        if (ast_StrHasPrefix(lex, "..."))
+        {
+            ast_LexerNext(lex, 3);
+            CopyToken(token, lex, "...", TOKEN_VARARG);
+            return TRUE;
+        }
+        else if (ast_StrHasPrefix(lex, ".."))
+        {
+            ast_LexerNext(lex, 2);
+            CopyToken(token, lex, "..", TOKEN_OP_CONCAT);
+            return TRUE;
+        }
+        else if (strlen(lex->curchunk) == 1 || !(lex->curchunk[1] >= '0' && lex->curchunk[1] <= '9'))
+        {
+            ast_LexerNext(lex, 1);
+            CopyToken(token, lex, ".", TOKEN_SEP_DOT);
+            return TRUE;
+        }
+        CopyToken(token, lex, "EOF", TOKEN_EOF);
+        return TRUE;
+    }
+    case '[':
+    {
+        ast_LexerNext(lex, 1);
+        CopyToken(token, lex, "[", TOKEN_SEP_LBRACK);
+        return TRUE;
+    }
+    case '\'':
     case '\"':
     {
-        TValue str = ast_ScanStr(lex->L, lex->curchunk);
+        TValue str = ast_ScanStr(lex);
         CopyToken(token, lex, getstr(&str.value.gc->ts), TOKEN_STRING);
-        ast_LexerNext(lex, strlen(getstr(&str.value.gc->ts)));
-        break;
+        return TRUE;
     }
-    default:
-        CopyToken(token, lex, "EOF", TOKEN_EOF);
-        return FALSE;
+    }
+    char c = lex->curchunk[0];
+    if (c == '.' || (c >= '0' && c <= '9'))
+    {
+        TValue num = ast_ScanNumber(lex, lex->curchunk);
+        if (strcmp(getstr(&num.value.gc->ts), "") == 0)
+        {
+            PANIC("unfinish num");
+        }
+        CopyToken(token, lex, getstr(&num.value.gc->ts), TOKEN_NUMBER);
+        return TRUE;
+    }
+    if (c == '_' || ast_IsLetter(c))
+    {
+        TValue str = ast_ScanIdentifier(lex, nullptr);
+        if (strcmp(getstr(&str.value.gc->ts), "") == 0)
+        {
+            PANIC("unfinish identifier");
+        }
+        TValue kind = astMap_GetValFromKey(kw, str);
+        if (kind.tt != AST_TNIL)
+        {
+            CopyToken(token, lex, getstr(&str.value.gc->ts), kind.value.i);
+            return TRUE;
+        }
+        else
+        {
+            CopyToken(token, lex, getstr(&str.value.gc->ts), TOKEN_IDENTIFIER);
+            return TRUE;
+        }
+    }
+    PANIC("unfinish token");
+    return FALSE;
+}
+char *KindToCatagory(ast_Integer kind)
+{
+    if (kind < TOKEN_SEP_SEMI)
+    {
+        return "other";
+    }
+    else if (kind <= TOKEN_SEP_RCURLY)
+    {
+        return "separator";
+    }
+    else if (kind <= TOKEN_OP_NOT)
+    {
+        return "operator";
+    }
+    else if (kind <= TOKEN_KW_WHILE)
+    {
+        return "keyword";
+    }
+    else if (kind == TOKEN_IDENTIFIER)
+    {
+        return "identifier";
+    }
+    else if (kind == TOKEN_NUMBER)
+    {
+        return "number";
+    }
+    else if (kind == TOKEN_STRING)
+    {
+        return "string";
+    }
+    return "other";
+}
+ast_Bool ast_TextLexer(ast_Lexer *lex)
+{
+    ast_Token token = ast_NewToken();
+    while (1)
+    {
+        ast_NextToken(lex, token);
+        printf("[%2d] [%-10s] %s\n", token.line, KindToCatagory(token.kind), token.token);
+        if (token.kind == TOKEN_EOF)
+        {
+            break;
+        }
     }
     return TRUE;
 }

@@ -11,18 +11,17 @@
 #include "astVm.h"
 #include "astTable.h"
 #include "astLexer.h"
+#include "iostream"
+#include "fstream"
 int main(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s);
     ast_Token token = ast_NewToken();
-    ast_Lexer *lex = ast_NewLexer(L, "()\"234567\"\n\"0x13123123123123\"", "test");
-    // printf("%s %s", lex->chunk, lex->chunkName);
-    while (ast_NextToken(lex, token))
-    {
-
-        printf("%d\n", token.size);
-        printf("%s %d %d \n", token.token, token.kind, token.line);
-    }
+    char *chunk;
+    ast_Integer len;
+    OPENANDREAD("/Users/tinakurisu/Desktop/AST/lua/test2.lua", chunk, len);
+    ast_Lexer *lex = ast_NewLexer(L, chunk, "test");
+    ast_TextLexer(lex);
 }
