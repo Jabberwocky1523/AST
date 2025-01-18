@@ -60,6 +60,7 @@ typedef union ast_TString
 } ast_String;
 typedef struct AST_LEXER
 {
+    ast_State *L;
     char *chunk;
     char *chunkName;
     ast_Integer Line;
@@ -115,6 +116,7 @@ typedef struct ast_Token
     ast_Integer line;
     ast_Integer kind;
     char *token;
+    ast_Integer size;
 } ast_Token;
 typedef struct ast_Stack
 {

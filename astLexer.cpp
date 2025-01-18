@@ -1,17 +1,20 @@
 #include "astLexer.h"
 #include "string.h"
 #include "astMap.h"
+#include "astString.h"
 #include "string"
+#include "log.h"
 #include <regex>
 #include <iostream>
-ast_Lexer *ast_NewLexer(char *chunk, char *chunkName)
+ast_Lexer *ast_NewLexer(ast_State *L, char *chunk, char *chunkName)
 {
-    ast_Lexer *lexer = (ast_Lexer *)malloc(sizeof(ast_Lexer));
+    ast_Lexer *lexer = (ast_Lexer *)calloc(1, sizeof(ast_Lexer));
     lexer->chunk = chunk;
     lexer->chunkName = chunkName;
     lexer->Line = 1;
     lexer->curchunk = lexer->chunk;
     lexer->chunkSize = strlen(lexer->chunk);
+    lexer->L = L;
     return lexer;
 }
 ast_Map *ast_KeyWordsInit(ast_State *L)
@@ -49,7 +52,7 @@ ast_Bool ast_StrHasPrefix(ast_Lexer *lex, char *s)
 ast_Bool ast_LexerNext(ast_Lexer *lex, ast_Integer num)
 {
     lex->curchunk += num;
-    // if (strlen(lex->curchunk) * 2 > lex->chunkSize && lex->chunkSize > 50)
+    // if (strlen(lex->curchunk) * 2 > lex->chunkSize && lex->chunkSize > 2)
     // {
     //     char *newChunk = (char *)malloc(sizeof(char) * (strlen(lex->curchunk) + 1));
     //     memcpy(newChunk, lex->curchunk, strlen(lex->curchunk));
@@ -168,14 +171,24 @@ TValue ast_ScanNumber(ast_State *L, char *chunk)
         return Nil2Ob();
     }
 }
+ast_Token ast_NewToken()
+{
+    ast_Token t;
+    t.kind = 0;
+    t.line = 0;
+    t.token = nullptr;
+    t.size = 0;
+    return t;
+}
 ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token)
 {
     if (token.token == nullptr)
     {
         token.token = (char *)malloc(sizeof(char) * 8);
+        token.size = 8;
     }
     ast_SkipWhiteSpaces(lex);
-    if (lex->chunkSize == 0)
+    if (lex->chunkSize == 0 || CClen(lex) == 0)
     {
         CopyToken(token, lex, "EOF", TOKEN_EOF);
         return FALSE;
@@ -186,37 +199,54 @@ ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token)
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ";", TOKEN_SEP_SEMI);
+        break;
     }
     case ',':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ",", TOKEN_SEP_COMMA);
+        break;
     }
     case '(':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "(", TOKEN_SEP_LPAREN);
+        break;
     }
     case ')':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ")", TOKEN_SEP_RPAREN);
+        break;
     }
     case ']':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "]", TOKEN_SEP_RBRACK);
+        break;
     }
     case '{':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, ")", TOKEN_SEP_LCURLY);
+        break;
     }
     case '}':
     {
         ast_LexerNext(lex, 1);
         CopyToken(token, lex, "}", TOKEN_SEP_RCURLY);
+        break;
     }
+    case '\"':
+    {
+        TValue str = ast_ScanStr(lex->L, lex->curchunk);
+        CopyToken(token, lex, getstr(&str.value.gc->ts), TOKEN_STRING);
+        ast_LexerNext(lex, strlen(getstr(&str.value.gc->ts)));
+        break;
+    }
+    default:
+        CopyToken(token, lex, "EOF", TOKEN_EOF);
+        return FALSE;
     }
     return TRUE;
 }
