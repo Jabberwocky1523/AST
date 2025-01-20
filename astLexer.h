@@ -28,4 +28,5 @@ TValue ast_ScanNumber(ast_Lexer *lex, char *chunk);
 ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token);
 ast_Integer ast_ScanNewLine(char *chunk);
 ast_Bool ast_TextLexer(ast_Lexer *lex);
+ast_Bool ast_LookAhead(ast_Lexer *lex, ast_Token &token);
 #endif

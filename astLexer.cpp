@@ -665,3 +665,10 @@ ast_Bool ast_TextLexer(ast_Lexer *lex)
     }
     return TRUE;
 }
+ast_Bool ast_LookAhead(ast_Lexer *lex, ast_Token &token)
+{
+    char *tmp = lex->curchunk;
+    ast_NextToken(lex, token);
+    lex->curchunk = tmp;
+    return TRUE;
+}

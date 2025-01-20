@@ -1,20 +1,22 @@
 #include "astStr.h"
 #include "iostream"
+#include "astVector.h"
 using namespace std;
+using namespace astStr;
+using namespace astVector;
+void test(int *b)
+{
+    Vector<int *> a;
+    a.push_back(b);
+    a.push_back(b + 1);
+}
 int main()
 {
-    astStr::String str("123");
-    std::cout << str.c_str() << " " << str.length() << std::endl;
-    str.pop_back();
-    str.append("234");
-    str = str.substr(0, 4);
-    std::cout << str.data() << " " << str.length() << std::endl;
-    str.erase(str.length() - 2);
-    std::cout << str.data() << " " << str.length() << std::endl;
-    str += "234";
-    std::cout << str.data() << " " << str.length() << std::endl;
-    str.erase(str.end() - 1);
-    astStr::String::Iterator it = str.find("323");
-    std::cout << str.data() << " " << str.length() << std::endl;
-    cout << *it;
+    Vector<int *> a;
+    int *p = new int[2];
+    *p = 1;
+    *(p + 1) = 2;
+    test(p);
+    cout << *p << *(p + 1);
+    return 0;
 }

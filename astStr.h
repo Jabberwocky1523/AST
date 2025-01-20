@@ -2,6 +2,7 @@
 #define AST_STR_H
 #include "string.h"
 #include <algorithm>
+#include "ostream"
 namespace astStr
 {
     class String
@@ -165,4 +166,5 @@ bool operator==(const char *lhs, const astStr::String &rhs);
 bool operator!=(const astStr::String &lhs, const astStr::String &rhs);
 bool operator!=(const char *lhs, const astStr::String &rhs);
 bool operator!=(const astStr::String &lhs, const char *rhs);
+std::ostream &operator<<(std::ostream &out, const astStr::String &str);
 #endif

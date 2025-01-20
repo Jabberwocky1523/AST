@@ -285,3 +285,8 @@ bool operator!=(const String &lhs, const char *rhs)
 {
     return (lhs.compare(rhs) != 0);
 }
+std::ostream &operator<<(std::ostream &out, const String &str)
+{
+    out << str.c_str();
+    return out;
+}

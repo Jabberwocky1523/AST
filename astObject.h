@@ -19,6 +19,26 @@ typedef struct ast_State ast_State;
 typedef ast_Integer (*ast_CFunction)(ast_State *L);
 // GC数据类型联合
 typedef union GCObject GCObject;
+typedef union ast_Stat ast_Stat;
+typedef union ast_Exp ast_Exp;
+typedef union ast_Stat
+{
+
+} ast_Stat;
+typedef union ast_Exp
+{
+
+} ast_Exp;
+typedef struct ast_Block
+{
+    ast_Integer LastLine;
+    ast_Stat *stats;
+    ast_Integer statlen;
+    ast_Integer statsize;
+    ast_Exp *exps;
+    ast_Integer explen;
+    ast_Integer expsize;
+} ast_Block;
 #define GCCommonHeader \
     GCObject *next;    \
     unsigned char tt;  \
