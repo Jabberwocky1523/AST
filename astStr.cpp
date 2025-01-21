@@ -68,6 +68,7 @@ String::~String()
         delete[] _buffer;
     }
     _size = 0;
+    _buffer = nullptr;
 }
 const char *String::c_str() const
 {

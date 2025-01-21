@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include "astBinaryChunk.h"
 #include "ast.h"
+#include "astVector.h"
 #define cast(t, exp) ((t)(exp)) // 类型转换
 #define lmod(s, size) cast(ast_Hash, (s) & ((size) - 1))
 typedef double ast_Number;
@@ -19,25 +20,24 @@ typedef struct ast_State ast_State;
 typedef ast_Integer (*ast_CFunction)(ast_State *L);
 // GC数据类型联合
 typedef union GCObject GCObject;
-typedef union ast_Stat ast_Stat;
-typedef union ast_Exp ast_Exp;
-typedef union ast_Stat
+typedef union StatObject StatObject;
+typedef struct ast_Stat ast_Stat;
+typedef union ExpObject ExpObject;
+typedef struct ast_Exp
 {
-
-} ast_Stat;
-typedef union ast_Exp
-{
-
+    ast_Integer tt;
+    ExpObject *exp;
 } ast_Exp;
+typedef struct ast_Stat
+{
+    ast_Integer tt;
+    StatObject *stat;
+} ast_Stat;
 typedef struct ast_Block
 {
     ast_Integer LastLine;
-    ast_Stat *stats;
-    ast_Integer statlen;
-    ast_Integer statsize;
-    ast_Exp *exps;
-    ast_Integer explen;
-    ast_Integer expsize;
+    Vector<ast_Stat> stats;
+    Vector<ast_Exp> exps;
 } ast_Block;
 #define GCCommonHeader \
     GCObject *next;    \

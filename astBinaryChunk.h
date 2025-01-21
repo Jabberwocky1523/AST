@@ -10,8 +10,7 @@ typedef struct
     unsigned char Instack;
     unsigned char Idx;
 } UpvalueData;
-typedef struct Upvalue
-{
+typedef struct Upvalue {
     int len;
     UpvalueData *data;
 } Upvalue;
@@ -21,8 +20,7 @@ typedef struct
     uint32_t StartPC;
     uint32_t EndPC;
 } LocVarData;
-typedef struct LocVar
-{
+typedef struct LocVar {
     int Len;
     LocVarData *data;
 } LocVar;
@@ -42,8 +40,7 @@ typedef struct
     double luacNum;
 } Header;
 
-enum ConstantTypeTag
-{
+enum ConstantTypeTag {
     CONSTANT_TAG_NONE = -1,
     CONSTANT_TAG_NIL = 0,
     CONSTANT_TAG_BOOLEAN = 1,
@@ -54,8 +51,7 @@ enum ConstantTypeTag
 typedef struct
 {
     enum ConstantTypeTag tag;
-    union
-    {
+    union {
         uint8_t tag_nil;
         uint8_t tag_boolean;
         uint64_t tag_integer;
@@ -63,28 +59,23 @@ typedef struct
         astBuffer tag_str;
     };
 } Constant;
-typedef struct ConstantType
-{
+typedef struct ConstantType {
     int len;
     Constant *data;
 } ConstantType;
-typedef struct Code
-{
+typedef struct Code {
     int len;
     uint32_t *data;
 } Code;
-typedef struct LineInfo
-{
+typedef struct LineInfo {
     int *LineInfo; // uint32_t
     int LineInfoLen;
 } LineInfo;
-typedef struct UpvalueNames
-{
+typedef struct UpvalueNames {
     astBuffer *UpvalueNames; // astBuffer
     int upvalusNameslen;
 } UpvalueNames;
-typedef struct Prototype
-{
+typedef struct Prototype {
     astBuffer Source;
     uint32_t LineDefined;
     uint32_t LastLineDefined;

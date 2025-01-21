@@ -11,24 +11,23 @@
 #include <stdlib.h>
 #define ast_Type int
 #define FPF 50
-#define PANIC(fmt, ...)                                              \
-  printf("file:[%s], line:[%d] panic:" fmt "\n", __FILE__, __LINE__, \
-         ##__VA_ARGS__);                                             \
-  exit(-1);
+#define PANIC(fmt, ...)                                                                \
+    printf("file:[%s], line:[%d] panic:" fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__); \
+    exit(-1);
 // 重定义数据
 typedef unsigned int ast_Uint32;
 typedef enum ast_Bool
 {
-  FALSE = 0,
-  TRUE
+    FALSE = 0,
+    TRUE
 } ast_Bool;
 #define AST_USER_ALINMENT \
-  union                   \
-  {                       \
-    double u;             \
-    void *s;              \
-    long l;               \
-  }
+    union                 \
+    {                     \
+        double u;         \
+        void *s;          \
+        long l;           \
+    }
 typedef AST_USER_ALINMENT ast_UMaxAlign;
 typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 

@@ -51,8 +51,14 @@ namespace astVector
         }
         ~Vector()
         {
-            std::destroy(begin(), end());
-            deallocate(m_start);
+            if (m_start != nullptr)
+            {
+                std::destroy(begin(), end());
+                deallocate(m_start);
+            }
+            m_start = nullptr;
+            m_finish = nullptr;
+            m_end_of_storage = nullptr;
         }
         template <class InputIt>
         Vector(InputIt first, InputIt last)
@@ -91,6 +97,7 @@ namespace astVector
         Iterator begin() const;
         Iterator end() const;
     };
-}
+} // namespace astVector
 #include "astVector.cpp"
+using namespace astVector;
 #endif
