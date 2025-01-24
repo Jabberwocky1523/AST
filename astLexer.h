@@ -29,4 +29,6 @@ ast_Bool ast_NextToken(ast_Lexer *lex, ast_Token &token);
 ast_Integer ast_ScanNewLine(char *chunk);
 ast_Bool ast_TextLexer(ast_Lexer *lex);
 ast_Bool ast_LookAhead(ast_Lexer *lex, ast_Token &token);
+ast_Bool ast_NextTokenOfKind(ast_Lexer *lex, ast_Token &token, ast_Integer kind);
+ast_Bool ast_NextIdentifier(ast_Lexer *lex, ast_Token &token);
 #endif

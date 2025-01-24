@@ -672,3 +672,16 @@ ast_Bool ast_LookAhead(ast_Lexer *lex, ast_Token &token)
     lex->curchunk = tmp;
     return TRUE;
 }
+ast_Bool ast_NextTokenOfKind(ast_Lexer *lex, ast_Token &token, ast_Integer kind)
+{
+    ast_NextToken(lex, token);
+    if (token.kind != kind)
+    {
+        PANIC("不匹配的token类型!");
+    }
+    return TRUE;
+}
+ast_Bool ast_NextIdentifier(ast_Lexer *lex, ast_Token &token)
+{
+    return ast_NextTokenOfKind(lex, token, TOKEN_IDENTIFIER);
+}

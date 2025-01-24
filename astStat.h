@@ -3,6 +3,7 @@
 #include "astStr.h"
 #include "astVector.h"
 #include "astState.h"
+#include "astLexer.h"
 enum
 {
     EMPTYSTAT = 0,
@@ -105,4 +106,6 @@ typedef union StatObject
     AssignStat assignstat;
     LocalFuncDefStat localfundefstat;
 } StatObject;
+ast_Stat parseEmptyStat(ast_Lexer *lex);
+ast_Stat parseBreakStat(ast_Lexer *lex);
 #endif

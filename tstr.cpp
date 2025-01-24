@@ -48,5 +48,4 @@ int main()
     // t->b = "123";
     // t->b.~String();
     // free(t);
-    cout << 1;
 }

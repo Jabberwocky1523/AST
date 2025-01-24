@@ -123,4 +123,5 @@ typedef union ExpObject
 } ExpObject;
 ast_Bool ast_FreeExp(ast_Exp exp);
 ast_Bool ast_FreeExpPointer(ast_Exp *exp);
+
 #endif

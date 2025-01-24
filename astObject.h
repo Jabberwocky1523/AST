@@ -10,7 +10,8 @@
 #include "astBinaryChunk.h"
 #include "ast.h"
 #include "astVector.h"
-#define cast(t, exp) ((t)(exp)) // 类型转换
+#include "variant"
+#define cast(t, exp) ((t)(exp)) 
 #define lmod(s, size) cast(ast_Hash, (s) & ((size) - 1))
 typedef double ast_Number;
 typedef unsigned char ast_Byte;
@@ -18,7 +19,7 @@ typedef unsigned int ast_Hash;
 typedef long long ast_Integer;
 typedef struct ast_State ast_State;
 typedef ast_Integer (*ast_CFunction)(ast_State *L);
-// GC数据类型联合
+
 typedef union GCObject GCObject;
 typedef union StatObject StatObject;
 typedef struct ast_Stat ast_Stat;
@@ -130,7 +131,7 @@ typedef union GCObject
     ast_Table tb;
     ast_Closure cl;
 } GCObject;
-// 栈作为虚拟寄存器
+
 typedef struct ast_Token
 {
     ast_Integer line;
@@ -153,10 +154,9 @@ typedef struct ast_Stack
     ast_Stack *prev;
     ast_State *L;
 } ast_Stack;
-// 判断数据对象是否可回收
+
 #define IsCollectable(o) (ttype(o) >= AST_TSTRING)
 #define IsNum(o) ((o.tt == AST_TINTEGER || o.tt == AST_TNUMBER))
-// 对common数据的封装
 
 #define setnvalue(obj, x)        \
     {                            \
