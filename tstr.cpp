@@ -17,7 +17,7 @@ typedef struct test2
     ast_Integer a;
     String b;
 } test2;
-int main()
+int mainstr()
 {
     ast_Exp e;
     e.tt = UNOPEXP;

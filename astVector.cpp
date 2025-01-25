@@ -1,3 +1,5 @@
+#ifndef AST_VECTOR_CPP
+#define AST_VECTOR_CPP
 #pragma once
 #include "astVector.h"
 using namespace astVector;
@@ -189,3 +191,4 @@ Vector<T>::Iterator Vector<T>::end() const
 {
     return m_finish;
 }
+#endif
