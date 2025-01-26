@@ -2,7 +2,7 @@
 #include "astStr.h"
 #include "astUtils.h"
 #include "iostream"
-int main()
+int maingo()
 {
     char *buffer;
     int len;
@@ -13,5 +13,5 @@ int main()
     name.p = "123";
     // String a = buf.p;
     // std::cout << a;
-    testParser(buf, name);
+    // testParser(buf, name);
 }
