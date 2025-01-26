@@ -1,8 +1,10 @@
 package parser
 
-import . "luago/compiler/ast"
-import . "luago/compiler/lexer"
-import "luago/number"
+import (
+	. "com/compiler/ast"
+	. "com/compiler/lexer"
+	"com/number"
+)
 
 // explist ::= exp {‘,’ exp}
 func parseExpList(lexer *Lexer) []Exp {

@@ -1,6 +1,6 @@
 package codegen
 
-import . "luago/binchunk"
+import . "com/binchunk"
 
 func toProto(fi *funcInfo) *Prototype {
 	proto := &Prototype{

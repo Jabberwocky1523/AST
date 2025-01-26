@@ -11,7 +11,8 @@
 #include "ast.h"
 #include "astVector.h"
 #include "variant"
-#define cast(t, exp) ((t)(exp)) 
+#include "any"
+#define cast(t, exp) ((t)(exp))
 #define lmod(s, size) cast(ast_Hash, (s) & ((size) - 1))
 typedef double ast_Number;
 typedef unsigned char ast_Byte;

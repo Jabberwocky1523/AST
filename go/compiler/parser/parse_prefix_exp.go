@@ -1,7 +1,9 @@
 package parser
 
-import . "luago/compiler/ast"
-import . "luago/compiler/lexer"
+import (
+	. "com/compiler/ast"
+	. "com/compiler/lexer"
+)
 
 // prefixexp ::= var | functioncall | ‘(’ exp ‘)’
 // var ::=  Name | prefixexp ‘[’ exp ‘]’ | prefixexp ‘.’ Name
@@ -9,6 +11,7 @@ import . "luago/compiler/lexer"
 
 /*
 prefixexp ::= Name
+
 	| ‘(’ exp ‘)’
 	| prefixexp ‘[’ exp ‘]’
 	| prefixexp ‘.’ Name

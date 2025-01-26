@@ -1,7 +1,9 @@
 package parser
 
-import . "luago/compiler/ast"
-import . "luago/compiler/lexer"
+import (
+	. "com/compiler/ast"
+	. "com/compiler/lexer"
+)
 
 // block ::= {stat} [retstat]
 func parseBlock(lexer *Lexer) *Block {

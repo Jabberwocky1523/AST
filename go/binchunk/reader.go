@@ -1,7 +1,9 @@
 package binchunk
 
-import "encoding/binary"
-import "math"
+import (
+	"encoding/binary"
+	"math"
+)
 
 type reader struct {
 	data []byte
@@ -52,16 +54,16 @@ func (self *reader) readString() string {
 }
 
 func (self *reader) checkHeader() {
-	if string(self.readBytes(4)) != LUA_SIGNATURE {
+	if string(self.readBytes(4)) != AST_SIGNATURE {
 		panic("not a precompiled chunk!")
 	}
-	if self.readByte() != LUAC_VERSION {
+	if self.readByte() != ASTC_VERSION {
 		panic("version mismatch!")
 	}
-	if self.readByte() != LUAC_FORMAT {
+	if self.readByte() != ASTC_FORMAT {
 		panic("format mismatch!")
 	}
-	if string(self.readBytes(6)) != LUAC_DATA {
+	if string(self.readBytes(6)) != ASTC_DATA {
 		panic("corrupted!")
 	}
 	if self.readByte() != CINT_SIZE {
@@ -73,16 +75,16 @@ func (self *reader) checkHeader() {
 	if self.readByte() != INSTRUCTION_SIZE {
 		panic("instruction size mismatch!")
 	}
-	if self.readByte() != LUA_INTEGER_SIZE {
+	if self.readByte() != AST_INTEGER_SIZE {
 		panic("lua_Integer size mismatch!")
 	}
-	if self.readByte() != LUA_NUMBER_SIZE {
+	if self.readByte() != AST_NUMBER_SIZE {
 		panic("lua_Number size mismatch!")
 	}
-	if self.readLuaInteger() != LUAC_INT {
+	if self.readLuaInteger() != ASTC_INT {
 		panic("endianness mismatch!")
 	}
-	if self.readLuaNumber() != LUAC_NUM {
+	if self.readLuaNumber() != ASTC_NUM {
 		panic("float format mismatch!")
 	}
 }

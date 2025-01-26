@@ -1,7 +1,9 @@
 package codegen
 
-import . "luago/binchunk"
-import . "luago/compiler/ast"
+import (
+	. "com/binchunk"
+	. "com/compiler/ast"
+)
 
 func GenProto(chunk *Block) *Prototype {
 	fd := &FuncDefExp{

@@ -1,17 +1,12 @@
-#include "lib/libtest.h"
 #include "astStr.h"
 #include "astUtils.h"
 #include "iostream"
-int maingo()
+int maingo(int argc, const char *const *argv)
 {
-    char *buffer;
-    int len;
-    OPENANDREAD("/Users/tinakurisu/Desktop/AST/lua/hello_world.lua", buffer, len);
-    GoString buf;
-    buf.p = buffer;
-    GoString name;
-    name.p = "123";
-    // String a = buf.p;
-    // std::cout << a;
-    // testParser(buf, name);
+    const char *file_name = "../luac.out";
+    if (argc >= 2)
+    {
+        file_name = argv[1];
+    }
+    ast_Dump2File((char *)file_name);
 }

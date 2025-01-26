@@ -1,6 +1,6 @@
 package codegen
 
-import . "luago/compiler/ast"
+import . "com/compiler/ast"
 
 func isVarargOrFuncCall(exp Exp) bool {
 	switch exp.(type) {

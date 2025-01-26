@@ -2,6 +2,7 @@
 #define __UTILS_H__
 #include "astBuffer.h"
 #include "astBinaryChunk.h"
+#include "lib/libcomgo.h"
 #define OPENANDREAD(file_name, buffer, len)             \
     do                                                  \
     {                                                   \
@@ -22,6 +23,7 @@
 char *LoadFileContent(const char *file_name);
 
 astBuffer LoadFileToastBuffer(const char *file_name);
+astBuffer LoadViaCodePath(const char *file_name);
 void PrintOperand(uint32_t instruction);
 void PrintAst(Prototype *proto);
 #endif

@@ -1,14 +1,41 @@
 package main
 
 import (
+	"com/binchunk"
+	"com/compiler"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"luago/compiler"
-	. "luago/api"
-	"luago/binchunk"
-	"luago/state"
 )
+import "C"
+
+//export ast_Dump2Str
+func ast_Dump2Str(path *C.char) (*C.char, C.size_t) {
+	goPath := C.GoString(path)
+
+	data, err := ioutil.ReadFile(goPath)
+	if err != nil {
+		errMsg := fmt.Sprintf("Failed to read file: %v", err)
+		return C.CString(errMsg), 0
+	}
+	proto := compiler.Compile(string(data), goPath)
+	w := binchunk.Dump2Str(proto)
+	cBytesWithNull := C.CBytes(append(w, 0))
+	return (*C.char)(cBytesWithNull), C.size_t(len(w))
+}
+
+//export ast_Dump2File
+func ast_Dump2File(path *C.char) {
+	goPath := C.GoString(path)
+
+	data, err := ioutil.ReadFile(goPath)
+	if err != nil {
+		panic("error to open file!")
+		return
+	}
+	proto := compiler.Compile(string(data), goPath)
+	binchunk.Dump(proto, "astc.out")
+}
 
 func main() {
 	if len(os.Args) > 1 {
@@ -16,115 +43,10 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-
-		ls := state.New()
-		ls.Register("print", print)
-		ls.Register("getmetatable", getMetatable)
-		ls.Register("setmetatable", setMetatable)
-		ls.Register("next", next)
-		ls.Register("pairs", pairs)
-		ls.Register("ipairs", iPairs)
-		ls.Register("error", error)
-		ls.Register("pcall", pCall)
-		// ls.Load(data, os.Args[1], "bt")
 		proto := compiler.Compile(string(data), os.Args[1])
-		// ls.Call(0, 0)
-
-		// proto := &binchunk.Prototype{
-		// 	Source:          "test",
-		// 	LineDefined:     1,
-		// 	LastLineDefined: 10,
-		// 	NumParams:       2,
-		// 	IsVararg:        1,
-		// 	MaxStackSize:    5,
-		// 	Code:            []uint32{1, 2, 3, 4, 5},
-		// 	Constants:       []interface{}{nil, true, int64(123), 3.14, "hello"},
-		// 	Upvalues:        []binchunk.Upvalue{{Instack: 1, Idx: 0}},
-		// 	Protos:          []*binchunk.Prototype{},
-		// 	LineInfo:        []uint32{1, 2, 3, 4, 5},
-		// 	LocVars:         []binchunk.LocVar{{VarName: "a", StartPC: 1, EndPC: 2}},
-		// 	UpvalueNames:    []string{"_ENV"},
-		// }
-		// binchunk.Dump(proto, "output.luac")
-		// proto2 := binchunk.Undump(data)
 		list(proto)
+		binchunk.Dump(proto, "vector.luac")
 	}
-}
-
-func print(ls LuaState) int {
-	nArgs := ls.GetTop()
-	for i := 1; i <= nArgs; i++ {
-		if ls.IsBoolean(i) {
-			fmt.Printf("%t", ls.ToBoolean(i))
-		} else if ls.IsString(i) {
-			fmt.Print(ls.ToString(i))
-		} else {
-			fmt.Print(ls.TypeName(ls.Type(i)))
-		}
-		if i < nArgs {
-			fmt.Print("\t")
-		}
-	}
-	fmt.Println()
-	return 0
-}
-
-func getMetatable(ls LuaState) int {
-	if !ls.GetMetatable(1) {
-		ls.PushNil()
-	}
-	return 1
-}
-
-func setMetatable(ls LuaState) int {
-	ls.SetMetatable(1)
-	return 1
-}
-
-func next(ls LuaState) int {
-	ls.SetTop(2) /* create a 2nd argument if there isn't one */
-	if ls.Next(1) {
-		return 2
-	} else {
-		ls.PushNil()
-		return 1
-	}
-}
-
-func pairs(ls LuaState) int {
-	ls.PushGoFunction(next) /* will return generator, */
-	ls.PushValue(1)         /* state, */
-	ls.PushNil()
-	return 3
-}
-
-func iPairs(ls LuaState) int {
-	ls.PushGoFunction(_iPairsAux) /* iteration function */
-	ls.PushValue(1)               /* state */
-	ls.PushInteger(0)             /* initial value */
-	return 3
-}
-
-func _iPairsAux(ls LuaState) int {
-	i := ls.ToInteger(2) + 1
-	ls.PushInteger(i)
-	if ls.GetI(1, i) == LUA_TNIL {
-		return 1
-	} else {
-		return 2
-	}
-}
-
-func error(ls LuaState) int {
-	return ls.Error()
-}
-
-func pCall(ls LuaState) int {
-	nArgs := ls.GetTop() - 1
-	status := ls.PCall(nArgs, -1, 0)
-	ls.PushBoolean(status == LUA_OK)
-	ls.Insert(1)
-	return ls.GetTop()
 }
 func list(f *binchunk.Prototype) {
 	printHeader(f)

@@ -271,7 +271,6 @@ TValue _ast_Arith(TValue a, TValue b, ast_Operator op)
 ast_Bool ast_CallMetaMethod(ast_State *L, TValue a, TValue b, TValue str)
 {
     TValue mt = ast_GetMetaTable(L, a);
-    ast_PrintTable(mt.value.gc->tb);
     TValue m1 = ast_GetMetaField(L, a, str);
     if (m1.tt == AST_TNIL)
     {

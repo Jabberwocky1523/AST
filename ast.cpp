@@ -1,2 +1,48 @@
-#include "ast.h"
-
+#include "stdlib.h"
+#include "stdio.h"
+#include "astMem.h"
+#include "astBuffer.h"
+#include "astString.h"
+#include "astMath.h"
+#include "astStack.h"
+#include "astOpcode.h"
+#include "astUtils.h"
+#include "astMap.h"
+#include "astVm.h"
+#include "log.h"
+#include "astUser.h"
+#include "astTable.h"
+#include "astError.h"
+int main(int argc, const char *const *argv)
+{
+    const char *file_name = "../lua/pcall.lua";
+    if (argc >= 2)
+    {
+        file_name = argv[1];
+    }
+    astBuffer file_content = LoadViaCodePath(file_name);
+    Prototype *proto = astBinaryChunkUnDump(file_content);
+    ast_State *L = (ast_State *)malloc(sizeof(ast_State));
+    global_State *g_s = (global_State *)malloc(sizeof(global_State));
+    ast_Init(L, g_s);
+    // PrintAst(proto);
+    ast_LoadChunk(L, file_content, proto, nullptr, 0);
+    TValue name = Char2Ob(L, "print");
+    ast_RegisterPushValue(L, astPrintTest, name);
+    name = Char2Ob(L, "astTest");
+    ast_RegisterPushValue(L, astTest, name);
+    name = Char2Ob(L, "getmetatable");
+    ast_RegisterPushValue(L, getMetatable, name);
+    name = Char2Ob(L, "setmetatable");
+    ast_RegisterPushValue(L, setMetatable, name);
+    name = Char2Ob(L, "name");
+    ast_RegisterPushValue(L, next, name);
+    name = Char2Ob(L, "pairs");
+    ast_RegisterPushValue(L, pairs, name);
+    name = Char2Ob(L, "ipairs");
+    ast_RegisterPushValue(L, ipairs, name);
+    name = Char2Ob(L, "pcall");
+    ast_RegisterPushValue(L, pCall, name);
+    ast_Call(L, 0, 0);
+    return 0;
+}

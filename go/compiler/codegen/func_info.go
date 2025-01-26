@@ -1,9 +1,12 @@
 package codegen
 
-import . "luago/compiler/ast"
-import . "luago/compiler/lexer"
-import . "luago/vm"
+import (
+	. "com/compiler/ast"
+	. "com/compiler/lexer"
+)
 
+const MAXARG_Bx = 1<<18 - 1       // 262143
+const MAXARG_sBx = MAXARG_Bx >> 1 // 131071
 var arithAndBitwiseBinops = map[int]int{
 	TOKEN_OP_ADD:  OP_ADD,
 	TOKEN_OP_SUB:  OP_SUB,
@@ -466,5 +469,29 @@ func (self *funcInfo) emitBinaryOp(line, op, a, b, c int) {
 		self.emitJmp(line, 0, 1)
 		self.emitLoadBool(line, a, 0, 1)
 		self.emitLoadBool(line, a, 1, 0)
+	}
+}
+func Int2fb(x int) int {
+	e := 0 /* exponent */
+	if x < 8 {
+		return x
+	}
+	for x >= (8 << 4) { /* coarse steps */
+		x = (x + 0xf) >> 4 /* x = ceil(x / 16) */
+		e += 4
+	}
+	for x >= (8 << 1) { /* fine steps */
+		x = (x + 1) >> 1 /* x = ceil(x / 2) */
+		e++
+	}
+	return ((e + 1) << 3) | (x - 8)
+}
+
+/* converts back */
+func Fb2int(x int) int {
+	if x < 8 {
+		return x
+	} else {
+		return ((x & 7) + 8) << uint((x>>3)-1)
 	}
 }

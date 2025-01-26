@@ -1,6 +1,6 @@
 package codegen
 
-import . "luago/compiler/ast"
+import . "com/compiler/ast"
 
 func cgBlock(fi *funcInfo, node *Block) {
 	for _, stat := range node.Stats {

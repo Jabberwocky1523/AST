@@ -1,17 +1,17 @@
 package binchunk
 
 const (
-	LUA_SIGNATURE    = "\x1bLua"
-	LUAC_VERSION     = 0x53
-	LUAC_FORMAT      = 0
-	LUAC_DATA        = "\x19\x93\r\n\x1a\n"
+	AST_SIGNATURE    = "\x1blst"
+	ASTC_VERSION     = 0x53
+	ASTC_FORMAT      = 0
+	ASTC_DATA        = "\x19\x93\r\n\x1a\n"
 	CINT_SIZE        = 4
 	CSIZET_SIZE      = 8
 	INSTRUCTION_SIZE = 4
-	LUA_INTEGER_SIZE = 8
-	LUA_NUMBER_SIZE  = 8
-	LUAC_INT         = 0x5678
-	LUAC_NUM         = 370.5
+	AST_INTEGER_SIZE = 8
+	AST_NUMBER_SIZE  = 8
+	ASTC_INT         = 0x5678
+	ASTC_NUM         = 370.5
 )
 
 const (
@@ -73,7 +73,7 @@ type LocVar struct {
 
 func IsBinaryChunk(data []byte) bool {
 	return len(data) > 4 &&
-		string(data[:4]) == LUA_SIGNATURE
+		string(data[:4]) == AST_SIGNATURE
 }
 
 func Undump(data []byte) *Prototype {

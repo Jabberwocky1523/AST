@@ -1,6 +1,6 @@
 package codegen
 
-import . "luago/compiler/ast"
+import . "com/compiler/ast"
 
 func cgStat(fi *funcInfo, node Stat) {
 	switch stat := node.(type) {
@@ -55,13 +55,15 @@ func cgDoStat(fi *funcInfo, node *DoStat) {
 }
 
 /*
-           ______________
-          /  false? jmp  |
-         /               |
+	  ______________
+	 /  false? jmp  |
+	/               |
+
 while exp do block end <-'
-      ^           \
-      |___________/
-           jmp
+
+	^           \
+	|___________/
+	     jmp
 */
 func cgWhileStat(fi *funcInfo, node *WhileStat) {
 	pcBeforeExp := fi.pc()
@@ -84,9 +86,10 @@ func cgWhileStat(fi *funcInfo, node *WhileStat) {
 }
 
 /*
-        ______________
-       |  false? jmp  |
-       V              /
+	 ______________
+	|  false? jmp  |
+	V              /
+
 repeat block until exp
 */
 func cgRepeatStat(fi *funcInfo, node *RepeatStat) {
@@ -108,13 +111,15 @@ func cgRepeatStat(fi *funcInfo, node *RepeatStat) {
 }
 
 /*
-         _________________       _________________       _____________
-        / false? jmp      |     / false? jmp      |     / false? jmp  |
-       /                  V    /                  V    /              V
+	  _________________       _________________       _____________
+	 / false? jmp      |     / false? jmp      |     / false? jmp  |
+	/                  V    /                  V    /              V
+
 if exp1 then block1 elseif exp2 then block2 elseif true then block3 end <-.
-                   \                       \                       \      |
-                    \_______________________\_______________________\_____|
-                    jmp                     jmp                     jmp
+
+	\                       \                       \      |
+	 \_______________________\_______________________\_____|
+	 jmp                     jmp                     jmp
 */
 func cgIfStat(fi *funcInfo, node *IfStat) {
 	pcJmpToEnds := make([]int, len(node.Exps))

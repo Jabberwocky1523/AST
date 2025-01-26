@@ -60,7 +60,7 @@ TValue astTable_GetVal(ast_Table *tb, TValue key)
 }
 ast_Bool _astTable_ShrinkTableNil(ast_Table *tb)
 {
-    printf("do!");
+    // printf("do!");
     int i = TableArrLen(tb) - 1;
     for (; i >= 0; i--)
     {

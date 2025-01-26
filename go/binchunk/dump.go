@@ -12,6 +12,10 @@ type writer struct {
 }
 
 func (self *writer) writeByte(b byte) {
+	// if b == 0 {
+	// 	z := "0"
+	// 	self.data = append(self.data, byte(z[0]))
+	// }
 	self.data = append(self.data, b)
 }
 
@@ -43,29 +47,38 @@ func (self *writer) writeLuaInteger(i int64) {
 func (self *writer) writeLuaNumber(n float64) {
 	self.writeUint64(math.Float64bits(n))
 }
+func Dump2Writer(proto *Prototype) *writer {
 
-func Dump(proto *Prototype, filePath string) error {
-	// Create a new writer to store the binary data
 	w := &writer{}
 
 	// Write the header
-	w.writeBytes([]byte(LUA_SIGNATURE)) // Lua signature
-	w.writeByte(LUAC_VERSION)           // LUAC version
-	w.writeByte(LUAC_FORMAT)            // LUAC format
-	w.writeBytes([]byte(LUAC_DATA))     // LUAC data
+	w.writeBytes([]byte(AST_SIGNATURE)) // Lua signature
+	w.writeByte(ASTC_VERSION)           // LUAC version
+	w.writeByte(ASTC_FORMAT)            // LUAC format
+	w.writeBytes([]byte(ASTC_DATA))     // LUAC data
 	w.writeByte(CINT_SIZE)              // C int size
 	w.writeByte(CSIZET_SIZE)            // C size_t size
 	w.writeByte(INSTRUCTION_SIZE)       // instruction size
-	w.writeByte(LUA_INTEGER_SIZE)       // lua_Integer size
-	w.writeByte(LUA_NUMBER_SIZE)        // lua_Number size
-	w.writeLuaInteger(LUAC_INT)         // LUAC integer
-	w.writeLuaNumber(LUAC_NUM)          // LUAC number
+	w.writeByte(AST_INTEGER_SIZE)       // lua_Integer size
+	w.writeByte(AST_NUMBER_SIZE)        // lua_Number size
+	w.writeLuaInteger(ASTC_INT)         // LUAC integer
+	w.writeLuaNumber(ASTC_NUM)          // LUAC number
 
 	// Write the size of upvalues
-	w.writeByte(0) // size_upvalues (this is just an example, you can adjust it based on actual usage)
+	w.writeByte(2) // size_upvalues (this is just an example, you can adjust it based on actual usage)
 
 	// Write the prototype
 	writeProto(w, proto)
+	return w
+}
+func Dump2Str(proto *Prototype) []byte {
+	w := Dump2Writer(proto)
+	return w.data
+}
+func Dump(proto *Prototype, filePath string) error {
+	// Create a new writer to store the binary data
+
+	w := Dump2Writer(proto)
 
 	// Create or open the file for writing
 	file, err := os.Create(filePath)

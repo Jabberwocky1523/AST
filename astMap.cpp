@@ -92,7 +92,7 @@ TValue astMap_GetValFromKey(ast_Map *map, TValue key)
 {
   if (astMap_FindNodeFromKey(map, key) == nullptr)
   {
-    printf("找不到对应val\n");
+    // printf("找不到对应val\n");
     TValue tt;
     tt.tt = AST_TNIL;
     tt.value.gc = NULL;

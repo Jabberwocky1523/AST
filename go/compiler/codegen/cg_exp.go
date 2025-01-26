@@ -1,8 +1,9 @@
 package codegen
 
-import . "luago/compiler/ast"
-import . "luago/compiler/lexer"
-import . "luago/vm"
+import (
+	. "com/compiler/ast"
+	. "com/compiler/lexer"
+)
 
 // kind of operands
 const (

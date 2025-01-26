@@ -57,29 +57,29 @@ bool astBinaryChunkCheckHead(astBufferStream buffer_stream)
     assert(buffer_stream != NULL);
     do {
             char buffer[10] = {0};
-            int buffer_len = strlen(LUA_SIGNATURE);
+            int buffer_len = strlen(AST_SIGNATURE);
             astBufferStreamRead(buffer_stream, buffer, buffer_len);
-            if (strncmp(buffer, LUA_SIGNATURE, buffer_len) != 0)
+            if (strncmp(buffer, AST_SIGNATURE, buffer_len) != 0)
                 {
                     printf("LUA_SIGNATURE error");
                     break;
                 }
 
-            if (astBufferStreamReadUInt8(buffer_stream) != LUAC_VERSION)
+                if (astBufferStreamReadUInt8(buffer_stream) != ASTC_VERSION)
                 {
                     printf("LUAC_VERSION error");
                     break;
                 }
 
-            if (astBufferStreamReadUInt8(buffer_stream) != LUAC_FORMAT)
+                if (astBufferStreamReadUInt8(buffer_stream) != ASTC_FORMAT)
                 {
                     printf("LUAC_FORMAT error");
                     break;
                 }
 
-            buffer_len = strlen(LUAC_DATA);
-            astBufferStreamRead(buffer_stream, buffer, buffer_len);
-            if (strncmp(buffer, LUAC_DATA, buffer_len) != 0)
+                buffer_len = strlen(ASTC_DATA);
+                astBufferStreamRead(buffer_stream, buffer, buffer_len);
+                if (strncmp(buffer, ASTC_DATA, buffer_len) != 0)
                 {
                     printf("LUAC_DATA error");
                     break;
@@ -103,25 +103,25 @@ bool astBinaryChunkCheckHead(astBufferStream buffer_stream)
                     break;
                 }
 
-            if (astBufferStreamReadUInt8(buffer_stream) != LUA_INTEGER_SIZE)
+                if (astBufferStreamReadUInt8(buffer_stream) != AST_INTEGER_SIZE)
                 {
                     printf("LUA_INTEGER_SIZE error");
                     break;
                 }
 
-            if (astBufferStreamReadUInt8(buffer_stream) != LUA_NUMBER_SIZE)
+                if (astBufferStreamReadUInt8(buffer_stream) != AST_NUMBER_SIZE)
                 {
                     printf("LUA_NUMBER_SIZE error");
                     break;
                 }
 
-            if (astBufferStreamReadInt64(buffer_stream) != LUAC_INT)
+                if (astBufferStreamReadInt64(buffer_stream) != ASTC_INT)
                 {
                     printf("LUAC_INT error");
                     break;
                 }
 
-            if (astBufferStreamReadDouble(buffer_stream) != LUAC_NUM)
+                if (astBufferStreamReadDouble(buffer_stream) != ASTC_NUM)
                 {
                     printf("LUAC_NUM error");
                     break;

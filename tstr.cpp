@@ -20,7 +20,7 @@ typedef struct test2
 int mainstr()
 {
     ast_Exp e;
-    e.tt = UNOPEXP;
+    // e.tt = UNOPEXP;
     ExpObject *eo = (ExpObject *)malloc(sizeof(ExpObject));
     eo->unopexp.Line = 1;
     eo->unopexp.Op = 0;
@@ -33,16 +33,16 @@ int mainstr()
     ExpObject *con = (ExpObject *)malloc(sizeof(ExpObject));
     con->concatexp.Line = 0;
     ast_Exp c;
-    c.tt = STRINGEXP;
-    c.exp = i;
-    con->concatexp.exps.push_back(c);
-    c.exp = s;
-    con->concatexp.exps.push_back(c);
-    c.exp = con;
-    c.tt = CONCATEXP;
-    eo->unopexp.exp = c;
-    e.exp = eo;
-    ast_FreeExp(e);
+    // c.tt = STRINGEXP;
+    // c.exp = i;
+    // con->concatexp.exps.push_back(c);
+    // c.exp = s;
+    // con->concatexp.exps.push_back(c);
+    // c.exp = con;
+    // c.tt = CONCATEXP;
+    // eo->unopexp.exp = c;
+    // e.exp = eo;
+    // ast_FreeExp(e);
     // test2 *t = (test2 *)malloc(sizeof(test2));
     // t->a = 1;
     // t->b = "123";
