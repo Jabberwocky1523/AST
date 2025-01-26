@@ -1,4 +1,6 @@
 #!/bin/bash
+rm -r ./bin
+rm -r ./build
 cd "./go"
 go build -o libcomgo.so -buildmode=c-shared
 cd ..
