@@ -379,8 +379,6 @@ ast_Bool _ast_SetList(ast_State *L, Instruction i)
         }
         ast_StackSetTop(PStack(L), ast_RegCount(L));
     }
-    ast_Table *tb = &L->stack->Value[n.a].value.gc->tb;
-    ast_PrintTable(*tb);
     return TRUE;
 }
 // END
