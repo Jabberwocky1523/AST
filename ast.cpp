@@ -13,7 +13,7 @@
 #include "astUser.h"
 #include "astTable.h"
 #include "astError.h"
-int main(int argc, const char *const *argv)
+int mainast(int argc, const char *const *argv)
 {
     const char *file_name = "../lua/pcall.lua";
     if (argc >= 2)
