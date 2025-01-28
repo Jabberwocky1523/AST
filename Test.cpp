@@ -1,5 +1,5 @@
 #include "std/test.h"
-int main()
+int mainstd()
 {
     test();
 }

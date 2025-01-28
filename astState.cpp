@@ -118,6 +118,16 @@ TValue ast_NumberToTValue(ast_Number n)
     tt.value.n = n;
     return tt;
 }
+TValue ast_CFunctionToTValue(ast_CFunction func)
+{
+    TValue tt;
+    tt.tt = AST_TUSERFUNCTION;
+    ast_Closure *cs = (ast_Closure *)calloc(1, sizeof(ast_Closure));
+    cs->func = func;
+    cs->Upvalues = nullptr;
+    tt.value.gc = cast(GCObject *, cs);
+    return tt;
+}
 TValue ast_BooleanToTValue(ast_Bool bo)
 {
     TValue tt;
@@ -171,6 +181,10 @@ ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto,
 }
 TValue *ast_PopN(ast_Stack *L, int size)
 {
+    if (size < 0)
+    {
+        size = 0;
+    }
     TValue *val = (TValue *)malloc(sizeof(TValue) * size);
     for (int i = size - 1; i >= 0; i--)
     {
@@ -255,6 +269,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, ast_Closure *closure, int nArgs,
         TValue tt = Nil2Ob();
         for (int i = L->stack->nPrevFuncResults; i < nResults; i++)
             ast_StackPush(PStack(L), tt);
+        astack_Rotate(PStack(L), -nResults, nResults - L->stack->nPrevFuncResults);
     }
     if (nResults >= 0)
     {
@@ -336,9 +351,9 @@ ast_Bool ast_Call(ast_State *L, int nArgs, int nResults)
                 ast_StackPush(PStack(L), mf);
                 astack_Insert(PStack(L), -(nArgs + 2));
                 nArgs += 1;
-                printf("call %s<%d,%d>\n", mf.value.gc->cl.pr->Source->data_,
-                       mf.value.gc->cl.pr->LineDefined,
-                       mf.value.gc->cl.pr->LastLineDefined);
+                // printf("call %s<%d,%d>\n", mf.value.gc->cl.pr->Source->data_,
+                //        mf.value.gc->cl.pr->LineDefined,
+                //        mf.value.gc->cl.pr->LastLineDefined);
                 ast_CallAstClousure(L, cast(ast_Closure *, mf.value.gc), nArgs,
                                     nResults);
                 return TRUE;
@@ -455,5 +470,13 @@ ast_Bool ast_RegisterPushValue(ast_State *L, ast_CFunction func, TValue name)
 {
     ast_PushCFunction(L, func);
     ast_SetGlobal(L, name);
+    return TRUE;
+}
+ast_Bool ast_Load(ast_State *L, char *file_Path)
+{
+    astBuffer file_content = LoadViaCodePath(file_Path);
+    Prototype *proto = astBinaryChunkUnDump(file_content);
+    PrintAst(proto);
+    ast_LoadChunk(L, file_content, proto, nullptr, 0);
     return TRUE;
 }

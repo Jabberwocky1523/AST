@@ -286,6 +286,10 @@ bool operator!=(const String &lhs, const char *rhs)
 {
     return (lhs.compare(rhs) != 0);
 }
+bool operator==(astStr::String &lhs, astStr::String &rhs)
+{
+    return (lhs.compare(rhs) == 0);
+}
 std::ostream &operator<<(std::ostream &out, const String &str)
 {
     out << str.c_str();

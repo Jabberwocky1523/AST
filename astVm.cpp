@@ -440,7 +440,6 @@ ast_Bool _PopResults(ast_State *L, int a, int c)
     {
         for (int i = a; i <= a + c - 2; i++)
         {
-
             astack_ReplaceToIdx(PStack(L), i);
         }
     }

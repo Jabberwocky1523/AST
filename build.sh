@@ -3,6 +3,8 @@ rm -r ./bin
 rm -r ./build
 cd "./go"
 go build -o libcomgo.so -buildmode=c-shared
+cp ./libcomgo.so ../lib
+cp ./libcomgo.h ../lib
 cd ..
 if [ -d "/build/" ]; then
     cd build
@@ -16,4 +18,6 @@ cd ..
 mkdir bin
 cd ./bin
 cp ../build/AST ./
-cp ../lib/libcomgo.so ./
+cp ../go/libcomgo.so ./
+cp ./AST ../
+cp ./libcomgo.so ../

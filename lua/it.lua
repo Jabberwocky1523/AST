@@ -1,11 +1,7 @@
 t = { a = 1, b = 2, c = 3 }
 
-for k, v in pairs(t) do
-    print(k, v)
-end
+printtable(t)
 t = { "a", "b", "c", 1, 2, 3 }
-for k, v in pairs(t) do
-    print(k, v)
-end
+printtable(t)
 local i = 1;
 i = ~i;

@@ -9,8 +9,8 @@ local function max(...)
             val, idx = args[i], i
         end
     end
-    return val, idx, 2
+    return val, 1, 2
 end
 local v1, idx1, sum = max(4, add(7, 2), 6, 2)
 local v2 = max(5, 6, 1)
-print(v4)
+print(v1, idx1, sum, v2)
