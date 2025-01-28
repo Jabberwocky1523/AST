@@ -382,7 +382,7 @@ ast_Integer ast_RegCount(ast_State *L)
 {
     return L->stack->closure->pr->MaxStackSize;
 }
-ast_Bool ast_LoadVararg(ast_State *L, int n)
+ast_Integer ast_LoadVararg(ast_State *L, int n)
 {
     if (n < 0)
     {
@@ -391,7 +391,7 @@ ast_Bool ast_LoadVararg(ast_State *L, int n)
     }
     ast_StackCheck(PStack(L), n);
     ast_PushN(PStack(L), L->stack->varargs, n);
-    return TRUE;
+    return n;
 }
 ast_Bool ast_LoadProto(ast_State *L, int idx)
 {

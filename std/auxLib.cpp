@@ -127,6 +127,7 @@ ast_Bool RequireF(ast_State *L, String modname, ast_CFunction func)
         ast_SetTableFromString(L, -3, s);
     }
     astack_Remove(PStack(L), -2);
+    return TRUE;
 }
 ast_Bool NewLibTable(ast_State *L, FuncRegs func)
 {

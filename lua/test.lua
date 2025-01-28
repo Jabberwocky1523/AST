@@ -1,7 +1,7 @@
 local function add(a, b)
     return a + b
 end
-local function max(...)
+local function max(a, b, ...)
     local args = { ... }
     local val, idx
     for i = 1, #args do
@@ -9,8 +9,17 @@ local function max(...)
             val, idx = args[i], i
         end
     end
-    return val, 1, 2
+    return val, idx, add(1, 2)
 end
-local v1, idx1, sum = max(4, add(7, 2), 6, 2)
-local v2 = max(5, 6, 1)
-print(v1, idx1, sum, v2)
+
+local v1, idx1, sum = max(4, 6)
+-- local v2 = max(5, 6, 1)
+print(v1, idx1, sum)
+-- function f(...)
+--     local args = { ... }
+--     for i = 1, #args do
+--         print(args[i])
+--     end
+-- end
+
+-- f(1, 2, 3, 4)

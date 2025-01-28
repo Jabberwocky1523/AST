@@ -152,6 +152,8 @@ ast_Bool ast_StackSetTValue(ast_Stack *L, TValue &value, int idx)
 ast_Bool ast_StackReverse(ast_Stack *L, int idx1, int idx2)
 {
     TValue *value = L->Value;
+    idx1 = ast_StackAbsIndex(L, idx1);
+    idx2 = ast_StackAbsIndex(L, idx2);
     if (idx1 > L->top - 1 || idx2 > L->top - 1)
     {
         PANIC("无效地址");

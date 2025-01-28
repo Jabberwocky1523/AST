@@ -344,6 +344,7 @@ ast_Bool _ast_SetTable(ast_State *L, Instruction i)
 ////R(A)[(C - 1) * FPF + i] = R(A + i) 1 <= i <= B 给数组赋值
 ast_Bool _ast_SetList(ast_State *L, Instruction i)
 {
+
     TABC n = InstructionTABC(i);
     if (n.c > 0)
     {
@@ -471,7 +472,8 @@ ast_Bool _ast_Return(ast_State *L, Instruction i)
     TABC n = InstructionTABC(i);
     if (n.b == 0)
     {
-        n.b = L->stack->nPrevFuncResults + 1;
+        n.b = L->stack->PrevIdx - n.a + L->stack->nPrevFuncResults + 1;
+        // n.b = L->stack->nPrevFuncResults + 1;
     }
     if (n.b == 1)
     {
@@ -492,11 +494,17 @@ ast_Bool _ast_Return(ast_State *L, Instruction i)
 ast_Bool _ast_VarArg(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
+
     if (n.b != 1)
     {
-        ast_LoadVararg(L, n.b - 1);
-        _PopResults(L, n.a, n.b);
+        ast_Integer num = ast_LoadVararg(L, n.b - 1);
+        if (num > 0)
+        {
+            astack_Reverse(PStack(L), -num, -1);
+        }
+        _PopResults(L, n.a, num + 1);
     }
+
     return TRUE;
 }
 ast_Bool _ast_TailCall(ast_State *L, Instruction i)

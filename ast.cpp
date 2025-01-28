@@ -27,9 +27,5 @@ int main(int argc, const char *const *argv)
     OpenLibs(L);
     ast_Load(L, (char *)file_name);
     ast_Call(L, 0, 0);
-    TValue r = ast_StackGetTValue(PStack(L), AST_REGISTRYINDEX);
-    ast_PrintTable(r.value.gc->tb);
-    TValue g = astTable_GetVal(cast(ast_Table *, r.value.gc), Int2Ob(AST_RIDX_GLOBALS));
-    ast_PrintTable(g.value.gc->tb);
     return 0;
 }

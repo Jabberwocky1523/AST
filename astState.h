@@ -51,7 +51,7 @@ ast_Bool ast_PushStack(ast_State *L, ast_Stack *stack);
 ast_Stack *ast_PopStack(ast_State *L);
 ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto, ast_String *chunkname, int mode);
 ast_Integer ast_RegCount(ast_State *L);
-ast_Bool ast_LoadVararg(ast_State *L, int n);
+ast_Integer ast_LoadVararg(ast_State *L, int n);
 ast_Bool ast_LoadProto(ast_State *L, int idx);
 ast_Bool ast_Call(ast_State *L, int nArgs, int nResults);
 ast_Bool ast_PushGlobalTable(ast_State *L);
