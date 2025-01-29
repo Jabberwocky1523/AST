@@ -4,6 +4,7 @@
 #include "astMath.h"
 #include "string.h"
 #include "astMap.h"
+#include "astTable.h"
 #include "log.h"
 ast_Stack *ast_NewStack(int size, ast_State *S)
 {
@@ -525,25 +526,25 @@ ast_Bool ast_PrintTValue(TValue &val)
         switch (val.value.bo)
         {
         case TRUE:
-            printf("[TRUE] ");
+            printf("TRUE");
             return TRUE;
         case FALSE:
-            printf("[FALSE] ");
+            printf("FALSE");
             return FALSE;
         }
     case AST_TSTRING:
     {
-        printf("[\"%s\"] ", getstr(&val.value.gc->ts));
+        printf("%s", getstr(&val.value.gc->ts));
         return TRUE;
     }
     case AST_TNUMBER:
-        printf("[%f] ", val.value.n);
+        printf("%f", val.value.n);
         return TRUE;
     case AST_TINTEGER:
-        printf("[%lld] ", val.value.i);
+        printf("%lld", val.value.i);
         return TRUE;
     case AST_TTABLE:
-        printf("[table] ");
+        ast_PrintTable(val.value.gc->tb);
         return TRUE;
     case AST_TFUNCTION:
         printf("[FUNCTION%d-%d] ", val.value.gc->cl.pr->LineDefined, val.value.gc->cl.pr->LastLineDefined);

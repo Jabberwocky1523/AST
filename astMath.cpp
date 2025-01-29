@@ -515,6 +515,47 @@ ast_Bool ast_Compare(ast_State *L, int idx1, int idx2, int op)
     }
     return TRUE;
 }
+ast_Integer _ast_Len(ast_State *L, TValue tmp)
+{
+    switch (tmp.tt)
+    {
+    case AST_TSTRING:
+    {
+        ast_Integer len = tmp.value.gc->ts.Tsv.len;
+        return len;
+    }
+    case AST_TTABLE:
+    {
+        ast_Integer len = TableArrLen(&tmp.value.gc->tb);
+        return len;
+    }
+    default:
+    {
+        ast_Bool bo = ast_CallMetaMethod(L, tmp, tmp, Char2Ob(L, "__len"));
+        if (bo == FALSE)
+        {
+            PANIC("长度计算有误！");
+        }
+        TValue tt = ast_StackPop(PStack(L));
+        if (IsNum(tt))
+        {
+            switch (tt.tt)
+            {
+            case AST_TINTEGER:
+            {
+                return tt.value.i;
+            }
+            case AST_TNUMBER:
+            {
+                return tt.value.n;
+            }
+            }
+        }
+        return 0;
+    }
+    }
+    return TRUE;
+}
 ast_Bool ast_Len(ast_State *L, int idx)
 {
     TValue tmp = ast_StackGetTValue(PStack(L), idx);

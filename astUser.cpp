@@ -6,12 +6,10 @@
 ast_Integer astPrintTest(ast_State *L)
 {
     ast_Integer len = L->stack->top;
-    int num;
     for (int i = 0; i < len; i++)
     {
         ast_PrintTValue(L->stack->Value[i]);
     }
-    printf("\n");
     return 0;
 }
 ast_Integer astTest(ast_State *L)
