@@ -16,7 +16,7 @@
 #include "std/auxLib.h"
 int main(int argc, const char *const *argv)
 {
-    const char *file_name = "../lua/pcall.lua";
+    const char *file_name = "/home/kurisu/桌面/AST/lua/test2.lua";
     if (argc >= 2)
     {
         file_name = argv[1];

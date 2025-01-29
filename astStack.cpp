@@ -389,7 +389,7 @@ ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag)
         return 0;
     }
 }
-ast_String ast_ConvertToString(ast_State *L, TValue &val)
+ast_String *ast_ConvertToString(ast_State *L, TValue &val)
 {
     switch (val.tt)
     {
@@ -399,10 +399,11 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
         char *tmp = (char *)malloc(sizeof(char) * 2);
         sprintf(tmp, "%c", num);
         ast_String *st = astString_NewLStr(L, tmp, strlen(tmp));
-        return *st;
+        free(tmp);
+        return st;
     }
     case AST_TSTRING:
-        return val.value.gc->ts;
+        return &val.value.gc->ts;
     case AST_TNUMBER:
     {
         ast_Number num = val.value.n;
@@ -414,7 +415,8 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
         str[strlen(tmp)] = '\0';
         val.value.gc = (GCObject *)astString_NewLStr(L, str, strlen(tmp));
         free(tmp);
-        return val.value.gc->ts;
+        free(str);
+        return &val.value.gc->ts;
     }
     case AST_TINTEGER:
     {
@@ -427,19 +429,13 @@ ast_String ast_ConvertToString(ast_State *L, TValue &val)
         str[strlen(tmp)] = '\0';
         val.value.gc = (GCObject *)astString_NewLStr(L, str, strlen(tmp));
         free(tmp);
-        return val.value.gc->ts;
+        free(str);
+        return &val.value.gc->ts;
     }
     default:
     {
-        ast_String def;
-        def.Tsv.hash = 0;
-        def.Tsv.len = 0;
-        def.Tsv.marked = 0;
-        def.Tsv.next = NULL;
-        def.Tsv.reserved = 0;
-        def.Tsv.tt = AST_TSTRING;
         printf("无效变量类型,无法转化\n");
-        return def;
+        return nullptr;
     }
     }
 }
@@ -583,11 +579,12 @@ ast_Bool ast_StackPushConstant(ast_State *L, Constant val)
         return TRUE;
     case CONSTANT_TAG_STR:
     {
-        char buffer[1024] = {0};
-        memcpy(buffer, astBufferData(val.tag_str), astBufferDataSize(val.tag_str));
-        char *a = (char *)malloc(sizeof(char));
-        sprintf(a, "%s", buffer);
-        ast_StackPush(L, a, AST_TSTRING);
+        char *buff = (char *)malloc(astBufferDataSize(val.tag_str) * sizeof(char) + 1);
+        memcpy(buff, astBufferData(val.tag_str), astBufferDataSize(val.tag_str));
+        buff[astBufferDataSize(val.tag_str)] = '\0';
+        TValue str = Char2Ob(L, buff);
+        free(buff);
+        ast_StackPush(PStack(L), str);
         return TRUE;
     }
         return FALSE;

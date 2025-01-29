@@ -6,7 +6,8 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
 {
     ast_String *ts;
     StringTable *tb;
-    ts = (ast_String *)ast_Malloc(L, (len + 1) * sizeof(char) + sizeof(ast_String));
+    ts = (ast_String *)malloc((len + 1) * sizeof(char) + sizeof(ast_String));
+    L->G_S->totalbytes += len;
     ts->Tsv.len = len;
     ts->Tsv.hash = hash;
 

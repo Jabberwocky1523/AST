@@ -10,4 +10,4 @@
 -- print(c1())
 -- print(c1())
 -- print(len(c2))
-dofile("")
+dofile("/home/kurisu/桌面/AST/lua/test.lua")

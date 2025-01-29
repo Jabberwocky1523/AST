@@ -39,7 +39,7 @@ ast_Bool ast_Init(ast_State *L, global_State *g_s)
     L->Registry = reg;
     ast_Stack *Stack = ast_NewStack(AST_MINSTACK, L);
     ast_PushStack(L, Stack);
-    kw = ast_KeyWordsInit(L);
+    // kw = ast_KeyWordsInit(L);
     return TRUE;
 }
 TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag)
@@ -210,7 +210,7 @@ ast_Bool ast_RunAstClosure(ast_State *L)
         // printf("[%d] %s", pc + 1, InstructionOpName(ins));
         // printf("\t");
         // PrintOperand(ins);
-        // printf("\t");
+        // printf("\t\n");
         // ast_PrintStack(PStack(L));
         if (InstructionOpcode(ins) == OP_RETURN)
         {
@@ -476,7 +476,9 @@ ast_Bool ast_Load(ast_State *L, char *file_Path)
 {
     astBuffer file_content = LoadViaCodePath(file_Path);
     Prototype *proto = astBinaryChunkUnDump(file_content);
-    PrintAst(proto);
+    // PrintAst(proto);
     ast_LoadChunk(L, file_content, proto, nullptr, 0);
+    free(file_content->data_);
+    free(file_content);
     return TRUE;
 }

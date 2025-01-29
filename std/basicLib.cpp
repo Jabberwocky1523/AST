@@ -3,6 +3,7 @@
 #include "../astVm.h"
 #include "../astMath.h"
 #include "../astString.h"
+#include "../log.h"
 ast_Integer OpenBaseLibs(ast_State *L)
 {
     ast_PushGlobalTable(L);
@@ -22,7 +23,17 @@ ast_Integer Len(ast_State *L)
 ast_Integer LoadFile(ast_State *L)
 {
     TValue tt = ast_StackGetTValue(PStack(L), -1);
-    ast_String fp = ast_ConvertToString(L, tt);
-    ast_Load(L, (char *)getstr(&fp));
-    
+    ast_String *fp = ast_ConvertToString(L, tt);
+    ast_Load(L, (char *)getstr(fp));
+    return 1;
+}
+ast_Integer doFile(ast_State *L)
+{
+    TValue tt = ast_StackGetTValue(PStack(L), -1);
+    ast_String *fp = ast_ConvertToString(L, tt);
+    if (!DoFile(L, getstr(fp)))
+    {
+        PANIC("Error dofile!");
+    }
+    return 0;
 }

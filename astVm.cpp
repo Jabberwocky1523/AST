@@ -5,6 +5,7 @@
 #include "astMap.h"
 #include "log.h"
 #include "astTable.h"
+#include "astString.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
     return L->stack->pc;

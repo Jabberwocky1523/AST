@@ -14,4 +14,4 @@ local function max(t)
 end
 local t = { 4, 5, add(5, 5), add(7, 5), 99 }
 local v1, idx1, sum, sum2, te = max(t)
-print(v1, idx1, sum, sum2, te)
+print(v1, " ", idx1, sum, sum2, te)

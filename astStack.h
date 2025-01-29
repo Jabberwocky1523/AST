@@ -67,7 +67,7 @@ ast_Number ast_ConvertToNumber(TValue val);
 ast_Number ast_ConvertToNumberAndGetFlag(TValue val, ast_Integer *flag);
 ast_Integer ast_ConvertToInteger(TValue val);
 ast_Integer ast_ConvertToIntegerAndGetFlag(TValue val, ast_Integer *flag);
-ast_String ast_ConvertToString(ast_State *L, TValue &val);
+ast_String *ast_ConvertToString(ast_State *L, TValue &val);
 ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type);
 ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type);

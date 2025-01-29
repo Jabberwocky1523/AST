@@ -22,7 +22,7 @@ ast_Bool DoFile(ast_State *L, String filename)
 {
     if (LoadFile(L, filename))
     {
-        ast_Call(L, -1, 0);
+        ast_Call(L, 0, 0);
     }
     return TRUE;
 }
