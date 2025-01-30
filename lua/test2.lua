@@ -19,8 +19,8 @@
 -- A = 1
 -- t(A)
 -- print(A,C)
-<<<<<<< HEAD
-=======
 
-print(select("#", 1, 2, 3))
->>>>>>> 8f56bee6108f7249811fab839f38dba00b875e02
+print(select(1, 1, 2, 3))
+print("\n")
+print(tonumber("123213.132"), "\n")
+print(tostring(132131))

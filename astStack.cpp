@@ -52,11 +52,7 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
 }
 ast_Bool ast_StackPush(ast_Stack *L, TValue &&value)
 {
-<<<<<<< HEAD
     return ast_StackPush(L, value);
-=======
-    return ast_StackPush(L, std::forward<TValue &&>(value));
->>>>>>> 8f56bee6108f7249811fab839f38dba00b875e02
 }
 
 TValue ast_StackPop(ast_Stack *L)

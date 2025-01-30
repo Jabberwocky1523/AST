@@ -60,7 +60,6 @@ ast_Integer select(ast_State *L)
     {
         PANIC("index out of range!");
     }
-<<<<<<< HEAD
     // for (int j = s; j <= num - 1; j++)
     // {
     //     TValue tmp = ast_StackGetTValue(PStack(L), j);
@@ -101,7 +100,4 @@ ast_Integer tonumber(ast_State *L)
         }
     }
     return num;
-=======
-    return s;
->>>>>>> 8f56bee6108f7249811fab839f38dba00b875e02
 }
