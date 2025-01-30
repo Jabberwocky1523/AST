@@ -306,10 +306,6 @@ ast_Bool ast_CallCFunction(ast_State *L, ast_Closure *func, int nArgs,
     ast_PushStack(L, newStack);
     ast_Integer num = newStack->closure->func(L);
     ast_PopStack(L);
-    if (nResults >= 0)
-    {
-        L->stack->nPrevFuncResults = nResults;
-    }
     if (num >= 0)
     {
         L->stack->nPrevFuncResults = num;
@@ -320,6 +316,10 @@ ast_Bool ast_CallCFunction(ast_State *L, ast_Closure *func, int nArgs,
         }
         r = nullptr;
         free(r);
+    }
+    if (nResults >= 0)
+    {
+        L->stack->nPrevFuncResults = nResults;
     }
     free(newStack->Value);
     if (newStack->varargs != nullptr)
@@ -476,7 +476,7 @@ ast_Bool ast_Load(ast_State *L, char *file_Path)
 {
     astBuffer file_content = LoadViaCodePath(file_Path);
     Prototype *proto = astBinaryChunkUnDump(file_content);
-    // PrintAst(proto);
+    PrintAst(proto);
     ast_LoadChunk(L, file_content, proto, nullptr, 0);
     free(file_content->data_);
     free(file_content);

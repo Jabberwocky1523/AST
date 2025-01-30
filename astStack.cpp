@@ -50,6 +50,11 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
     L->Value[L->top++] = value;
     return TRUE;
 }
+ast_Bool ast_StackPush(ast_Stack *L, TValue &&value)
+{
+    return ast_StackPush(L, value);
+}
+
 TValue ast_StackPop(ast_Stack *L)
 {
     if (L->top < 1)
@@ -253,7 +258,7 @@ ast_Number ast_ConvertToNumber(TValue val)
         {
             PANIC("字符串包含非数字");
         }
-        assert(tmp = atof(getstr(&val.value.gc->ts)));
+        assert(tmp = strtod(getstr(&val.value.gc->ts), nullptr));
         return tmp;
     }
     case AST_TINTEGER:
@@ -395,12 +400,18 @@ ast_String *ast_ConvertToString(ast_State *L, TValue &val)
     {
     case AST_TBOOLEAN:
     {
-        ast_Bool num = val.value.bo;
-        char *tmp = (char *)malloc(sizeof(char) * 2);
-        sprintf(tmp, "%c", num);
-        ast_String *st = astString_NewLStr(L, tmp, strlen(tmp));
-        free(tmp);
-        return st;
+        TValue tmp;
+        if (val.value.bo == TRUE)
+        {
+            tmp = Char2Ob(L, "True");
+        }
+        else
+        {
+            tmp = Char2Ob(L, "False");
+        }
+        val.value.gc = tmp.value.gc;
+        val.tt = AST_TSTRING;
+        return &val.value.gc->ts;
     }
     case AST_TSTRING:
         return &val.value.gc->ts;
@@ -522,10 +533,10 @@ ast_Bool ast_PrintTValue(TValue &val)
         switch (val.value.bo)
         {
         case TRUE:
-            printf("TRUE");
+            printf("true");
             return TRUE;
         case FALSE:
-            printf("FALSE");
+            printf("false");
             return FALSE;
         }
     case AST_TSTRING:
@@ -534,7 +545,8 @@ ast_Bool ast_PrintTValue(TValue &val)
         return TRUE;
     }
     case AST_TNUMBER:
-        printf("%f", val.value.n);
+        // std::cout << val.value.n;
+        printf("%.14g", val.value.n);
         return TRUE;
     case AST_TINTEGER:
         printf("%lld", val.value.i);
