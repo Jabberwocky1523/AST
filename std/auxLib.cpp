@@ -104,12 +104,12 @@ ast_Bool OpenLibs(ast_State *L)
     FuncRegs::iterator it = lib.begin();
     for (; it != lib.end(); it++)
     {
-        RequireF(L, it->first, it->second);
+        RequireF(L, it->first, it->second, TRUE);
         astack_Pop(PStack(L));
     }
     return TRUE;
 }
-ast_Bool RequireF(ast_State *L, String modname, ast_CFunction func)
+ast_Bool RequireF(ast_State *L, String modname, ast_CFunction func, ast_Bool glb)
 {
     GetSubTable(L, AST_REGISTRYINDEX, "_LOADED");
     GetField(L, -1, Char2Ob(L, modname.c_str()));
@@ -127,6 +127,12 @@ ast_Bool RequireF(ast_State *L, String modname, ast_CFunction func)
         ast_SetTableFromString(L, -3, s);
     }
     astack_Remove(PStack(L), -2);
+    if (glb)
+    {
+        TValue r = ast_StackGetTValue(PStack(L), -1);
+        ast_StackPush(PStack(L), r);
+        ast_SetGlobal(L, Char2Ob(L, modname.c_str()));
+    }
     return TRUE;
 }
 ast_Bool NewLibTable(ast_State *L, FuncRegs func)

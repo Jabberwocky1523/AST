@@ -10,4 +10,14 @@
 -- print(c1())
 -- print(c1())
 -- print(len(c2))
-dofile("/home/kurisu/桌面/AST/lua/test.lua")
+
+-- local function t(a)
+--     local A = 1
+--      A = A + 1
+--      C = A + 1
+-- end
+-- A = 1
+-- t(A)
+-- print(A,C)
+
+print(select("#", 1, 2, 3))

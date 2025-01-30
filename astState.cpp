@@ -207,11 +207,11 @@ ast_Bool ast_RunAstClosure(ast_State *L)
         int pc = ast_GetPc(L);
         Instruction ins = ast_Fetch(L);
         ast_ExecuteOp(L, ins);
-        // printf("[%d] %s", pc + 1, InstructionOpName(ins));
-        // printf("\t");
-        // PrintOperand(ins);
-        // printf("\t\n");
-        // ast_PrintStack(PStack(L));
+        printf("[%d] %s", pc + 1, InstructionOpName(ins));
+        printf("\t");
+        PrintOperand(ins);
+        printf("\t\n");
+        ast_PrintStack(PStack(L));
         if (InstructionOpcode(ins) == OP_RETURN)
         {
             return TRUE;
@@ -476,7 +476,7 @@ ast_Bool ast_Load(ast_State *L, char *file_Path)
 {
     astBuffer file_content = LoadViaCodePath(file_Path);
     Prototype *proto = astBinaryChunkUnDump(file_content);
-    // PrintAst(proto);
+    PrintAst(proto);
     ast_LoadChunk(L, file_content, proto, nullptr, 0);
     free(file_content->data_);
     free(file_content);

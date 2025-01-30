@@ -9,6 +9,7 @@
 ast_Integer Len(ast_State *L);
 ast_Integer LoadFile(ast_State *L);
 ast_Integer doFile(ast_State *L);
+ast_Integer select(ast_State *L);
 std::unordered_map<String, ast_CFunction> func{
     {"print", astPrintTest},
     {"getmetatable", getMetatable},
@@ -19,6 +20,7 @@ std::unordered_map<String, ast_CFunction> func{
     {"pcall", pCall},
     {"len", Len},
     {"dofile", doFile},
-    {"loadfile", LoadFile}};
+    {"loadfile", LoadFile},
+    {"select", select}};
 
 #endif

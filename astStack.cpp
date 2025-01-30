@@ -50,6 +50,11 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
     L->Value[L->top++] = value;
     return TRUE;
 }
+ast_Bool ast_StackPush(ast_Stack *L, TValue &&value)
+{
+    return ast_StackPush(L, std::forward<TValue &&>(value));
+}
+
 TValue ast_StackPop(ast_Stack *L)
 {
     if (L->top < 1)

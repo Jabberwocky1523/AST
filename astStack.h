@@ -53,6 +53,7 @@
 ast_Stack *ast_NewStack(int size, ast_State *S);
 ast_Bool ast_StackCheck(ast_Stack *L, int n);
 ast_Bool ast_StackPush(ast_Stack *L, TValue &value);
+ast_Bool ast_StackPush(ast_Stack *L, TValue &&value);
 TValue ast_StackPop(ast_Stack *L);
 ast_Bool ast_StackIdxIsValid(ast_Stack *L, int idx);
 ast_Bool ast_StackReverse(ast_Stack *L, int idx1, int idx2);
