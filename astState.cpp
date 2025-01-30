@@ -207,11 +207,11 @@ ast_Bool ast_RunAstClosure(ast_State *L)
         int pc = ast_GetPc(L);
         Instruction ins = ast_Fetch(L);
         ast_ExecuteOp(L, ins);
-        // printf("[%d] %s", pc + 1, InstructionOpName(ins));
-        // printf("\t");
-        // PrintOperand(ins);
-        // printf("\t\n");
-        // ast_PrintStack(PStack(L));
+        printf("[%d] %s", pc + 1, InstructionOpName(ins));
+        printf("\t");
+        PrintOperand(ins);
+        printf("\t\n");
+        ast_PrintStack(PStack(L));
         if (InstructionOpcode(ins) == OP_RETURN)
         {
             return TRUE;
