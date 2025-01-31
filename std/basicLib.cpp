@@ -101,3 +101,61 @@ ast_Integer tonumber(ast_State *L)
     }
     return num;
 }
+ast_Integer rawget(ast_State *L)
+{
+    CheckType(L, 0, AST_TTABLE);
+    CheckAny(L, 1);
+    ast_StackSetTop(PStack(L), 2);
+    TValue key = ast_StackPop(PStack(L));
+    TValue tb = ast_StackGetTValue(PStack(L), -1);
+    _ast_GetTable(L, tb, key, TRUE);
+    return 1;
+}
+ast_Integer rawset(ast_State *L)
+{
+    CheckType(L, 0, AST_TTABLE);
+    CheckAny(L, 1);
+    CheckAny(L, 2);
+    ast_StackSetTop(PStack(L), 3);
+    TValue val = ast_StackPop(PStack(L));
+    TValue key = ast_StackPop(PStack(L));
+    TValue tb = ast_StackGetTValue(PStack(L), -1);
+    _ast_SetTable(L, tb, key, val, TRUE);
+    return 1;
+}
+ast_Integer type(ast_State *L)
+{
+    CheckAny(L, 0);
+    ast_StackSetTop(PStack(L), 1);
+    ast_Type tt = ast_StackDataType(PStack(L), 0);
+    TValue k;
+    switch (tt)
+    {
+    case AST_TNIL:
+        k = Char2Ob(L, "Nil");
+        break;
+    case AST_TINTEGER:
+        k = Char2Ob(L, "Long Long");
+        break;
+    case AST_TNUMBER:
+        k = Char2Ob(L, "Number");
+        break;
+    case AST_TSTRING:
+        k = Char2Ob(L, "String");
+        break;
+    case AST_TTABLE:
+        k = Char2Ob(L, "Table");
+        break;
+    case AST_TBOOLEAN:
+        k = Char2Ob(L, "Boolean");
+        break;
+    case AST_TFUNCTION:
+    case AST_TUSERFUNCTION:
+        k = Char2Ob(L, "Function");
+        break;
+    default:
+        PANIC("cant find type");
+    }
+    ast_StackPush(PStack(L), k);
+    return 1;
+}

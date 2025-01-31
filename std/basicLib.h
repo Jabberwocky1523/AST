@@ -12,6 +12,9 @@ ast_Integer doFile(ast_State *L);
 ast_Integer select(ast_State *L);
 ast_Integer tostring(ast_State *L);
 ast_Integer tonumber(ast_State *L);
+ast_Integer rawget(ast_State *L);
+ast_Integer rawset(ast_State *L);
+ast_Integer type(ast_State *L);
 std::unordered_map<String, ast_CFunction> func{
     {"print", astPrintTest},
     {"getmetatable", getMetatable},
@@ -25,6 +28,9 @@ std::unordered_map<String, ast_CFunction> func{
     {"loadfile", LoadFile},
     {"select", select},
     {"tostring", tostring},
-    {"tonumber", tonumber}};
+    {"tonumber", tonumber},
+    {"rawset", rawset},
+    {"rawget", rawget},
+    {"type", type}};
 
 #endif

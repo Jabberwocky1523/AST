@@ -215,6 +215,7 @@ ast_Bool ast_StackSetTop(ast_Stack *L, int idx)
 }
 int ast_StackDataType(ast_Stack *L, int idx)
 {
+    idx = ast_StackAbsIndex(L, idx);
     if (ast_StackIdxIsValid(L, idx))
     {
         return L->Value[idx].tt;
