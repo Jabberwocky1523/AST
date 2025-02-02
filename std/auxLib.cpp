@@ -101,7 +101,8 @@ ast_Bool SetFuncs(ast_State *L, FuncRegs func)
 ast_Bool OpenLibs(ast_State *L)
 {
     FuncRegs lib = {{"_G", OpenBaseLibs},
-                    {"string", OpenStringLibs}};
+                    {"string", OpenStringLibs},
+                    {"table", OpenTableLibs}};
     FuncRegs::iterator it = lib.begin();
     for (; it != lib.end(); it++)
     {

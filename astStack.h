@@ -73,6 +73,7 @@ ast_Bool ast_StackPush(ast_Stack *L, void *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Bool val, ast_Type type);
 ast_Bool ast_StackPush(ast_State *L, char *val, ast_Type type);
 ast_Bool ast_StackPush(ast_Stack *L, ast_Number val, ast_Type type);
+ast_Bool ast_StackPushValue(ast_Stack *L, ast_Integer idx);
 ast_Bool ast_StackPushConstant(ast_State *L, Constant val);
 ast_Bool ast_PrintTValue(TValue &val);
 ast_Bool ast_PrintStack(ast_Stack *L);

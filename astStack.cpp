@@ -612,3 +612,9 @@ ast_Bool ast_FreeStack(ast_Stack *L)
     free(L);
     return TRUE;
 }
+ast_Bool ast_StackPushValue(ast_Stack *L, ast_Integer idx)
+{
+    TValue val = ast_StackGetTValue(L, idx);
+    ast_StackPush(L, val);
+    return TRUE;
+}

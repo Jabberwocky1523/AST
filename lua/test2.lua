@@ -45,7 +45,27 @@
 --     print("E")
 -- end
 
-Str = "123"
-Len = string.len(Str)
+-- Str = "123"
+-- Len = string.len(Str)
 
-print(string.sub(Str, 2, 4));
+-- print(string.sub(Str, 2, 4));
+
+-- local T = { c = 1 }
+-- function T:add(a, b)
+--     return a + b + self.c
+-- end
+
+-- C = T:add(1, 2)
+-- print(C)
+
+-- A = "aaa"
+-- D = A.format("{} {} %d", 1.23232, 1)
+-- B = A:upper()
+-- C = A.sub(A, 1, 3):upper():lower()
+-- ST, En = A:find("c")
+-- E = A:gsub("c", "c")
+-- print(E)
+
+T = { 1, 2, "123" }
+table.insert(T, 2, "123")
+print(T)
