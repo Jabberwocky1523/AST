@@ -58,7 +58,7 @@ typedef union
     ast_Number n;
     ast_Integer i;
     ast_Bool bo;
-    int b;
+    FILE *fh;
 } Value;
 
 #define TValueFields \

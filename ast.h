@@ -45,6 +45,7 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_TUSERFUNCTION 10
 #define AST_TUSERDATA 8
 #define AST_TTHREAD 9
+#define AST_TFILE 11
 
 #define AST_MINSTACK 20
 #define AST_MAXSTACK 1000000

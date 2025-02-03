@@ -66,6 +66,17 @@
 -- E = A:gsub("c", "c")
 -- print(E)
 
-T = { 1, 2, "123" }
-table.insert(T, 2, "123")
-print(T)
+-- T = { 1, 2, 3 }
+-- S = table.concat(T, "||")
+-- TT = table.pack(1, 2, "concat")
+-- T1, T2, T3 = table.unpack(TT)
+-- print(T1, T2, T3)
+
+-- T = math.max(1, 2, 3, "33.33")
+-- print(T)
+
+i = io.open("./lua/test.ast")
+a = i:read()
+print(a)
+b = io.read()
+print(b)

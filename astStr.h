@@ -184,4 +184,5 @@ bool operator!=(const astStr::String &lhs, const astStr::String &rhs);
 bool operator!=(const char *lhs, const astStr::String &rhs);
 bool operator!=(const astStr::String &lhs, const char *rhs);
 std::ostream &operator<<(std::ostream &out, const astStr::String &str);
+std::istream &operator>>(std::istream &in, String &str);
 #endif

@@ -33,13 +33,13 @@ ast_Bool astTableArr_Push(ast_Table *tb, TValue val)
 {
     if (tb->arrtop == tb->arrSize)
     {
-        TValue *NewArr = (TValue *)realloc(tb->arr, sizeof(TValue) * (tb->arrSize * 2));
+        TValue *NewArr = (TValue *)realloc(tb->arr, sizeof(TValue) * (tb->arrSize * 2 + 1));
         if (NewArr == nullptr)
         {
             PANIC("栈已满");
         }
         tb->arr = NewArr;
-        tb->arrSize *= 2;
+        tb->arrSize = tb->arrSize * 2 + 1;
     }
     tb->arr[tb->arrtop++] = val;
     return TRUE;

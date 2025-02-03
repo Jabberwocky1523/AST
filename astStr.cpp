@@ -295,3 +295,10 @@ std::ostream &operator<<(std::ostream &out, const String &str)
     out << str.c_str();
     return out;
 }
+std::istream &operator>>(std::istream &in, String &str)
+{
+    char tmp[1024];
+    in >> tmp;
+    str = tmp;
+    return in;
+}

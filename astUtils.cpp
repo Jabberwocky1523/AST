@@ -11,7 +11,8 @@ char *LoadFileContent(const char *file_name)
 {
     char *buffer = NULL;
     int len = 0;
-    OPENANDREAD(file_name, buffer, len);
+    FILE *fp = fopen(file_name, "rb");
+    OPENANDREAD(fp, buffer, len);
     return buffer;
 }
 astBuffer LoadViaCodePath(const char *file_name)
@@ -27,7 +28,8 @@ astBuffer LoadFileToastBuffer(const char *file_name)
 {
     char *buffer = NULL;
     int len = 0;
-    OPENANDREAD(file_name, buffer, len);
+    FILE *fp = fopen(file_name, "rb");
+    OPENANDREAD(fp, buffer, len);
     return astBufferFromStr(buffer, len);
 }
 void PrintHeader(Prototype *proto)

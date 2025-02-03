@@ -102,7 +102,10 @@ ast_Bool OpenLibs(ast_State *L)
 {
     FuncRegs lib = {{"_G", OpenBaseLibs},
                     {"string", OpenStringLibs},
-                    {"table", OpenTableLibs}};
+                    {"table", OpenTableLibs},
+                    {"math", OpenMathLibs},
+                    {"os", OpenOsLibs},
+                    {"io", OpenIoLibs}};
     FuncRegs::iterator it = lib.begin();
     for (; it != lib.end(); it++)
     {

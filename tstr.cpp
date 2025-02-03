@@ -4,6 +4,8 @@
 #include <string>
 #include <format>
 #include <sstream>
+#include "astStr.h"
+#include "fstream"
 using VariantType = std::variant<int, double, std::string>;
 
 std::string variantToString(const VariantType &v)
@@ -54,7 +56,8 @@ std::string formatWithVector(const std::string &fmt, const std::vector<VariantTy
 
 int mainstr()
 {
-    const std::string tmp = "{} {} 133";
-    // 输出: Hello, 42! Number: 3.14, Value: World
+    String a = "1";
+    std::cin >> a;
+    std::cout << a;
     return 0;
 }
