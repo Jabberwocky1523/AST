@@ -75,8 +75,12 @@
 -- T = math.max(1, 2, 3, "33.33")
 -- print(T)
 
-i = io.open("./lua/test.ast")
-a = i:read()
-print(a)
-b = io.read()
-print(b)
+-- i = io.open("./lua/test.ast")
+-- a = i:read()
+-- print(a)
+-- b = io.read()
+-- print(b)
+
+
+A = require "test"
+print(type(A))

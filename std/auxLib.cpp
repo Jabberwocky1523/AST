@@ -105,7 +105,8 @@ ast_Bool OpenLibs(ast_State *L)
                     {"table", OpenTableLibs},
                     {"math", OpenMathLibs},
                     {"os", OpenOsLibs},
-                    {"io", OpenIoLibs}};
+                    {"io", OpenIoLibs},
+                    {"package", OpenPackLibs}};
     FuncRegs::iterator it = lib.begin();
     for (; it != lib.end(); it++)
     {

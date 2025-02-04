@@ -9,6 +9,7 @@
 ast_Bool CheckAny(ast_State *L, ast_Integer idx);
 ast_Bool CheckType(ast_State *L, ast_Integer argidx, ast_Type t);
 ast_Bool DoFile(ast_State *L, String filename);
+ast_Bool LoadFile(ast_State *L, String filename);
 ast_Type GetField(ast_State *L, ast_Integer idx, TValue name);
 ast_Bool GetSubTable(ast_State *L, ast_Integer idx, String name);
 ast_Bool CallMeta(ast_State *L, ast_Integer obj, String name);
@@ -20,6 +21,7 @@ ast_Integer OpenTableLibs(ast_State *L);
 ast_Integer OpenMathLibs(ast_State *L);
 ast_Integer OpenOsLibs(ast_State *L);
 ast_Integer OpenIoLibs(ast_State *L);
+ast_Integer OpenPackLibs(ast_State *L);
 ast_Bool RequireF(ast_State *L, String modname, ast_CFunction func, ast_Bool glb);
 ast_Bool SetFuncs(ast_State *L, FuncRegs func);
 ast_Bool NewLibTable(ast_State *L, FuncRegs func);
