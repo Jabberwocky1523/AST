@@ -159,3 +159,12 @@ ast_Integer unpack(ast_State *L)
     }
     return len;
 }
+ast_Integer free(ast_State *L)
+{
+    CheckType(L, 0, AST_TTABLE);
+    ast_StackSetTop(PStack(L), 1);
+    TValue tb = ast_StackGetTValue(PStack(L), 0);
+    ast_RemoveTable(L, &tb.value.gc->tb);
+    ast_StackPush(PStack(L), Nil2Ob());
+    return 1;
+}

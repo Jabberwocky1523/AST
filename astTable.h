@@ -2,6 +2,7 @@
 #define AST_TABLE_H
 #include "astState.h"
 ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize);
+ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize, int marked);
 TValue astTable_GetVal(ast_Table *tb, TValue key);
 ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val);
 ast_Bool astTableArr_Push(ast_Table *tb, TValue val);
@@ -23,7 +24,7 @@ ast_Bool ast_SetTableFromNum(ast_State *L, ast_Integer idx, TValue NumKey);
 ast_Bool _ast_SetTable(ast_State *L, TValue tb, TValue key, TValue val, ast_Bool ign);
 ast_Type _ast_GetTable(ast_State *L, TValue tb, TValue key, ast_Bool ign);
 ast_Bool ast_PrintTable(ast_Table tb);
-ast_Bool ast_FreeTable(ast_Table *tb);
+ast_Bool ast_RemoveTable(ast_State *L, ast_Table *tb);
 // MetaTable
 ast_Bool ast_SetMetaTable(ast_State *L, TValue mt, TValue val);
 TValue ast_GetMetaTable(ast_State *L, TValue val);

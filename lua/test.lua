@@ -27,5 +27,5 @@ local function add(...)
     return sum
 end
 
-T.add = add
+T["add"] = add
 return T

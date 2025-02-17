@@ -82,5 +82,5 @@
 -- print(b)
 
 
-A = require "test"
-print(type(A))
+A = { a = 1, b = 2 }
+print(A)

@@ -1,26 +1,28 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "astMem.h"
-#include "astBuffer.h"
-#include "astString.h"
-#include "astMath.h"
-#include "astStack.h"
-#include "astOpcode.h"
-#include "astUtils.h"
-#include "astMap.h"
-#include "astVm.h"
-#include "log.h"
-#include "astTable.h"
-int main2()
+#include "iostream"
+#include "any"
+#include "string"
+#include "typeinfo"
+#include "optional"
+#include "variant"
+auto getany(std::any &&a) -> std::optional<int>
 {
-    TValue t1 = Nil2Ob();
-    TValue t2 = Dou2Ob(1);
-    ast_State *L = (ast_State *)malloc(sizeof(ast_State));
-    global_State *g_s = (global_State *)malloc(sizeof(global_State));
-    ast_Init(L, g_s);
-    ast_Map *map = astMap_Init(8);
-    astMap_PushKeyVal(map, t1, t2);
-    ast_PrintMap(map);
-    astMap_PushKeyVal(map, t1, Int2Ob(2));
-    ast_PrintMap(map);
+    if (a.type() == typeid(int))
+    {
+        std::optional<int> res = std::any_cast<int>(a);
+        return res;
+    }
+    else if (a.type() == typeid(std::string))
+    {
+        std::optional<std::string> res = std::any_cast<std::string>(a);
+    }
+    return std::nullopt;
+}
+int mainany()
+{
+    std::any t;
+    t = 1;
+    auto a = std::any_cast<std::string>(t);
+    auto b = std::is_same_v<std::any, decltype(t)>;
+    std::variant<int, std::string> v = 1;
+    std::cout << a;
 }

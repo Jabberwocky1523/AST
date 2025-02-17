@@ -29,6 +29,12 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
     tb->arrSize = arrSize;
     return tb;
 }
+ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize, int marked)
+{
+    ast_Table *tb = astTable_Init(arrSize, MapSize);
+    tb->marked = marked;
+    return tb;
+}
 ast_Bool astTableArr_Push(ast_Table *tb, TValue val)
 {
     if (tb->arrtop == tb->arrSize)
@@ -330,11 +336,30 @@ ast_Bool ast_PrintTable(ast_Table tb)
     ast_PrintMap(tb.HashMap);
     return TRUE;
 }
-ast_Bool ast_FreeTable(ast_Table *tb)
+ast_Bool ast_RemoveTable(ast_State *L, ast_Table *tb)
 {
-    for (int i = 0; i < tb->arrSize; i++)
+    if (tb->arr != nullptr)
     {
-        ast_FreeTvaluePoint(&tb->arr[i]);
+        for (int i = 0; i < tb->arrSize; i++)
+        {
+            ast_RemoveTvalue(L, tb->arr[i]);
+        }
+        tb->arr = nullptr;
+    }
+    if (tb->HashMap != nullptr)
+    {
+        ast_RemoveMap(L, tb->HashMap);
+        tb->HashMap = nullptr;
+    }
+    if (tb->IteratorMap != nullptr)
+    {
+        ast_RemoveMap(L, tb->IteratorMap);
+        tb->IteratorMap = nullptr;
+    }
+    if (tb->MetaTable != nullptr)
+    {
+        ast_RemoveTable(L, tb->MetaTable);
+        tb->MetaTable = nullptr;
     }
     free(tb);
     return TRUE;

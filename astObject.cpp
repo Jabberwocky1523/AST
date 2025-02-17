@@ -62,13 +62,55 @@ TValue *ast_NewClosure(int size)
     tt->value.gc = (GCObject *)proto;
     return tt;
 }
-ast_Bool ast_FreeTvaluePoint(TValue *t)
+ast_Bool ast_RemoveTvaluePoint(ast_State *L, TValue *t)
 {
     switch (t->tt)
     {
     case AST_TTABLE:
-        ast_FreeTable(&t->value.gc->tb);
+        ast_RemoveTable(L, &t->value.gc->tb);
         break;
+    case AST_TSTRING:
+        astString_Remove(L, &t->value.gc->ts);
+        break;
+    case AST_TINTEGER:
+    case AST_TNUMBER:
+    case AST_TNIL:
+    case AST_TBOOLEAN:
+    {
+        free(t);
+        break;
+    }
+    case AST_TUSERFUNCTION:
+    case AST_TFUNCTION:
+    {
+        break;
+    }
+    default:
+        return FALSE;
+    }
+    return TRUE;
+}
+ast_Bool ast_RemoveTvalue(ast_State *L, TValue t)
+{
+    switch (t.tt)
+    {
+    case AST_TTABLE:
+        ast_RemoveTable(L, &t.value.gc->tb);
+        break;
+    case AST_TSTRING:
+        astString_Remove(L, &t.value.gc->ts);
+        break;
+    case AST_TINTEGER:
+    case AST_TNUMBER:
+    case AST_TNIL:
+    case AST_TBOOLEAN:
+    case AST_TUSERFUNCTION:
+    case AST_TFUNCTION:
+    {
+        break;
+    }
+    default:
+        return FALSE;
     }
     return TRUE;
 }

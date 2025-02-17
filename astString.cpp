@@ -10,8 +10,6 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     L->G_S->totalbytes += len;
     ts->Tsv.len = len;
     ts->Tsv.hash = hash;
-
-    ts->Tsv.marked = 0;
     ts->Tsv.tt = AST_TSTRING;
     ts->Tsv.reserved = 0;
     ast_Memcpy(ts + 1, str, len * sizeof(char));
@@ -142,4 +140,14 @@ ast_Bool astString_RemoveStr(ast_State *L, const char *str)
     ans->gch.next = nullptr;
     free(ans);
     return TRUE;
+}
+ast_Bool astString_Remove(ast_State *L, const ast_String *str)
+{
+    return astString_RemoveStr(L, getstr(str));
+}
+ast_String *astString_NewLStr(ast_State *L, const char *str, size_t len, int marked)
+{
+    ast_String *tmp = astString_NewLStr(L, str, len);
+    tmp->Tsv.marked = marked;
+    return tmp;
 }

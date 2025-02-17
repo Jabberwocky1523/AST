@@ -10,7 +10,7 @@ ast_Map *astMap_Init(ast_Integer size)
   map->size = size;
   for (int i = 0; i < size; i++)
   {
-    *(nodelist + i) = NULL;
+    *(nodelist + i) = nullptr;
   }
   map->map = nodelist;
   return map;
@@ -151,9 +151,32 @@ ast_Bool ast_PrintMap(ast_Map *map)
       ast_PrintTValue(cur->key);
       printf(":");
       ast_PrintTValue(cur->val);
+      printf(" ");
       cur = cur->next;
     }
   }
   printf("\n");
+  return TRUE;
+}
+ast_MapNode *ast_RemoveMapNode(ast_State *L, ast_MapNode *node)
+{
+  ast_RemoveTvalue(L, node->key);
+  ast_RemoveTvalue(L, node->val);
+  ast_MapNode *next = node->next;
+  node->next = nullptr;
+  free(node);
+  return next;
+}
+ast_Bool ast_RemoveMap(ast_State *L, ast_Map *map)
+{
+  for (int i = 0; i < map->size; i++)
+  {
+    ast_MapNode *cur = map->map[i];
+    while (cur != nullptr)
+    {
+      cur = ast_RemoveMapNode(L, cur);
+    }
+    map->map[i] = nullptr;
+  }
   return TRUE;
 }

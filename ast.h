@@ -31,7 +31,7 @@ typedef enum ast_Bool
 typedef AST_USER_ALINMENT ast_UMaxAlign;
 typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 
-#define ttype(o) ((o)->tt)
+#define ttype(o) ((o).tt)
 #define AST_TNONE (-1)
 #define AST_TNIL 0
 #define AST_TBOOLEAN 1

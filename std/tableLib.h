@@ -11,11 +11,13 @@ ast_Integer remove(ast_State *L);
 ast_Integer concat(ast_State *L);
 ast_Integer pack(ast_State *L);
 ast_Integer unpack(ast_State *L);
+ast_Integer free(ast_State *L);
 FuncRegs stdtable = {
     {"move", move},
     {"insert", insert},
     {"remove", remove},
     {"concat", concat},
     {"pack", pack},
-    {"unpack", unpack}};
+    {"unpack", unpack},
+    {"free", free}};
 #endif

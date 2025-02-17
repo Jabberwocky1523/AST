@@ -83,7 +83,7 @@ TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag)
         {
             tt.tt = AST_TSTRING;
             tt.value.gc = (GCObject *)astString_NewLStr(L, cast(char *, ob),
-                                                        strlen(cast(char *, ob)));
+                                                        strlen(cast(char *, ob)), 1);
             break;
         }
         case 1:

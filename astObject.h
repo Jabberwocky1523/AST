@@ -44,12 +44,18 @@ typedef struct ast_Block
 #define GCCommonHeader \
     GCObject *next;    \
     unsigned char tt;  \
-    unsigned char marked
+    int marked;
 // GC数据头
 typedef struct GCHeader
 {
     GCCommonHeader;
 } GCHeader;
+typedef struct GCList
+{
+    GCObject *gc;
+    unsigned char tt;
+    int marked;
+} GCList;
 // AST_STRING
 typedef union
 {
@@ -149,6 +155,7 @@ typedef struct ast_Stack
     ast_Closure *closure;
     ast_Map *openuvs;
     TValue *varargs;
+    astVector::Vector<GCList> gclist;
     int varArgsLen = 0;
     int PrevIdx = 0;
     int nPrevFuncResults = 0;
@@ -172,6 +179,7 @@ typedef struct ast_Stack
     }
 ast_Bool ast_TValueCmp(TValue val1, TValue val2);
 ast_Integer ast_GetTValueHash(TValue val1);
-ast_Bool ast_FreeTvaluePoint(TValue *t);
+ast_Bool ast_RemoveTvaluePoint(ast_State *L, TValue *t);
+ast_Bool ast_RemoveTvalue(ast_State *L, TValue t);
 TValue *ast_NewClosure(int size);
 #endif
