@@ -41,21 +41,6 @@ ast_Bool ast_StackCheck(ast_Stack *L, int n)
     }
     return TRUE;
 }
-ast_Bool ast_PrintGCList(ast_State *L)
-{
-    if (!PStack(L)->gclist.empty())
-    {
-        for (GCList gc : PStack(L)->gclist)
-        {
-            TValue tmp;
-            tmp.tt = gc.tt;
-            tmp.value.gc = gc.gc;
-            ast_PrintTValue(tmp);
-            printf(" ");
-        }
-    }
-    return TRUE;
-}
 ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
 {
     if (L->top == L->size)
@@ -63,12 +48,6 @@ ast_Bool ast_StackPush(ast_Stack *L, TValue &value)
         PANIC("栈溢出");
     }
     L->Value[L->top++] = value;
-    if (IsCollectable(value))
-    {
-        GCList gc;
-        gc.tt = value.tt;
-        gc.gc = value.value.gc;
-    }
     return TRUE;
 }
 ast_Bool ast_StackPush(ast_Stack *L, TValue &&value)

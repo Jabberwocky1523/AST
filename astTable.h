@@ -1,8 +1,8 @@
 #ifndef AST_TABLE_H
 #define AST_TABLE_H
 #include "astState.h"
-ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize);
-ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize, int marked);
+ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize);
+ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize, int marked);
 TValue astTable_GetVal(ast_Table *tb, TValue key);
 ast_Bool astTable_PushVal(ast_Table *tb, TValue key, TValue val);
 ast_Bool astTableArr_Push(ast_Table *tb, TValue val);

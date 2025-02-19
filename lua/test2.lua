@@ -82,5 +82,5 @@
 -- print(b)
 
 
-A = { a = 1, b = 2 }
-print(A)
+T = require("test")
+print(T["add"](2, 2))

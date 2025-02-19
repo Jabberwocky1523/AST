@@ -22,6 +22,7 @@ typedef struct ast_State ast_State;
 typedef ast_Integer (*ast_CFunction)(ast_State *L);
 
 typedef union GCObject GCObject;
+typedef struct ast_Stack ast_Stack;
 typedef union StatObject StatObject;
 typedef struct ast_Stat ast_Stat;
 typedef union ExpObject ExpObject;
@@ -44,7 +45,8 @@ typedef struct ast_Block
 #define GCCommonHeader \
     GCObject *next;    \
     unsigned char tt;  \
-    int marked;
+    int marked;        \
+    ast_Stack *master;
 // GC数据头
 typedef struct GCHeader
 {
@@ -155,7 +157,6 @@ typedef struct ast_Stack
     ast_Closure *closure;
     ast_Map *openuvs;
     TValue *varargs;
-    astVector::Vector<GCList> gclist;
     int varArgsLen = 0;
     int PrevIdx = 0;
     int nPrevFuncResults = 0;

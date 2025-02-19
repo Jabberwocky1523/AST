@@ -28,6 +28,9 @@ typedef struct global_State
     StringTable stringtable;
     ast_Mem GCthreshold;
     ast_Mem totalbytes;
+    GCObject *rootgc;
+    int gcmarked;
+    int gcnum;
 } global_State;
 
 typedef struct ast_State

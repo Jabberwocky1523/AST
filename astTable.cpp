@@ -4,8 +4,9 @@
 #include "astStack.h"
 #include "astString.h"
 #include "string.h"
+#include "astGc.h"
 #include "log.h"
-ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
+ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize)
 {
     ast_Table *tb = (ast_Table *)malloc(sizeof(ast_Table));
     tb->HashMap = nullptr;
@@ -21,17 +22,19 @@ ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize)
         ast_Map *map = astMap_Init(MapSize);
         tb->HashMap = map;
     }
-    tb->next = NULL;
     tb->MetaTable = nullptr;
     tb->tt = AST_TTABLE;
     tb->IteratorMap = nullptr;
     tb->arrtop = 0;
     tb->arrSize = arrSize;
+    tb->master = L->stack;
+    tb->tt = AST_TTABLE;
+    ast_LinkGc(L, cast(GCObject *, tb));
     return tb;
 }
-ast_Table *astTable_Init(ast_Integer arrSize, ast_Integer MapSize, int marked)
+ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize, int marked)
 {
-    ast_Table *tb = astTable_Init(arrSize, MapSize);
+    ast_Table *tb = astTable_Init(L, arrSize, MapSize);
     tb->marked = marked;
     return tb;
 }
@@ -187,7 +190,7 @@ TValue ast_GetMetaField(ast_State *L, TValue val, TValue str)
 }
 ast_Bool ast_CreateTableAndPush(ast_State *L, ast_Integer arrSize, ast_Integer mapsize)
 {
-    ast_Table *tb = astTable_Init(arrSize, mapsize);
+    ast_Table *tb = astTable_Init(L, arrSize, mapsize);
     TValue tt;
     tt.value.gc = (GCObject *)tb;
     tt.tt = AST_TTABLE;
