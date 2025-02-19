@@ -4,14 +4,11 @@
 #include <iostream>
 #include <stdexcept>
 #include <thread>
-
-//! coro_ret 协程函数的返回值，内部定义promise_type，承诺对象
 template <typename T>
 struct coro_ret
 {
     struct promise_type;
     using handle_type = std::coroutine_handle<promise_type>;
-    //! 协程句柄
     handle_type coro_handle_;
 
     coro_ret(handle_type h)
@@ -26,7 +23,6 @@ struct coro_ret
     }
     ~coro_ret()
     {
-        //! 自行销毁
         if (coro_handle_)
             coro_handle_.destroy();
     }
@@ -38,39 +34,29 @@ struct coro_ret
         return *this;
     }
 
-    //! 恢复协程，返回是否结束
     bool move_next()
     {
         coro_handle_.resume();
         return coro_handle_.done();
     }
-    //! 通过promise获取数据，返回值
     T get()
     {
         return coro_handle_.promise().return_data_;
     }
-    //! promise_type就是承诺对象，承诺对象用于协程内外交流
+
     struct promise_type
     {
         promise_type() = default;
         ~promise_type() = default;
 
-        //! 生成协程返回值
         auto get_return_object()
         {
             return coro_ret<T>{handle_type::from_promise(*this)};
         }
-
-        //! 注意这个函数,返回的就是awaiter
-        //! 如果返回std::suspend_never{}，就不挂起，
-        //! 返回std::suspend_always{} 挂起
-        //! 当然你也可以返回其他awaiter
         auto initial_suspend()
         {
-            // return std::suspend_never{};
             return std::suspend_always{};
         }
-        //! co_return 后这个函数会被调用
         void return_value(T v)
         {
             return_data_ = v;
@@ -83,10 +69,6 @@ struct coro_ret
             return_data_ = v;
             return std::suspend_always{};
         }
-        //! 在协程最后退出后调用的接口。
-        //! 若 final_suspend 返回 std::suspend_always 则需要用户自行调用
-        //! handle.destroy() 进行销毁，但注意final_suspend被调用时协程已经结束
-        //! 返回std::suspend_always并不会挂起协程（实测 VSC++ 2022）
         auto final_suspend() noexcept
         {
             std::cout << "final_suspend invoked." << std::endl;
@@ -102,6 +84,5 @@ struct coro_ret
     };
 };
 
-// 这就是一个协程函数
 coro_ret<int> coroutine_7in7out();
 #endif
