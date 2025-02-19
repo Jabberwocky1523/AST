@@ -15,7 +15,7 @@
 #include "astStat.h"
 #include "fstream"
 #include "astGc.h"
-int main(int argc, const char *const *argv)
+int main3(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
