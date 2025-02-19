@@ -141,6 +141,7 @@ ast_Bool astString_RemoveStr(ast_State *L, const char *str)
         pre->gch.next = ans->gch.next;
     }
     ans->gch.next = nullptr;
+    L->G_S->totalbytes -= strlen(getstr(&ans->ts));
     free(ans);
     return TRUE;
 }

@@ -52,4 +52,10 @@ typedef void *(*ast_Alloc)(void *ud, void *ptr, size_t oldSize, size_t newSize);
 #define AST_REGISTRYINDEX -AST_MAXSTACK - 1000
 #define AST_RIDX_GLOBALS 2
 #define AstUpvalueIndex(o) AST_REGISTRYINDEX - 1 - (o)
+
+#define ast_assert(o)              \
+    {                              \
+        if (!o)                    \
+            PANIC("can not free"); \
+    }
 #endif

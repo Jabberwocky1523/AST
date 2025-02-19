@@ -15,14 +15,23 @@
 #include "astStat.h"
 #include "fstream"
 #include "astGc.h"
-int main3(int argc, const char *const *argv)
+int main(int argc, const char *const *argv)
 {
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));
     ast_Init(L, g_s);
     ast_YieldGc(L);
     TValue str = Char2Ob(L, "123");
-    TValue tb = Tb2Ob(astTable_Init(L, 1, 1));
+    L->stack = ast_NewStack(1, L);
+    str = Char2Ob(L, "234");
+    L->stack = ast_NewStack(1, L);
+    ast_Stack *mainstack = L->stack;
+    str = Char2Ob(L, "345");
+
+    // TValue tb = Tb2Ob(astTable_Init(L, 1, 1));
+    L->stack = mainstack;
+    ast_RunGc(L);
+    ast_PrintGcList(L);
     // ast_Token token = ast_NewToken();
     // char *chunk;
     // ast_Integer len;

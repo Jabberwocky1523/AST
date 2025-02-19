@@ -15,7 +15,7 @@
 #include "astTable.h"
 #include "astError.h"
 #include "std/auxLib.h"
-auto main(int argc, const char *const *argv) -> int
+auto mainast(int argc, const char *const *argv) -> int
 {
     const char *file_name = "/home/kurisu/桌面/AST/lua/test2.lua";
     if (argc >= 2)
