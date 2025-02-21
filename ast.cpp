@@ -15,7 +15,7 @@
 #include "astTable.h"
 #include "astError.h"
 #include "std/auxLib.h"
-auto mainast(int argc, const char *const *argv) -> int
+auto main(int argc, const char *const *argv) -> int
 {
     const char *file_name = "/home/kurisu/桌面/AST/lua/test2.lua";
     if (argc >= 2)
@@ -27,7 +27,8 @@ auto mainast(int argc, const char *const *argv) -> int
     ast_Init(L, g_s);
     OpenLibs(L);
     ast_Load(L, (char *)file_name);
-    ast_YieldGc(L);
+    // ast_YieldGc(L);
+    // L->G_S->borrow = NOTBORROW;
     ast_Call(L, 0, 0);
     return 0;
 }

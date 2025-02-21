@@ -1,6 +1,7 @@
 #include "astGc.h"
 #include "astStack.h"
 #include "astString.h"
+#include "log.h"
 ast_Type ast_FreeGcOb(ast_State *L, GCObject *ob)
 {
     ast_Type type = ob->gch.tt;
@@ -58,6 +59,7 @@ int ast_YieldGc(ast_State *L)
 {
     int mark = L->G_S->gcmarked;
     L->G_S->gcmarked = GCRUN;
+    L->G_S->borrow = BORROW;
     return mark;
 }
 ast_Bool ast_RunGc(ast_State *L)
@@ -67,10 +69,10 @@ ast_Bool ast_RunGc(ast_State *L)
     GCObject *prev = gs->rootgc;
     while (cur)
     {
-        if (cur->gch.master == L->stack)
+        if (cur->gch.master == PStack(L))
         {
             cur = ast_RemoveGc(L, prev, cur);
-            break;
+            continue;
         }
         prev = cur;
         cur = cur->gch.next;
@@ -87,6 +89,21 @@ ast_Bool ast_PrintGcList(ast_State *L)
         tt.value.gc = cur;
         ast_PrintTValue(tt);
         cur = cur->gch.next;
+    }
+    return TRUE;
+}
+ast_Bool ast_ChangeMaster(ast_Stack *L, TValue *val, ast_Integer len)
+{
+    if (val == nullptr || L->L->G_S->gcmarked == GCPAUSE)
+    {
+        return FALSE;
+    }
+    for (int i = 0; i < abs(len); i++)
+    {
+        if (IsCollectable(val[i]))
+        {
+            val[i].value.gc->gch.master = L;
+        }
     }
     return TRUE;
 }

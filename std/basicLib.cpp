@@ -3,7 +3,9 @@
 #include "../astVm.h"
 #include "../astMath.h"
 #include "../astString.h"
+#include "sstream"
 #include "../log.h"
+#include "../astGc.h"
 ast_Integer OpenBaseLibs(ast_State *L)
 {
     ast_PushGlobalTable(L);
@@ -158,4 +160,29 @@ ast_Integer type(ast_State *L)
     }
     ast_StackPush(PStack(L), k);
     return 1;
+}
+ast_Integer master(ast_State *L)
+{
+    CheckAny(L, 0);
+    ast_StackSetTop(PStack(L), 1);
+    TValue val = ast_StackPop(PStack(L));
+    if (IsCollectable(val))
+    {
+        if (val.value.gc->gch.master == ast_Static)
+        {
+            ast_StackPush(PStack(L), Char2Ob(L, "static"));
+            return 1;
+        }
+        std::stringstream ss;
+        ss << val.value.gc->gch.master;
+        ast_StackPush(PStack(L), Char2Ob(L, ss.str().c_str()));
+        return 1;
+    }
+    ast_StackPush(PStack(L), Nil2Ob());
+    return 1;
+}
+ast_Integer gclist(ast_State *L)
+{
+    ast_PrintGcList(L);
+    return 0;
 }

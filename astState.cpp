@@ -11,6 +11,7 @@
 #include "astTable.h"
 #include "astUtils.h"
 #include "astVm.h"
+#include "astGc.h"
 #include "log.h"
 #include "string.h"
 ast_Map *kw;
@@ -254,6 +255,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, ast_Closure *closure, int nArgs,
     }
     ast_PopN(PStack(L), 1);
     ast_PushN(newStack, vals, nParam);
+    ast_ChangeMaster(newStack, vals, nParam);
     newStack->top = nRegs;
     if (nArgs > nParam && IsVarArg)
     {
@@ -266,6 +268,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, ast_Closure *closure, int nArgs,
     }
     ast_PushStack(L, newStack);
     ast_RunAstClosure(L);
+    ast_RunGc(L);
     ast_PopStack(L);
     if (nResults > L->stack->nPrevFuncResults)
     {

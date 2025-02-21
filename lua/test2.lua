@@ -82,5 +82,29 @@
 -- print(b)
 
 
-T = require("test")
-print(T["add"](2, 2))
+-- T = require("test")
+-- print(T["add"](2, 2))
+
+function add(a, b)
+    return a + b;
+end
+
+function concat(a, b)
+    return a .. b
+end
+
+local A = "1";
+local B = "2";
+-- local C = add(A, B)
+local C = A + B;
+
+-- print(master(A), " ")
+-- D = concat(A, B)
+-- print(master(A), " ", master(D), " ")
+-- print(A)
+print(" ")
+gclist()
+print(" ")
+add(A, B)
+gclist()
+print(A, B)

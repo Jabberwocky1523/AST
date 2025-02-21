@@ -1,5 +1,5 @@
 #include "astCo.h"
-int main(int argc, char *argv[])
+int mainco(int argc, char *argv[])
 {
     auto c_r = coroutine_7in7out();
     bool done = false;

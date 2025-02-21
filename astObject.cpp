@@ -95,7 +95,7 @@ ast_Bool ast_RemoveTvalue(ast_State *L, TValue t)
     switch (t.tt)
     {
     case AST_TTABLE:
-        ast_RemoveTable(L, &t.value.gc->tb);
+        // ast_RemoveTable(L, &t.value.gc->tb);
         break;
     case AST_TSTRING:
         astString_Remove(L, &t.value.gc->ts);

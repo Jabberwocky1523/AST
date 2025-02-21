@@ -113,7 +113,7 @@ ast_String *astString_FindStr(ast_State *L, const char *str)
     }
     return NULL;
 }
-ast_Bool astString_RemoveStr(ast_State *L, const char *str)
+ast_Bool astString_RemoveStr(ast_State *L, char *str)
 {
     StringTable st = L->G_S->stringtable;
     ast_Hash h = astString_GetHash(str);
@@ -145,9 +145,11 @@ ast_Bool astString_RemoveStr(ast_State *L, const char *str)
     free(ans);
     return TRUE;
 }
-ast_Bool astString_Remove(ast_State *L, const ast_String *str)
+ast_Bool astString_Remove(ast_State *L, ast_String *str)
 {
-    return astString_RemoveStr(L, getstr(str));
+    // astString_RemoveStr(L, getstr(str));
+    free(str);
+    return TRUE;
 }
 ast_String *astString_NewLStr(ast_State *L, const char *str, size_t len, int marked)
 {

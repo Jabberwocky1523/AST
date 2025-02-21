@@ -30,6 +30,7 @@ typedef struct global_State
     ast_Mem totalbytes;
     GCObject *rootgc;
     int gcmarked;
+    int borrow;
     int gcnum;
 } global_State;
 

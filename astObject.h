@@ -62,6 +62,7 @@ typedef struct GCList
 typedef union
 {
     union GCObject *gc;
+    union GCObject *ref;
     void *p;
     ast_Number n;
     ast_Integer i;

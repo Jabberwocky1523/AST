@@ -5,6 +5,7 @@
 #include "astMap.h"
 #include "log.h"
 #include "astTable.h"
+#include "astGc.h"
 #include "astString.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
@@ -48,6 +49,8 @@ ast_Bool _ast_Move(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     astack_Copy(PStack(L), n.b, n.a);
+    if (L->G_S->gcmarked == GCRUN && L->G_S->borrow == BORROW)
+        L->stack->Value[n.b].tt = AST_TNIL;
     return TRUE;
 }
 ast_Bool _ast_CloseUpvalues(ast_State *L, ast_Integer n)
@@ -463,6 +466,7 @@ ast_Bool _ast_Call(ast_State *L, Instruction i)
     {
         L->stack->PrevIdx = n.a;
     }
+
     ast_Call(L, nArgs, n.c - 1);
     _PopResults(L, n.a, n.c);
     return TRUE;
@@ -545,6 +549,10 @@ ast_Bool _ast_SetUpval(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     TValue tt = ast_StackGetTValue(PStack(L), n.a);
+    if (IsCollectable(tt))
+    {
+        tt.value.gc->gch.master = ast_Static;
+    }
     L->stack->closure->Upvalues[n.b] = tt;
     return TRUE;
 }
@@ -554,6 +562,11 @@ ast_Bool _ast_SetTabUp(ast_State *L, Instruction i)
     TABC n = InstructionTABC(i);
     ast_GetRk(L, n.b);
     ast_GetRk(L, n.c);
+    TValue val = ast_StackGetTValue(PStack(L), -1);
+    if (IsCollectable(val))
+    {
+        val.value.gc->gch.master = ast_Static;
+    }
     ast_SetTableFromIdx(L, AstUpvalueIndex(n.a));
 
     return TRUE;

@@ -15,6 +15,8 @@ ast_Integer tonumber(ast_State *L);
 ast_Integer rawget(ast_State *L);
 ast_Integer rawset(ast_State *L);
 ast_Integer type(ast_State *L);
+ast_Integer master(ast_State *L);
+ast_Integer gclist(ast_State *L);
 std::unordered_map<String, ast_CFunction> func{
     {"print", astPrintTest},
     {"getmetatable", getMetatable},
@@ -31,6 +33,8 @@ std::unordered_map<String, ast_CFunction> func{
     {"tonumber", tonumber},
     {"rawset", rawset},
     {"rawget", rawget},
-    {"type", type}};
+    {"type", type},
+    {"master", master},
+    {"gclist", gclist}};
 
 #endif
