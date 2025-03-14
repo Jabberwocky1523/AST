@@ -145,6 +145,7 @@ namespace astStr
         Iterator find(char byte);
         Iterator find(const char *str);
         Iterator find(String &str);
+        Iterator findByKmp(String &str);
         const char *data();
         Iterator begin()
         {

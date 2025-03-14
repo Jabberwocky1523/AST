@@ -262,6 +262,55 @@ String::Iterator String::find(String &str)
 {
     return std::search(this->begin(), this->end(), str.begin(), str.end());
 }
+int *aux_Kmp(String &str)
+{
+    int *next = (int *)calloc(str.length(), sizeof(int));
+    next[0] = -1;
+    for (int i = 2; i < str.length(); i++)
+    {
+        if (str[i - 1] == str[next[i - 1]])
+        {
+            next[i] = next[i - 1] + 1;
+        }
+        else
+        {
+            int tmp = next[i - 1];
+            while (tmp >= 0)
+            {
+                if (str[tmp] == str[i - 1])
+                {
+                    break;
+                }
+                tmp = next[tmp];
+            }
+            next[i] = tmp + 1;
+        }
+    }
+    return next;
+}
+String::Iterator String::findByKmp(String &str)
+{
+    int *next = aux_Kmp(str);
+    int lt = 0, rt = 0;
+    String tmp = *this;
+    while (lt < this->length() && rt < str.length())
+    {
+        if (tmp[lt] == str[rt] || rt == -1)
+        {
+            lt++, rt++;
+        }
+        else
+        {
+            rt = next[rt];
+        }
+    }
+    free(next);
+    if (rt == str.length())
+    {
+        return this->begin() + (lt - rt);
+    }
+    return nullptr;
+}
 bool operator==(const String &lhs, const String &rhs)
 {
     return (lhs.compare(rhs) == 0);

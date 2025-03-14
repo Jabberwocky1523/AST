@@ -66,47 +66,57 @@
 //     auto b = a(c, 1, 2);
 //     std::cout << b;
 // }
-#include <iostream>
-#include <functional>
+// #include <iostream>
+// #include <functional>
 
-template <typename T>
-class Fun
+// template <typename T>
+// class Fun
+// {
+// public:
+//     T p;
+//     Fun() {}
+//     Fun(T pm) : p(pm) {}
+
+//     template <typename U, typename... Args>
+//     auto operator()(U obj, Args... args)
+//     {
+//         return (obj.*p)(args...);
+//     }
+// };
+
+// template <class T>
+// Fun<T> mem(T pm)
+// {
+//     return Fun<T>(pm);
+// }
+
+// class Test
+// {
+// public:
+//     int a;
+//     int cal(int a, int b) { return a + b; }
+//     ~Test()
+//     {
+//         printf("123");
+//     }
+// };
+
+// int mainstr()
+// {
+//     auto a = mem(&Test::cal);
+//     Test *c = new Test;
+//     c->a = 1;
+//     int result = a(*c, 1, 2);
+//     std::cout << c->Test::cal(1, 2) << std::endl;
+//     return 0;
+// }
+#include "astStr.h"
+#include "iostream"
+auto main() -> int
 {
-public:
-    T p;
-    Fun() {}
-    Fun(T pm) : p(pm) {}
-
-    template <typename U, typename... Args>
-    auto operator()(U obj, Args... args)
-    {
-        return (obj.*p)(args...);
-    }
-};
-
-template <class T>
-Fun<T> mem(T pm)
-{
-    return Fun<T>(pm);
-}
-
-class Test
-{
-public:
-    int a;
-    int cal(int a, int b) { return a + b; }
-    ~Test()
-    {
-        printf("123");
-    }
-};
-
-int mainstr()
-{
-    auto a = mem(&Test::cal);
-    Test *c = new Test;
-    c->a = 1;
-    int result = a(*c, 1, 2);
-    std::cout << c->Test::cal(1, 2) << std::endl;
+    String ss("test");
+    String m("es");
+    String::Iterator it = ss.findByKmp(m);
+    std::cout << *it;
     return 0;
 }
