@@ -115,8 +115,8 @@
 auto main() -> int
 {
     String ss("test");
-    String m("es");
-    String::Iterator it = ss.findByKmp(m);
-    std::cout << *it;
+    String m("st");
+    String::Iterator it = ss.find(m);
+    std::cout << (bool)(it == nullptr);
     return 0;
 }
