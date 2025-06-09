@@ -159,6 +159,45 @@ ast_Stack *ast_PopStack(ast_State *L)
     S->prev = nullptr;
     return S;
 }
+ast_Bool ast_Updateclosure(ast_State *L, ast_Closure *cs, Prototype *proto)
+{
+    if (proto->Upvalues.len > 0)
+    {
+        cs->Upvalues = (TValue *)calloc(proto->Upvalues.len, sizeof(TValue));
+        cs->Uvslen = proto->Upvalues.len;
+        for (int i = 0; i < proto->Upvalues.len; i++)
+        {
+            if (proto->Upvalues.data[i].Instack == 1)
+            {
+                if (L->stack->openuvs == nullptr)
+                {
+                    L->stack->openuvs = astMap_Init(8);
+                }
+                ast_Integer k = proto->Upvalues.data[i].Idx;
+                TValue res = astMap_GetValFromKey(L->stack->openuvs,
+                                                  Int2Ob(proto->Upvalues.data[i].Idx));
+                if (res.tt != AST_TNIL)
+                {
+                    cs->Upvalues[i] = res;
+                }
+                else
+                {
+                    cs->Upvalues[i] = L->stack->Value[proto->Upvalues.data[i].Idx];
+                    astMap_PushKeyVal(L->stack->openuvs,
+                                      Int2Ob(proto->Upvalues.data[i].Idx),
+                                      cs->Upvalues[i]);
+                }
+            }
+            else
+            {
+                if (L->stack->closure->Upvalues != nullptr)
+                    cs->Upvalues[i] =
+                        L->stack->closure->Upvalues[proto->Upvalues.data->Idx];
+            }
+        }
+    }
+    return TRUE;
+}
 ast_Bool ast_LoadChunk(ast_State *L, astBuffer chunk, Prototype *proto,
                        ast_String *chunkname, int mode)
 {
@@ -236,6 +275,7 @@ ast_Bool ast_CallAstClousure(ast_State *L, ast_Closure *closure, int nArgs,
         newStack->closure->Upvalues =
             (TValue *)calloc(closure->pr->Upvalues.len, sizeof(TValue));
         newStack->closure->Uvslen = closure->pr->Upvalues.len;
+        ast_Updateclosure(L, newStack->closure, newStack->closure->pr);
     }
     TValue *vals = ast_PopN(PStack(L), nArgs);
     if (nParam > nArgs)
@@ -399,6 +439,7 @@ ast_Integer ast_LoadVararg(ast_State *L, int n)
     ast_PushN(PStack(L), L->stack->varargs, n);
     return n;
 }
+
 ast_Bool ast_LoadProto(ast_State *L, int idx)
 {
     Prototype *proto = L->stack->closure->pr->Protos[idx];
@@ -408,41 +449,7 @@ ast_Bool ast_LoadProto(ast_State *L, int idx)
     cs->pr = proto;
     cs->Upvalues = nullptr;
     tt.value.gc = (GCObject *)cs;
-    if (proto->Upvalues.len > 0)
-    {
-        cs->Upvalues = (TValue *)calloc(proto->Upvalues.len, sizeof(TValue));
-        cs->Uvslen = proto->Upvalues.len;
-        for (int i = 0; i < proto->Upvalues.len; i++)
-        {
-            if (proto->Upvalues.data[i].Instack == 1)
-            {
-                if (L->stack->openuvs == nullptr)
-                {
-                    L->stack->openuvs = astMap_Init(8);
-                }
-                ast_Integer k = proto->Upvalues.data[i].Idx;
-                TValue res = astMap_GetValFromKey(L->stack->openuvs,
-                                                  Int2Ob(proto->Upvalues.data[i].Idx));
-                if (res.tt != AST_TNIL)
-                {
-                    cs->Upvalues[i] = res;
-                }
-                else
-                {
-                    cs->Upvalues[i] = L->stack->Value[proto->Upvalues.data[i].Idx];
-                    astMap_PushKeyVal(L->stack->openuvs,
-                                      Int2Ob(proto->Upvalues.data[i].Idx),
-                                      cs->Upvalues[i]);
-                }
-            }
-            else
-            {
-                if (L->stack->closure->Upvalues != nullptr)
-                    cs->Upvalues[i] =
-                        L->stack->closure->Upvalues[proto->Upvalues.data->Idx];
-            }
-        }
-    }
+    ast_Updateclosure(L, cs, proto);
     ast_StackPush(PStack(L), tt);
     return TRUE;
 }

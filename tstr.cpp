@@ -112,7 +112,7 @@
 // }
 #include "astStr.h"
 #include "iostream"
-auto main() -> int
+auto mainstr() -> int
 {
     String ss("test");
     String m("st");
