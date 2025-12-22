@@ -108,6 +108,8 @@
 -- add(A, B)
 -- gclist()
 -- print(A, B)
-
 T = requireso("libuser")
 T["test"]()
+-- T = requireso("libuser")
+
+-- T["test"]()

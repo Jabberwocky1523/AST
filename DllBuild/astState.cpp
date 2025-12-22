@@ -9,7 +9,7 @@
 #include "astStack.h"
 #include "astString.h"
 #include "astTable.h"
-#include "astUtils.h"
+// #include "astUtils.h"
 #include "astVm.h"
 #include "astGc.h"
 #include "log.h"

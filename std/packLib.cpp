@@ -36,6 +36,13 @@ ast_Integer preloadSearcher(ast_State *L)
 }
 TValue DllSearcher(ast_State *L, TValue name)
 {
+    std::string token;
+#ifdef __linux__
+    token = ".so";
+#endif
+#ifdef __apple__
+    token = ".dylib";
+#endif
     fs::path path = "./";
     std::string str = getstr(&name.value.gc->ts);
     while (str.find(".") != std::string::npos)
@@ -43,9 +50,9 @@ TValue DllSearcher(ast_State *L, TValue name)
         std::string sep = "/";
         str = str.replace(str.find("."), 1, sep);
     }
-    if (!str.ends_with(".dylib"))
+    if (!str.ends_with(token))
     {
-        str = str.append(".dylib");
+        str = str.append(token);
     }
     auto result = findFile(path, str.c_str());
     if (!result.has_value())

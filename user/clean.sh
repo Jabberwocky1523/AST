@@ -4,8 +4,3 @@ rm ./AST
 rm ./libcomgo.so
 rm ./lib/libcomgo.so
 rm ./go/libcomgo.so
-cd ./DllBuild
-sh ./clean.sh
-cd ../user
-sh ./clean.sh
-cd ..
