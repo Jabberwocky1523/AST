@@ -3,7 +3,7 @@ project(AST)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(std)
-
+add_subdirectory(ons)
 include_directories(${PROJECT_SOURCE_DIR})
 aux_source_directory(${PROJECT_SOURCE_DIR} SRC)
 include_directories(${PROJECT_SOURCE_DIR}/lib)
