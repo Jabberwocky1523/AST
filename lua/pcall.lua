@@ -4,3 +4,4 @@ end
 
 ok, result = pcall(div, 1, 2);
 print(result)
+

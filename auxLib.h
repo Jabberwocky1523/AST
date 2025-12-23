@@ -1,9 +1,9 @@
 #ifndef AUX_LIB_H
 #define AUX_LIB_H
-#include "../astState.h"
-#include "../astStack.h"
-#include "../astStr.h"
-#include "../astUser.h"
+#include "astState.h"
+#include "astStack.h"
+#include "astStr.h"
+#include "astUser.h"
 #include "unordered_map"
 #define FuncRegs std::unordered_map<String, ast_CFunction>
 ast_Bool CheckAny(ast_State *L, ast_Integer idx);

@@ -7,6 +7,7 @@
 #include "ast.h"
 #include "astObject.h"
 #include "astBinaryChunk.h"
+#include "auxLib.h"
 #define Int2Ob(o) ast_IntegerToTValue(o)
 #define Dou2Ob(o) ast_NumberToTValue(o)
 #define Char2Ob(L, o) ast_ObjectToTValue(L, (void *)o, AST_TSTRING, 0)
