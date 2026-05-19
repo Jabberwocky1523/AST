@@ -1,7 +1,7 @@
 t = { a = 1, b = 2, c = 3 }
 
-printtable(t)
+print(t)
 t = { "a", "b", "c", 1, 2, 3 }
-printtable(t)
+print(t)
 local i = 1;
 i = ~i;
