@@ -1,6 +1,8 @@
 package codegen
 
-import . "com/compiler/ast"
+import (
+	. "com/compiler/ast"
+)
 
 func cgStat(fi *funcInfo, node Stat) {
 	switch stat := node.(type) {
@@ -26,9 +28,20 @@ func cgStat(fi *funcInfo, node Stat) {
 		cgLocalVarDeclStat(fi, stat)
 	case *LocalFuncDefStat:
 		cgLocalFuncDefStat(fi, stat)
-	case *LabelStat, *GotoStat:
-		panic("label and goto statements are not supported!")
+	case *LabelStat:
+		cgLabelStat(fi, stat)
+	case *GotoStat:
+		cgGotoStat(fi, stat)
+	default:
+		panic("不支持的语句!")
 	}
+}
+func cgGotoStat(fi *funcInfo, node *GotoStat) {
+	fi.emitJmp(fi.line, 0, fi.label[node.Name]-fi.pc()-1)
+}
+
+func cgLabelStat(fi *funcInfo, node *LabelStat) {
+	fi.label[node.Name] = fi.pc()
 }
 
 func cgLocalFuncDefStat(fi *funcInfo, node *LocalFuncDefStat) {

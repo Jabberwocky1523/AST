@@ -1,3 +1,4 @@
-local t = { a = 1, b = 2, c = 3 }
-
-return t
+::test::
+print(1, 2, 3)
+for i = 1, 2 do
+end

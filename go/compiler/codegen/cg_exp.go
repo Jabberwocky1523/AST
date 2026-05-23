@@ -15,7 +15,6 @@ const (
 	ARG_RUK   = ARG_REG | ARG_UPVAL | ARG_CONST
 )
 
-// todo: rename to evalExp()?
 func cgExp(fi *funcInfo, node Exp, a, n int) {
 	switch exp := node.(type) {
 	case *NilExp:

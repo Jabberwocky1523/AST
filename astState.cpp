@@ -487,7 +487,12 @@ ast_Bool ast_RegisterPushValue(ast_State *L, ast_CFunction func, TValue name)
 }
 ast_Bool ast_Load(ast_State *L, char *file_Path)
 {
-    astBuffer file_content = LoadViaCodePath(file_Path);
+    std::string str = file_Path;
+    astBuffer file_content;
+    if (str.ends_with("out"))
+        file_content = LoadFileToastBuffer(str.data());
+    else
+        file_content = LoadViaCodePath(file_Path);
     Prototype *proto = astBinaryChunkUnDump(file_content);
     PrintAst(proto);
     ast_LoadChunk(L, file_content, proto, nullptr, 0);

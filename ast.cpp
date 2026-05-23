@@ -21,6 +21,12 @@ auto main(int argc, const char *const *argv) -> int
     if (argc >= 2)
     {
         file_name = argv[1];
+        if (strcmp((char *)file_name, "-c") == 0)
+        {
+            file_name = argv[2];
+            Dump2File((char *)file_name);
+            return 1;
+        }
     }
     ast_State *L = (ast_State *)malloc(sizeof(ast_State));
     global_State *g_s = (global_State *)malloc(sizeof(global_State));

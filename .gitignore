@@ -3,3 +3,4 @@ lib/
 .vscode/
 AST
 libcomgo.so
+*.out

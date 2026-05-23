@@ -55,6 +55,7 @@ type funcInfo struct {
 	lastLine  int
 	numParams int
 	isVararg  bool
+	label     map[string]int
 }
 
 func newFuncInfo(parent *funcInfo, fd *FuncDefExp) *funcInfo {
@@ -72,6 +73,7 @@ func newFuncInfo(parent *funcInfo, fd *FuncDefExp) *funcInfo {
 		lastLine:  fd.LastLine,
 		numParams: len(fd.ParList),
 		isVararg:  fd.IsVararg,
+		label:     map[string]int{},
 	}
 }
 

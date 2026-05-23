@@ -15,6 +15,10 @@ char *LoadFileContent(const char *file_name)
     OPENANDREAD(fp, buffer, len);
     return buffer;
 }
+void Dump2File(char *file_name)
+{
+    ast_Dump2File(file_name);
+}
 astBuffer LoadViaCodePath(const char *file_name)
 {
     astBuffer file_contont = (astBuffer)calloc(1, sizeof(StructastBuffer));
