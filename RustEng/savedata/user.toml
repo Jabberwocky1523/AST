@@ -1,0 +1,12 @@
+[auto]
+delay = 2.5382617
+is_wait = true
+
+[text]
+speed = 14.647284
+opacity = 0.5
+
+[volume]
+main = 0.0
+bgm = 100.0
+voice = 100.0

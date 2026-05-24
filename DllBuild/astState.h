@@ -7,6 +7,8 @@
 #include "ast.h"
 #include "astObject.h"
 #include "astBinaryChunk.h"
+#include "astStr.h"
+#include "unordered_map"
 #define Int2Ob(o) ast_IntegerToTValue(o)
 #define Dou2Ob(o) ast_NumberToTValue(o)
 #define Char2Ob(L, o) ast_ObjectToTValue(L, (void *)o, AST_TSTRING, 0)
@@ -15,6 +17,7 @@
 #define Bool2Ob(o) ast_BooleanToTValue(o)
 #define Tb2Ob(o) ast_ObjectToTValue(nullptr, (void *)o, AST_TTABLE, 0)
 #define CFunc2Ob(o) ast_CFunctionToTValue(o)
+#define FuncRegs std::unordered_map<String, ast_CFunction>
 typedef size_t ast_Mem;
 typedef struct StringTable
 {
@@ -44,7 +47,6 @@ typedef struct ast_State
 // 全局定义
 extern "C"
 {
-
     ast_Bool ast_Init(ast_State *L, global_State *G_S);
     // ast_Bool ast_Load(ast_State *L, char *file_Path);
     TValue ast_ObjectToTValue(ast_State *L, void *ob, ast_Type type, int flag);
@@ -66,5 +68,6 @@ extern "C"
     ast_Bool ast_GetGlobal(ast_State *L, TValue name);
     TValue *ast_PopN(ast_Stack *L, int size);
     ast_Bool ast_PushN(ast_Stack *L, TValue *vals, int num);
+    ast_Bool NewLib(ast_State *L, FuncRegs func);
 }
 #endif

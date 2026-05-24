@@ -27,7 +27,7 @@
 #include "gbk2utf16.h"
 #include "sjis2utf16.h"
 #include "version.h"
-#include "../astState.h"
+#include "../DllBuild/astState.h"
 ONScripter ons;
 Coding2UTF16 *coding2utf16 = NULL;
 void parseOption(int argc, char *argv[]);

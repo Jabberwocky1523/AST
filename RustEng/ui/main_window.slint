@@ -1,0 +1,223 @@
+import { MainMenu } from "components/main_menu.slint";
+import { SaveView } from "components/save.slint";
+import { LoadView } from "components/load.slint";
+import { SettingsView } from "components/main_config.slint";
+import { StoryView } from "components/story.slint";
+
+export component MainWindow inherits Window {
+    min-width: 1280px;
+    min-height: 720px;
+    title: "RustEng";
+
+    // 所有原有的属性保持不变
+    in property <string> dialogue-1;
+    in property <string> dialogue-2;
+    in property <string> dialogue-3;
+    in property<string> speaker;
+    in property <[{ front: string, back: string, script: string, index: int }]> backlogs;
+    in property<[{ index: int, text: string }]> choose-branch;
+    in property <{ img: image, x_offset: float, y_offset: float, zoom: float }> bg;
+    in property <{ body: image, rate: float, offset: float }> fg-no-0;
+    in property <{ face: image, face-x: float, face-y: float }> face-no-0;
+    in property <{ body: image, rate: float, offset: float }> fg-z1-0;
+    in property <{ face: image, face-x: float, face-y: float }> face-z1-0;
+    in property <{ x_offset: length, y_offset: length }> offset-z1-0;
+    in property <{ body: image, rate: float, offset: float }> fg-z1-2;
+    in property <{ face: image, face-x: float, face-y: float }> face-z1-2;
+    in property <{ x_offset: length, y_offset: length }> offset-z1-2;
+    in property <{ body: image, rate: float, offset: float }> fg-z1--2;
+    in property <{ face: image, face-x: float, face-y: float }> face-z1--2;
+    in property <{ x_offset: length, y_offset: length }> offset-z1--2;
+    in property<bool> is-fullscreen: false;
+    in-out property <bool> is_backlog: false;
+    in-out property <bool> is-auto;
+    in-out property <bool> is-wait;
+    in-out property <float> delay;
+    in-out property <float> text-speed;
+    in-out property <float> dialogue-opacity;
+    in-out property <bool> is-skip;
+    in property<int> current-choose: 0;
+    property <bool> has-focus: true;
+
+    in-out property <int> current-screen: 0;
+    in-out property <int> last-screen: 0;
+
+    in property <[{name:string, index:int, bg:image, explain:string}]> save-items: [
+        {explain:"空的"},{explain:"空的"},{explain:"空的"},{explain:"空的"},
+        {explain:"空的"},{explain:"空的"},{explain:"空的"},{explain:"空的"},
+        {explain:"空的"},{explain:"空的"},{explain:"空的"},{explain:"空的"},
+        {explain:"空的"},{explain:"空的"},{explain:"空的"},{explain:"空的"},
+    ];
+
+    in-out property <float> main-volume;
+    in-out property <float> bgm-volume;
+    in-out property <float> voice-volume;
+
+    // 计算容器尺寸
+    property <length> container-size: min(self.width, self.height * 16 / 9);
+    out property <length> container-width: container-size;
+    out property <length> container-height: container-size * 9 / 16;
+
+    FocusScope {
+        width: parent.width;
+        height: parent.height;
+
+        key-pressed(event) => {
+            if (event.text == Key.F11) {
+                root.toggle-fullscreen();
+                accept
+            } else {
+                reject
+            }
+        }
+    }
+
+    // 居中容器
+    Rectangle {
+        width: container-width;
+        height: container-height;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+
+        // 主菜单界面
+        if root.current-screen == 0: MainMenu {
+            container-width: parent.width;
+            container-height: parent.height;
+            new-game => { root.current-screen = 2; }
+            load-game => {
+                root.last-screen = 0;
+                root.current-screen = 4;
+            }
+            gallery => { /* 画廊逻辑 */ }
+            settings => {
+                root.last-screen = 0;
+                root.current-screen = 1;
+            }
+            exit-game => { root.exit(); }
+        }
+
+        // 设置界面
+        if root.current-screen == 1: SettingsView {
+            container-width: parent.width;
+            container-height: parent.height;
+            is-fullscreen: root.is-fullscreen;
+            main-volume <=> root.main-volume;
+            bgm-volume <=> root.bgm-volume;
+            voice-volume <=> root.voice-volume;
+            is-wait <=> root.is-wait;
+            delay <=> root.delay;
+            dialogue-opacity <=> root.dialogue-opacity;
+            text-speed <=> root.text-speed;
+
+            back => { 
+                root.save-config();
+                root.current-screen = root.last-screen; 
+            }
+            toggle-fullscreen => { root.toggle-fullscreen(); }
+            volume-changed => { root.volume-changed(); }
+            voice-volume-changed => { root.voice-volume-changed(); }
+        }
+
+        // 剧情界面
+        if root.current-screen == 2: StoryView {
+            container-width: parent.width;
+            container-height: parent.height;
+            dialogue-1: root.dialogue-1;
+            dialogue-2: root.dialogue-2;
+            dialogue-3: root.dialogue-3;
+            speaker: root.speaker;
+            choose-branch: root.choose-branch;
+            bg: root.bg;
+            current-choose: root.current-choose;
+            fg-no-0: root.fg-no-0;
+            face-no-0: root.face-no-0;
+            fg-z1--2: root.fg-z1--2;
+            face-z1--2: root.face-z1--2;
+            offset-z1--2: root.offset-z1--2;
+            fg-z1-0: root.fg-z1-0;
+            face-z1-0: root.face-z1-0;
+            offset-z1-0: root.offset-z1-0;
+            fg-z1-2: root.fg-z1-2;
+            face-z1-2: root.face-z1-2;
+            offset-z1-2: root.offset-z1-2;
+            dialogue-opacity: root.dialogue-opacity;
+
+            backlogs <=> root.backlogs;
+            is_backlog <=> root.is_backlog;
+            is-auto <=> root.is-auto;
+            is-skip <=> root.is-skip;
+
+            auto-play(b) => {
+                root.auto-play(b);
+                root.skip-play(false);
+            }
+            skip-play(b) => {
+                root.skip-play(b);
+                root.auto-play(false);
+            }
+            backlog => {
+                root.auto-play(false);
+                root.skip-play(false);
+                root.backlog();
+            }
+            backlog-change(i) => { root.backlog-change(i); }
+            backlog-jump(s, i) => { root.backlog-jump(s, i); }
+            clicked => { root.clicked(); }
+            choose(text) => { root.choose(text); }
+            save-game => {
+                root.auto-play(false);
+                root.skip-play(false);
+                root.current-screen = 3;
+            }
+            load-game => {
+                root.auto-play(false);
+                root.skip-play(false);
+                root.last-screen = 2;
+                root.current-screen = 4;
+            }
+            settings => {
+                root.auto-play(false);
+                root.skip-play(false);
+                root.last-screen = 2;
+                root.current-screen = 1;
+            }
+        }
+
+        if root.current-screen == 3: SaveView {
+            container-width: parent.width;
+            container-height: parent.height;
+
+            save-items <=> root.save-items;
+
+            save(index) => { root.save(index); }
+            back => { root.current-screen = 2; }
+        }
+
+        if root.current-screen == 4: LoadView {
+            container-width: parent.width;
+            container-height: parent.height;
+
+            save-items <=> root.save-items;
+
+            load(name, index) => { root.load(name, index); }
+            back => { root.current-screen = root.last-screen; }
+        }
+    }
+
+    // 回调函数保持不变
+    callback auto-play(bool);
+    callback skip-play(bool);
+    callback clicked();
+    callback toggle-fullscreen();
+    callback volume-changed();
+    callback bgm-volume-changed();
+    callback voice-volume-changed();
+    callback save-config();
+    callback backlog();
+    callback backlog-change(int);
+    callback backlog-jump(string, int);
+    callback choose(string);
+    callback save(int);
+    callback load(string, int);
+    callback exit();
+}

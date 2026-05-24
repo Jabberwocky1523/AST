@@ -4,7 +4,6 @@
 #include "astStack.h"
 #include "astString.h"
 #include "string.h"
-#include "astGc.h"
 #include "log.h"
 ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize)
 {
@@ -29,7 +28,6 @@ ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize)
     tb->arrSize = arrSize;
     tb->master = L->stack;
     tb->tt = AST_TTABLE;
-    ast_LinkGc(L, cast(GCObject *, tb));
     return tb;
 }
 ast_Table *astTable_Init(ast_State *L, ast_Integer arrSize, ast_Integer MapSize, int marked)

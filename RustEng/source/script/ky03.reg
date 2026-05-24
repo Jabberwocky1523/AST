@@ -1,0 +1,53 @@
+%version 1
+
+@label start
+@bgm bgm43
+@bg bg037a
+@clear All
+@fg rir|z1|rir_z1b0200|z1b0031|0
+“start”
+
+@voice rir|fem_rir_50236
+@fg rir|z1|rir_z1b0200|z1b0010|0|100
+莉々子“ようこそ……えっ”
+
+智宏“お、お誕生日、おめでとうございましゅっ”
+
+@voice rar|fem_rar_50055
+@fg rir|z1|rir_z1b0200|z1b0008|0
+@move rir|z1|rir_z1b0200|z1b0008|0|to2|1
+@fg rar|z1|rar_z1a0200|z1a0054|-2
+@fg rar|z1|rar_z1a0200|z1a0041|-2|4200
+@move rar|z1|rar_z1a0200|z1a0041|-2|nod|1|1
+礼良“おととい和泉さんの家までお送りしたとき、{nns}うっかり話しちゃいました。てへっ☆”
+
+“メイドさんが頭をこっつんこしながらフォローを入れてくれた。聖会長が不審に思わないよう配慮してくれたのか。救いのないこの状況で助かる。”
+
+智宏“会長はユリの花がお好きと詩桜先輩に聞いたので、{nns}ご用意しました”
+
+@voice rir|fem_rir_50237
+@fg rir|z1|rir_z1b0200|z1b0012|2
+@fg rar|z1|rar_z1a0200|z1a0015|-2
+@fg rir|z1|rir_z1a0200|z1a0039|2|6600
+@fg rar|z1|rar_z1a0200|z1a0053|-2|1
+莉々子“ま、まあ！　そんな、和泉会長に気を遣わせてしまって……美倉さん、花瓶に生けていただける？”
+
+@clear z1|-2
+@voice rir|fem_rir_50238
+@move rir|z1|rir_z1a0200|z1a0039|2|to0|1|0
+@fg rir|z1|rir_z1a0200|z1a0038|0|1900
+@fg rir|z1|rir_z1a0200|z1a0002|0|5300
+@move rir|z1|rir_z1a0200|z1a0002|0|nod|1|7200
+莉々子“ありがとうございます、和泉会長から贈り物をいただけるなんて考えてもいなかったもので……{nns}ええ、本当に驚きました”
+
+@voice rir|fem_rir_50239
+@fg rir|z1|rir_z1a0200|z1a0009|0
+莉々子“ねえ、驚きましたよねえ！？”
+
+@voice rar|fem_rar_50056
+礼良“花束持って訪ねてくるとは思ってなかったですねー。なんかちょっとキザでいいじゃないですか”
+
+@clear All
+“end”
+
+@jump ky01

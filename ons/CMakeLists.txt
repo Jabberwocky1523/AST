@@ -4,35 +4,28 @@ set(CMAKE_CXX_STANDARD 11)
 project(ons)
 set(CMAKE_CXX_STANDARD 23)
 
-# 查找SDL2库
-set(SDL_H /opt/homebrew/Cellar/sdl2/2.32.10/include/SDL2)
-set(SDL_IMG /opt/homebrew/Cellar/sdl2_image/2.8.8/include/SDL2)
-set(SDL_TTF /opt/homebrew/Cellar/sdl2_ttf/2.24.0/include/SDL2)
-set(SDL_MIXER /opt/homebrew/Cellar/sdl2_mixer/2.8.1_1/include/SDL2)
+# Homebrew prefix for finding packages
+list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew")
+
+# SDL2
 find_package(SDL2 REQUIRED)
+
+# SDL2_image
 find_package(SDL2_image REQUIRED)
+
+# SDL2_ttf
 find_package(SDL2_ttf REQUIRED)
+
+# SDL2_mixer
 find_package(SDL2_mixer REQUIRED)
+
 find_package(lua REQUIRED)
 
-# find_package(bz2 REQUIRED)
 find_package(fontconfig REQUIRED)
 find_package(jpeg REQUIRED)
 find_package(ogg REQUIRED)
 
-# find_package(smpeg2 REQUIRED)
-# find_package(libjpeg REQUIRED)
-# find_package(libogg REQUIRED)
-# find_package(libvorbis_dev REQUIRED)
-# 添加SDL头文件搜索路径
 find_package(BZip2 REQUIRED)
-include_directories(${SDL_H})
-include_directories(${SDL_IMG})
-include_directories(${SDL_TTF})
-include_directories(${SDL_MIXER})
-include_directories(${SDL2_INCLUDE_DIRS})
-include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
-include_directories(${SDL2_MIXER_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIRS})
 include_directories(${BZ2_IMAGE_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIR})
@@ -45,16 +38,6 @@ include_directories(${OGG_IMAGE_INCLUDE_DIRS})
 include_directories(${LIBVORBIS_DEV_IMAGE_INCLUDE_DIRS})
 
 include_directories(${BZIP2_INCLUDE_DIRS})
-include_directories(${SDL2_TTF_INCLUDE_DIRS} ./builtin_dll ./simd)
-
-set(SDL_LIB /opt/homebrew/Cellar/sdl2/2.32.10/lib/libSDL2.dylib)
-set(SDL_LIB_IMG /opt/homebrew/Cellar/sdl2_image/2.8.8/lib/libSDL2_image.dylib)
-set(SDL_LIB_TTF /opt/homebrew/Cellar/sdl2_ttf/2.24.0/lib/libSDL2_ttf.dylib)
-set(SDL_LIB_MIXER /opt/homebrew/Cellar/sdl2_mixer/2.8.1_1/lib/libSDL2_mixer.dylib)
-link_libraries(${SDL_LIB})
-link_libraries(${SDL_LIB_IMG})
-link_libraries(${SDL_LIB_TTF})
-link_libraries(${SDL_LIB_MIXER})
 
 file(GLOB ASTCPP ./*.cpp)
 file(GLOB_RECURSE built ./builtin_dll/*.cpp)
@@ -67,15 +50,8 @@ set(Lsarconv ${Lsardec} ./sarconv.cpp ./conv_shared.cpp resize_image.cpp)
 set(Lnsaconv ${Lnsadec} ./nsaconv.cpp ./conv_shared.cpp resize_image.cpp)
 list(REMOVE_ITEM ASTCPP ${CMAKE_CURRENT_SOURCE_DIR}/./nsaconv.cpp ${CMAKE_CURRENT_SOURCE_DIR}/./nsadec.cpp ${CMAKE_CURRENT_SOURCE_DIR}/./onscripter_main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/./sarconv.cpp ${CMAKE_CURRENT_SOURCE_DIR}/./sardec.cpp)
 
-# 增加SDL链接库目录
-link_libraries(${SDL2_LIBRARIES})
-link_libraries(SDL2_image::SDL2_image)
-link_libraries(SDL2_ttf::SDL2_ttf)
-link_libraries(SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
 link_libraries(${LUA_LIBRARIES})
 
-# link_libraries(SDL2_ttf::SDL2_ttf)
-# link_libraries(SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
 link_libraries(${JPEG_LIBRARIES})
 link_libraries(${OGG_LIBRARIES})
 link_libraries(${BZIP2_LIBRARIES})
@@ -88,3 +64,4 @@ link_libraries(${BZIP2_LIBRARIES})
 # add_executable(ons ./onscripter_main.cpp ${ASTCPP})
 add_library(ons SHARED ./onscripter_main.cpp ${ASTCPP})
 target_link_libraries(ons ${PROJECT_SOURCE_DIR}/libsh.dylib)
+target_link_libraries(ons SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)

@@ -5,7 +5,6 @@
 #include "astMap.h"
 #include "log.h"
 #include "astTable.h"
-#include "astGc.h"
 #include "astString.h"
 ast_Integer ast_GetPc(ast_State *L)
 {
@@ -49,8 +48,6 @@ ast_Bool _ast_Move(ast_State *L, Instruction i)
 {
     TABC n = InstructionTABC(i);
     astack_Copy(PStack(L), n.b, n.a);
-    if (L->G_S->gcmarked == GCRUN && L->G_S->borrow == BORROW)
-        L->stack->Value[n.b].tt = AST_TNIL;
     return TRUE;
 }
 ast_Bool _ast_CloseUpvalues(ast_State *L, ast_Integer n)

@@ -1,7 +1,6 @@
 #include "astString.h"
 #include <climits>
 #include "astMem.h"
-#include "astGc.h"
 // 分配一个新字符串
 ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
 {
@@ -21,7 +20,6 @@ ast_String *NewLStr(ast_State *L, const char *str, size_t len, ast_Hash hash)
     ts->Tsv.next = tb->hashTable[hash];
     tb->hashTable[hash] = cast(GCObject *, ts);
     tb->Tnum++;
-    ast_LinkGc(L, cast(GCObject *, ts));
     if (tb->Tnum > tb->size && tb->size < (INT_MAX - 2) / 2)
     {
         astString_Resize(L, tb->size * 2);

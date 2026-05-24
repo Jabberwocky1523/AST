@@ -1,6 +1,4 @@
 #!/bin/bash
-rm -r ./bin
-rm -r ./build
 if [ -d "/build/" ]; then
     cd build
 else
